@@ -1,5 +1,18 @@
-# Created by https://www.toptal.com/developers/gitignore/api/windows,intellij,intellij+all,intellij+iml,eclipse,java,maven,git,sonarqube
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,intellij,intellij+all,intellij+iml,eclipse,java,maven,git,sonarqube
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
 
 ### Eclipse ###
 .metadata
@@ -61,7 +74,7 @@ local.properties
 
 # Uncomment this line if you wish to ignore the project description file.
 # Typically, this file would be tracked if it contains build/dependency configurations:
-#.project
+.project
 
 ### Eclipse Patch ###
 # Spring Boot Tooling
@@ -393,5 +406,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# End of https://www.toptal.com/developers/gitignore/api/windows,intellij,intellij+all,intellij+iml,eclipse,java,maven,git,sonarqube
