@@ -57,4 +57,9 @@ public class OwnerController {
         //ownerService.delete(id);
         return new ResponseEntity<Owner>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping(value = "/report",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createReport(@RequestBody String reportPreferences){
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
 }

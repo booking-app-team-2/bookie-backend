@@ -1,5 +1,6 @@
 package booking_app_team_2.bookie.controller;
 
+import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,4 +59,20 @@ public class GuestController {
         //guestService.delete(id);
         return new ResponseEntity<Guest>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping(value = "/{id}/favourite-accommodations",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Accommodation>> getFavouriteAccommodations(@PathVariable Long id){
+        Collection<Accommodation> accommodations= Collections.emptyList();
+        if(accommodations.isEmpty())
+        {
+            return new ResponseEntity<Collection<Accommodation>>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Collection<Accommodation>>(accommodations,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{id}/favourite-accommodations",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Guest> addFavouriteAccommodation(@RequestBody Long accommodationId){
+        return new ResponseEntity<Guest>(HttpStatus.CREATED);
+    }
+
 }
