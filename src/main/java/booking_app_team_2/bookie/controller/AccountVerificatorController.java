@@ -25,7 +25,7 @@ public class AccountVerificatorController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountVerificator> getAccountVerification(@PathVariable("id") Long id) {
         // QUESTION: Id of verificator or user? Does it even matter?
-        AccountVerificator verificator = new AccountVerificator() {};                                                               // Empty object right now
+        AccountVerificator verificator = new AccountVerificator() {};                                               // Empty object right now
         if (verificator == null) {
             return new ResponseEntity<AccountVerificator>(HttpStatus.NOT_FOUND);
         }
