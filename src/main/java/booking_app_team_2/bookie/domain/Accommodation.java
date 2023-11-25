@@ -1,9 +1,10 @@
 package booking_app_team_2.bookie.domain;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 
 public class Accommodation {
-    private Long id;
+    private Long id = null;
     private String name;
     private String description;
     private Location location;
@@ -16,4 +17,5 @@ public class Accommodation {
     private boolean isApproved = false;
     private boolean isReservationAutoAccepted = false;
     private Owner owner;
+    private HashSet<AvailabilityPeriod> availabilityPeriods;
 }
