@@ -53,7 +53,7 @@ public class GuestController {
         return new ResponseEntity<Guest>(updatedGuest, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Guest> deleteGuest(@PathVariable("id") Long id) {
         //guestService.delete(id);
         return new ResponseEntity<Guest>(HttpStatus.NO_CONTENT);
