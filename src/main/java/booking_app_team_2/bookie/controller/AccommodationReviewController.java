@@ -58,20 +58,20 @@ public class AccommodationReviewController {
     }
 
     @DeleteMapping(value = "/unapproved/{id}")
-    public ResponseEntity<AccommodationReview> denyReview(@PathVariable Long id) {
+    public ResponseEntity<Void> denyReview(@PathVariable Long id) {
         AccommodationReview accommodationReview = new AccommodationReview();
         if (accommodationReview == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<AccommodationReview> deleteReview(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
         AccommodationReview accommodationReview = new AccommodationReview();
         if (accommodationReview == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

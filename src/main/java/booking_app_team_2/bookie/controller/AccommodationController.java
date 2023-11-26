@@ -15,8 +15,8 @@ import java.util.HashSet;
 @RequestMapping("/api/v1/accommodations")
 public class AccommodationController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> getAccomodations() {
-        Collection<Accommodation> accommodations = Collections.emptyList();              // Empty list right now
+    public ResponseEntity<Collection<Accommodation>> getAccommodations() {
+        Collection<Accommodation> accommodations = Collections.emptyList();
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
@@ -25,7 +25,6 @@ public class AccommodationController {
         AccommodationDTO accommodationDTO = new AccommodationDTO();
         if (accommodationDTO.equals(null))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
         return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
     }
 
@@ -50,8 +49,8 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @GetMapping(value ="/owner-accomodations/{owner_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> getAccomodationsByOwner(@PathVariable Long owner_id) {
+    @GetMapping(value ="/owner-accommodations/{owner_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Accommodation>> getAccommodationsByOwner(@PathVariable Long owner_id) {
         Collection<Accommodation> accommodations = Collections.emptyList();
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
@@ -72,9 +71,9 @@ public class AccommodationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Accommodation> createAccomodation(@RequestBody Accommodation accommodation) {
-        Accommodation savedAccomodation = new Accommodation() {};                                      // Empty object right now
-        return new ResponseEntity<>(savedAccomodation, HttpStatus.CREATED);
+    public ResponseEntity<Accommodation> createAccommodation(@RequestBody Accommodation accommodation) {
+        Accommodation savedAccommodation = new Accommodation() {};
+        return new ResponseEntity<>(savedAccommodation, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -89,8 +88,7 @@ public class AccommodationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Accommodation> deleteAccomodation(@PathVariable("id") Long id) {
-        //accomodationService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteAccommodation(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

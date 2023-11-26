@@ -15,13 +15,13 @@ import java.util.Collections;
 public class OwnerController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Owner>> getOwners() {
-        Collection<Owner> owners = Collections.emptyList();              // Empty list right now
+        Collection<Owner> owners = Collections.emptyList();
         return new ResponseEntity<>(owners, HttpStatus.OK);
     }
 
     @GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Owner> getOwner(@PathVariable("id") Long id) {
-        Owner owner = new Owner() {};                                           // Empty object right now
+        Owner owner = new Owner() {};
 
         if (owner == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -36,16 +36,16 @@ public class OwnerController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Owner> createOwner(@RequestBody Owner owner) {
-        Owner savedOwner = new Owner() {};                                      // Empty object right now
+        Owner savedOwner = new Owner() {};
         return new ResponseEntity<>(savedOwner, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Owner> updateOwner(@RequestBody Owner owner, @PathVariable Long id) {
         Owner ownerForUpdate = new Owner() {};
-        //ownerForUpdate.copyValues(owner);
+
         // TODO: Create copy constructor for Guest
-        //Owner updatedOwner = ownerService.update(ownerForUpdate);
+
         Owner updatedOwner = ownerForUpdate;
         if (updatedOwner == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,8 +54,7 @@ public class OwnerController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Owner> deleteOwner(@PathVariable("id") Long id) {
-        //ownerService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteOwner(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

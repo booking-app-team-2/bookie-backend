@@ -14,14 +14,14 @@ import java.util.Collections;
 public class AccountVerificatorController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccountVerificator>> getAccountVerificators() {
-        Collection<AccountVerificator> verifications = Collections.emptyList();              // Empty list right now
+        Collection<AccountVerificator> verifications = Collections.emptyList();
         return new ResponseEntity<>(verifications, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountVerificator> getAccountVerification(@PathVariable("id") Long id) {
         // QUESTION: Id of verificator or user? Does it even matter?
-        AccountVerificator verificator = new AccountVerificator() {};                                               // Empty object right now
+        AccountVerificator verificator = new AccountVerificator() {};
         if (verificator == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -30,7 +30,7 @@ public class AccountVerificatorController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountVerificator> createVerificator(@RequestBody AccountVerificator verificator) {
-        AccountVerificator savedVerificator = new AccountVerificator() {};                                      // Empty object right now
+        AccountVerificator savedVerificator = new AccountVerificator() {};
         return new ResponseEntity<>(savedVerificator, HttpStatus.CREATED);
     }
 
@@ -38,9 +38,9 @@ public class AccountVerificatorController {
     public ResponseEntity<AccountVerificator> updateVerificator(@RequestBody AccountVerificator verificator, @PathVariable Long id) {
         AccountVerificator verificatorForUpdate = new AccountVerificator() {
         };
-        //verificatorForUpdate.copyValues(verificator);
+
         // TODO: Create copy constructor for AccountVerificator
-        //AccountVerificator updatedVerificator = verificatorService.update(verificatorForUpdate);
+
         AccountVerificator updatedVerificator = verificatorForUpdate;
         if (updatedVerificator == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,8 +49,7 @@ public class AccountVerificatorController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<AccountVerificator> deleteGuest(@PathVariable("id") Long id) {
-        //verificatorService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteGuest(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
