@@ -12,14 +12,6 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/api/v1/reports")
 public class ReportController {
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> createReport(@RequestBody Report report){
-        Report newReport=new Report();
-        if(newReport==null){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Report>>getReports(){
         Collection<Report> reports= Collections.emptyList();
@@ -28,6 +20,16 @@ public class ReportController {
         }
         return new ResponseEntity<>(reports, HttpStatus.OK);
     }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Report> createReport(@RequestBody Report report){
+        Report newReport=new Report();
+        if(newReport==null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @PutMapping(value = "/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Report> blockUser(@PathVariable Long userId){
         return new ResponseEntity<>(HttpStatus.OK);

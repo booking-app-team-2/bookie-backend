@@ -29,6 +29,11 @@ public class OwnerController {
         return new ResponseEntity<>(owner, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/report",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createReport(@RequestBody String reportPreferences){
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Owner> createOwner(@RequestBody Owner owner) {
         Owner savedOwner = new Owner() {};                                      // Empty object right now
@@ -52,10 +57,5 @@ public class OwnerController {
     public ResponseEntity<Owner> deleteOwner(@PathVariable("id") Long id) {
         //ownerService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping(value = "/report",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createReport(@RequestBody String reportPreferences){
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
