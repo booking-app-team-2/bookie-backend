@@ -9,6 +9,7 @@ public class Accommodation {
     private String description;
     private Location location;
     private EnumSet<Amenities> amenities;
+    private HashSet<Image> images;
     private int minimumGuests;
     private int maximumGuests;
     private int reservationCancellationDeadline;
