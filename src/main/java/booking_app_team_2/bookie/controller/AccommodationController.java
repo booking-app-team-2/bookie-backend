@@ -1,9 +1,6 @@
 package booking_app_team_2.bookie.controller;
 
-import booking_app_team_2.bookie.domain.Accommodation;
-import booking_app_team_2.bookie.domain.Amenities;
-import booking_app_team_2.bookie.domain.AvailabilityPeriod;
-import booking_app_team_2.bookie.domain.Image;
+import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,11 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/v1/accommodations")
 public class AccommodationController {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Accommodation>> getAccomodations() {
+        Collection<Accommodation> accommodations = Collections.emptyList();              // Empty list right now
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable Long id) {
         AccommodationDTO accommodationDTO = new AccommodationDTO();
@@ -23,6 +27,33 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Accommodation>> getFilteredAccommodation(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "amenities", required = false) String amenities,
+            @RequestParam(value = "minimumGuests", required = false) Integer minGuests,
+            @RequestParam(value = "maximumGuests", required = false) Integer maxGuests,
+            @RequestParam(value = "minimumPrice", required = false) Double minPrice,
+            @RequestParam(value = "maximumPrice", required = false) Double maxPrice,
+            @RequestParam(value = "type", required = false) AccommodationType type,
+            @RequestParam(value = "isPricedPerGuest", required = false) Boolean isPricedPerGuest,
+            @RequestParam(value = "availability", required = false) String availability,
+            @RequestParam(value = "averageRating", required = false) Double avgRating)
+    {
+        Collection<Accommodation> accommodations = Collections.emptyList();
+        if (accommodations.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
+    @GetMapping(value ="/owner-accomodations/{owner_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Accommodation>> getAccomodationsByOwner(@PathVariable Long owner_id) {
+        Collection<Accommodation> accommodations = Collections.emptyList();
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{accommodationId}/images")
@@ -40,6 +71,12 @@ public class AccommodationController {
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Accommodation> createAccomodation(@RequestBody Accommodation accommodation) {
+        Accommodation savedAccomodation = new Accommodation() {};                                      // Empty object right now
+        return new ResponseEntity<>(savedAccomodation, HttpStatus.CREATED);
+    }
+
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody AccommodationDTO accommodationDTO,
@@ -49,5 +86,11 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(accommodationDTO1, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Accommodation> deleteAccomodation(@PathVariable("id") Long id) {
+        //accomodationService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
