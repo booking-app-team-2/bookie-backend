@@ -18,12 +18,10 @@ public class NotificationController {
         return new ResponseEntity<>(newNotification, HttpStatus.CREATED);
     }
 
+    //Request param pogledati kod darkovog
     @GetMapping(value = "/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Notification>> getUserNotifications(@PathVariable Long userId){
         Collection<Notification> notifications= Collections.emptyList();
-        if(notifications.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(notifications, HttpStatus.OK);
     }
 }

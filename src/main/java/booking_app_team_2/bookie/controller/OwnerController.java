@@ -23,7 +23,7 @@ public class OwnerController {
     public ResponseEntity<Owner> getOwner(@PathVariable("id") Long id) {
         Owner owner = new Owner() {};
 
-        if (owner == null) {
+        if (owner.equals(null)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(owner, HttpStatus.OK);
@@ -47,7 +47,7 @@ public class OwnerController {
         // TODO: Create copy constructor for Guest
 
         Owner updatedOwner = ownerForUpdate;
-        if (updatedOwner == null){
+        if (updatedOwner.equals(null)){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(updatedOwner, HttpStatus.OK);

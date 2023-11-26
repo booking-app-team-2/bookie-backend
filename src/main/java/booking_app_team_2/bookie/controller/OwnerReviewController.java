@@ -23,18 +23,12 @@ public class OwnerReviewController {
     @GetMapping(value = "/{ownerId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OwnerReview>> getOwnersReviews(@PathVariable Long ownerId){
         Collection<OwnerReview> ownerReviews = Collections.emptyList();
-        if (ownerReviews.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(ownerReviews, HttpStatus.OK);
     }
 
     @GetMapping(value = "/reported/{ownerId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OwnerReview>> getOwnersReportedReviews(@PathVariable Long ownerId){
         Collection<OwnerReview> ownerReviews = Collections.emptyList();
-        if (ownerReviews.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(ownerReviews, HttpStatus.OK);
     }
 
@@ -46,7 +40,7 @@ public class OwnerReviewController {
     @PutMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OwnerReview> reportReview(@RequestBody Review review, @PathVariable Long id) throws Exception{
         OwnerReview ownerReview=new OwnerReview();
-        if(ownerReview==null){
+        if(ownerReview.equals(null)){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(ownerReview, HttpStatus.OK);

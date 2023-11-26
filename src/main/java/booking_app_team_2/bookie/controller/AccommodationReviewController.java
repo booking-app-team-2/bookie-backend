@@ -15,25 +15,19 @@ public class AccommodationReviewController {
     @GetMapping(value = "/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationReview>> getAccommodationReview(@PathVariable Long accommodationId) {
         Collection<AccommodationReview> accommodationReviews = Collections.emptyList();
-        if (accommodationReviews.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(accommodationReviews, HttpStatus.OK);
     }
 
     @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationReview>> getUnapprovedReviews() {
         Collection<AccommodationReview> accommodationReviews = Collections.emptyList();
-        if (accommodationReviews.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(accommodationReviews, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationReview> createReview(@RequestBody AccommodationReview accommodationReview) {
         AccommodationReview newReview = new AccommodationReview();
-        if (newReview == null) {
+        if (newReview.equals(null)) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
@@ -42,7 +36,7 @@ public class AccommodationReviewController {
     @PutMapping(value = "/unapproved/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationReview> approveReview(@RequestBody AccommodationReview review, @PathVariable Long id) {
         AccommodationReview accommodationReview = new AccommodationReview();
-        if (accommodationReview == null) {
+        if (accommodationReview.equals(null)) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(accommodationReview, HttpStatus.OK);
@@ -51,7 +45,7 @@ public class AccommodationReviewController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationReview> reportReview(@RequestBody AccommodationReview review, @PathVariable Long id) {
         AccommodationReview accommodationReview = new AccommodationReview();
-        if (accommodationReview == null) {
+        if (accommodationReview.equals(null)) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(accommodationReview, HttpStatus.OK);
@@ -60,7 +54,7 @@ public class AccommodationReviewController {
     @DeleteMapping(value = "/unapproved/{id}")
     public ResponseEntity<Void> denyReview(@PathVariable Long id) {
         AccommodationReview accommodationReview = new AccommodationReview();
-        if (accommodationReview == null) {
+        if (accommodationReview.equals(null)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -69,7 +63,7 @@ public class AccommodationReviewController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
         AccommodationReview accommodationReview = new AccommodationReview();
-        if (accommodationReview == null) {
+        if (accommodationReview.equals(null)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.OK);

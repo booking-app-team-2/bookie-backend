@@ -43,9 +43,6 @@ public class AccommodationController {
             @RequestParam(value = "averageRating", required = false) Double avgRating)
     {
         Collection<Accommodation> accommodations = Collections.emptyList();
-        if (accommodations.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 

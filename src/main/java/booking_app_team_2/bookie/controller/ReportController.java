@@ -15,16 +15,13 @@ public class ReportController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Report>>getReports(){
         Collection<Report> reports= Collections.emptyList();
-        if(reports.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Report> createReport(@RequestBody Report report){
         Report newReport=new Report();
-        if(newReport==null){
+        if(newReport.equals(null)){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
