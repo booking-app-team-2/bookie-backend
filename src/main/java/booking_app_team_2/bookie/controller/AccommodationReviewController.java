@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.AccommodationReview;
+import booking_app_team_2.bookie.dto.AccommodationReviewDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +14,14 @@ import java.util.Collections;
 @RequestMapping("/api/v1/accommodation-reviews")
 public class AccommodationReviewController {
     @GetMapping(value = "/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationReview>> getAccommodationReview(@PathVariable Long accommodationId) {
-        Collection<AccommodationReview> accommodationReviews = Collections.emptyList();
+    public ResponseEntity<Collection<AccommodationReviewDTO>> getAccommodationReviews(@PathVariable Long accommodationId) {
+        Collection<AccommodationReviewDTO> accommodationReviews = Collections.emptyList();
         return new ResponseEntity<>(accommodationReviews, HttpStatus.OK);
     }
 
     @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationReview>> getUnapprovedReviews() {
-        Collection<AccommodationReview> accommodationReviews = Collections.emptyList();
+    public ResponseEntity<Collection<AccommodationReviewDTO>> getUnapprovedReviews() {
+        Collection<AccommodationReviewDTO> accommodationReviews = Collections.emptyList();
         return new ResponseEntity<>(accommodationReviews, HttpStatus.OK);
     }
 

@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Report;
+import booking_app_team_2.bookie.dto.ReportDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,8 @@ import java.util.Collections;
 @RequestMapping("/api/v1/reports")
 public class ReportController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Report>>getReports(){
-        Collection<Report> reports= Collections.emptyList();
+    public ResponseEntity<Collection<ReportDTO>>getReports(){
+        Collection<ReportDTO> reports= Collections.emptyList();
         return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 

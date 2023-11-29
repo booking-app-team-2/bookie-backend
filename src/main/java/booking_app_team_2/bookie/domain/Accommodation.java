@@ -17,7 +17,7 @@ public class Accommodation {
     private boolean isPricedPerGuest;
     private boolean isApproved = false;
     private boolean isReservationAutoAccepted = false;
-    private double averageRaiting;
+    private double averageRating;
     private Owner owner;
     private HashSet<AvailabilityPeriod> availabilityPeriods;
 }

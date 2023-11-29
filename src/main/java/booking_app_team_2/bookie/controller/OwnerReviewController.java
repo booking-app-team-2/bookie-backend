@@ -1,5 +1,6 @@
 package booking_app_team_2.bookie.controller;
 
+import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.domain.Review;
 import booking_app_team_2.bookie.dto.OwnerReviewDTO;
 import booking_app_team_2.bookie.domain.OwnerReview;
@@ -21,15 +22,24 @@ public class OwnerReviewController {
     }
 
     @GetMapping(value = "/{ownerId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<OwnerReview>> getOwnersReviews(@PathVariable Long ownerId){
-        Collection<OwnerReview> ownerReviews = Collections.emptyList();
+    public ResponseEntity<Collection<OwnerReviewDTO>> getOwnersReviews(@PathVariable Long ownerId){
+        Collection<OwnerReviewDTO> ownerReviews = Collections.emptyList();
         return new ResponseEntity<>(ownerReviews, HttpStatus.OK);
     }
 
     @GetMapping(value = "/reported/{ownerId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<OwnerReview>> getOwnersReportedReviews(@PathVariable Long ownerId){
-        Collection<OwnerReview> ownerReviews = Collections.emptyList();
+    public ResponseEntity<Collection<OwnerReviewDTO>> getOwnersReportedReviews(@PathVariable Long ownerId){
+        Collection<OwnerReviewDTO> ownerReviews = Collections.emptyList();
         return new ResponseEntity<>(ownerReviews, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Float> getAverageGradeForOwner(@RequestParam Long ownerId) {
+        Owner owner = new Owner();
+        if (owner.equals(null))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

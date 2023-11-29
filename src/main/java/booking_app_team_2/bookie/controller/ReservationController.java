@@ -1,5 +1,7 @@
 package booking_app_team_2.bookie.controller;
 
+import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,8 +18,27 @@ public class ReservationController {
     public ResponseEntity<Collection<ReservationDTO>> getReservations(@RequestParam(required = false) String name,
                                                                       @RequestParam(required = false) Long startDate,
                                                                       @RequestParam(required = false) Long endDate,
-                                                                      @RequestParam(required = false) String status) {
+                                                                      @RequestParam(required = false) String status,
+                                                                      @RequestParam(required = false) Long ownerId) {
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/cancelled")
+    public ResponseEntity<Integer> getNumberOfCancelledReservationsForReservee(@RequestParam Long reserveeId) {
+        Guest reservee = new Guest();
+        if (reservee.equals(null))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/accepted")
+    public ResponseEntity<Integer> hasApprovedReservationForReservee(@RequestParam Long reserveeId) {
+        Guest reservee = new Guest();
+        if (reservee.equals(null))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,9 +48,9 @@ public class ReservationController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationDTO> updateReservation(@RequestBody ReservationDTO reservationDTO,
+    public ResponseEntity<ReservationStatusDTO> updateReservation(@RequestBody ReservationStatusDTO reservationDTO,
                                                             @PathVariable Long id) {
-        ReservationDTO reservationDTO1 = new ReservationDTO();
+        ReservationStatusDTO reservationDTO1 = new ReservationStatusDTO();
         if (reservationDTO1.equals(null))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

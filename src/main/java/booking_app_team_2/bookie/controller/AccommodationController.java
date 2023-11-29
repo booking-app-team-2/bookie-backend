@@ -1,7 +1,9 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.dto.AccommodationAutoAcceptDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
+import booking_app_team_2.bookie.dto.OwnerDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class AccommodationController {
     }
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> getFilteredAccommodation(
+    public ResponseEntity<Collection<AccommodationDTO>> getFilteredAccommodation(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "location", required = false) String location,
             @RequestParam(value = "amenities", required = false) String amenities,
@@ -42,13 +44,13 @@ public class AccommodationController {
             @RequestParam(value = "availability", required = false) String availability,
             @RequestParam(value = "averageRating", required = false) Double avgRating)
     {
-        Collection<Accommodation> accommodations = Collections.emptyList();
+        Collection<AccommodationDTO> accommodations = Collections.emptyList();
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
     @GetMapping(value ="/owner-accommodations/{owner_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> getAccommodationsByOwner(@PathVariable Long owner_id) {
-        Collection<Accommodation> accommodations = Collections.emptyList();
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByOwner(@PathVariable Long owner_id) {
+        Collection<AccommodationDTO> accommodations = Collections.emptyList();
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
@@ -67,17 +69,32 @@ public class AccommodationController {
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{accommodationId}/owner")
+    public ResponseEntity<OwnerDTO> getOwner(@PathVariable Long accommodationId) {
+        return new ResponseEntity<>(new OwnerDTO(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{accommodationId}/average-rating")
+    public ResponseEntity<Double> getAverageRating(@PathVariable Long accommodationId) {
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{accommodationId}/reservation-auto-accept")
+    public ResponseEntity<Boolean> isReservationAutoAccepted(@PathVariable Long accommodationId) {
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Accommodation> createAccommodation(@RequestBody Accommodation accommodation) {
         Accommodation savedAccommodation = new Accommodation() {};
         return new ResponseEntity<>(savedAccommodation, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/{id}/reservation-auto-accept", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody AccommodationDTO accommodationDTO,
-                                                                @PathVariable Long id) {
-        AccommodationDTO accommodationDTO1 = new AccommodationDTO();
+    public ResponseEntity<AccommodationAutoAcceptDTO> updateAccommodation(@RequestBody AccommodationAutoAcceptDTO accommodationDTO,
+                                                                              @PathVariable Long id) {
+        AccommodationAutoAcceptDTO accommodationDTO1 = new AccommodationAutoAcceptDTO();
         if (accommodationDTO1.equals(null))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

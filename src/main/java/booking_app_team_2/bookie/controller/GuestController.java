@@ -19,6 +19,7 @@ public class GuestController {
         Collection<Guest> guests = Collections.emptyList();
         return new ResponseEntity<>(guests, HttpStatus.OK);
     }
+
     @GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Guest> getGuest(@PathVariable("id") Long id) {
         Guest guest = new Guest() {};                                           // Empty object right now
