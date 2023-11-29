@@ -9,6 +9,7 @@ public class Accommodation {
     private String description;
     private Location location;
     private EnumSet<Amenities> amenities;
+    private HashSet<Image> images;
     private int minimumGuests;
     private int maximumGuests;
     private int reservationCancellationDeadline;
@@ -16,6 +17,7 @@ public class Accommodation {
     private boolean isPricedPerGuest;
     private boolean isApproved = false;
     private boolean isReservationAutoAccepted = false;
+    private double averageRating;
     private Owner owner;
     private HashSet<AvailabilityPeriod> availabilityPeriods;
 }
