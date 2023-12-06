@@ -1,5 +1,8 @@
 package booking_app_team_2.bookie.domain;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public abstract class Review {
     private Long id = null;
     private float grade;
