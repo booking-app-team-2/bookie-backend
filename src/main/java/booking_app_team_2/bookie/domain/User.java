@@ -1,9 +1,6 @@
 package booking_app_team_2.bookie.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -18,6 +15,8 @@ import org.hibernate.annotations.Where;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
+    @SequenceGenerator(name = "USER_SEQ", sequenceName = "SEQUENCE_USER", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ")
     private Long id;
     private String email;
     private String password;

@@ -17,6 +17,8 @@ import java.util.HashSet;
 @Entity
 public class Accommodation {
     @Id
+    @SequenceGenerator(name = "ACCOMMODATION_SEQ", sequenceName = "SEQUENCE_ACCOMMODATION", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCOMMODATION_SEQ")
     private Long id = null;
     private String name;
     private String description;

@@ -14,6 +14,8 @@ import org.hibernate.annotations.Where;
 @Entity
 public class Reservation {
     @Id
+    @SequenceGenerator(name = "RESERVATION_SEQ", sequenceName = "SEQUENCE_RESERVATION", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RESERVATION_SEQ")
     private Long id = null;
     private int numberOfGuests;
     private ReservationStatus status = ReservationStatus.Waiting;

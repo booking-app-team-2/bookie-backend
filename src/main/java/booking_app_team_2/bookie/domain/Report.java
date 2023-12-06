@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Report {
     @Id
+    @SequenceGenerator(name = "REPORT_SEQ", sequenceName = "SEQUENCE_REPORT", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REPORT_SEQ")
     private Long id = null;
     private String body;
     @ManyToOne
