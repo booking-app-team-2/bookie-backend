@@ -12,6 +12,7 @@ import org.hibernate.annotations.Where;
         + "WHERE id = ?")
 @Where(clause = "is_deleted = false")
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"path", "name"}))
 public class Image {
     @Id
     @SequenceGenerator(name = "image_seq", sequenceName = "sequence_image", allocationSize = 1)

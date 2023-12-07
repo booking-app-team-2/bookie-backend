@@ -53,8 +53,6 @@ public class Accommodation {
     private boolean isApproved = false;
     @Column(name = "is_reservation_auto_accepted", nullable = false)
     private boolean isReservationAutoAccepted = false;
-    @Column(name = "average_rating", nullable = false)
-    private double averageRating;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private Owner owner;
