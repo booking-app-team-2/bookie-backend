@@ -7,24 +7,36 @@ import org.hibernate.annotations.Where;
 
 @NoArgsConstructor
 @SQLDelete(sql
-        = "UPDATE User "
-        + "SET isDeleted = true "
+        = "UPDATE user_bookie "
+        + "SET is_deleted = true "
         + "WHERE id = ?")
-@Where(clause = "isDeleted = false")
+@Where(clause = "is_deleted = false")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "user_bookie")
 public class User {
     @Id
-    @SequenceGenerator(name = "USER_SEQ", sequenceName = "SEQUENCE_USER", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ")
+    @SequenceGenerator(name = "user_seq", sequenceName = "sequence_user", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @Column(unique = true, nullable = false)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String surname;
+    @Column(name = "address_of_residence", nullable = false)
     private String addressOfResidence;
+    @Column(nullable = false)
     private String telephone;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
+    @Column(name = "is_blocked", nullable = false)
     private boolean isBlocked = false;
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 }

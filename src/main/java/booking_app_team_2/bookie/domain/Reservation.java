@@ -7,23 +7,31 @@ import org.hibernate.annotations.Where;
 
 @NoArgsConstructor
 @SQLDelete(sql
-        = "UPDATE Reservation "
-        + "SET isDeleted = true "
+        = "UPDATE reservation "
+        + "SET is_deleted = true "
         + "WHERE id = ?")
-@Where(clause = "isDeleted = false")
+@Where(clause = "is_deleted = false")
 @Entity
 public class Reservation {
     @Id
-    @SequenceGenerator(name = "RESERVATION_SEQ", sequenceName = "SEQUENCE_RESERVATION", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RESERVATION_SEQ")
+    @SequenceGenerator(name = "reservation_seq", sequenceName = "sequence_reservation", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservation_seq")
+    @Column(unique = true, nullable = false)
     private Long id = null;
+    @Column(name = "number_of_guests", nullable = false)
     private int numberOfGuests;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ReservationStatus status = ReservationStatus.Waiting;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false)
     private Accommodation accommodation;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservee_id", referencedColumnName = "id", nullable = false)
     private Guest reservee;
     @Embedded
+    @Column(nullable = false)
     private Period period;
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 }
