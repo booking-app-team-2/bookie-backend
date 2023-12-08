@@ -1,23 +1,91 @@
 package booking_app_team_2.bookie.domain;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import java.util.EnumSet;
 import java.util.HashSet;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@SQLDelete(sql
+        = "UPDATE accommodation "
+        + "SET is_deleted = true "
+        + "WHERE id = ?")
+@Where(clause = "is_deleted = false")
+@Entity
 public class Accommodation {
+    @Id
+    @SequenceGenerator(name = "accommodation_seq", sequenceName = "sequence_accommodation", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accommodation_seq")
+    @Column(unique = true, nullable = false)
     private Long id = null;
+
+    @Column(nullable = false)
     private String name;
+
     private String description;
+
+    @Embedded
+    @Column(nullable = false)
     private Location location;
+
+    @ElementCollection(targetClass = Amenities.class)
+    @CollectionTable(
+            name = "accommodation_amenities",
+            joinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false)
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "amenity", nullable = false)
     private EnumSet<Amenities> amenities;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(
+            name = "accommodation_images",
+            joinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
+    )
     private HashSet<Image> images;
+
+    @Column(name = "minimum_guests", nullable = false)
     private int minimumGuests;
+
+    @Column(name = "maximum_guests", nullable = false)
     private int maximumGuests;
+
+    @Column(name = "reservation_cancellation_deadline", nullable = false)
     private int reservationCancellationDeadline;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AccommodationType type;
+
+    @Column(name = "is_priced_per_guest", nullable = false)
     private boolean isPricedPerGuest;
+
+    @Column(name = "is_approved", nullable = false)
     private boolean isApproved = false;
+
+    @Column(name = "is_reservation_auto_accepted", nullable = false)
     private boolean isReservationAutoAccepted = false;
-    private double averageRating;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private Owner owner;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(
+            name = "accommodation_availability_periods",
+            joinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "availability_period_id", referencedColumnName = "id", nullable = false)
+    )
     private HashSet<AvailabilityPeriod> availabilityPeriods;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

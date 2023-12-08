@@ -16,11 +16,6 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/api/v1/owner-reviews")
 public class OwnerReviewController {
-    @GetMapping
-    public ResponseEntity<Collection<OwnerReviewDTO>> getOwnerReviews() {
-        return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/{ownerId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OwnerReviewDTO>> getOwnersReviews(@PathVariable Long ownerId){
         Collection<OwnerReviewDTO> ownerReviews = Collections.emptyList();
