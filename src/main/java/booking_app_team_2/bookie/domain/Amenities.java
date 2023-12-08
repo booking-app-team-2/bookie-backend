@@ -4,7 +4,7 @@ public enum Amenities {
     WiFi,
     Kitchen,
     AC,
-    Parking
+    Parking,
 
     // TODO: Add more
 }

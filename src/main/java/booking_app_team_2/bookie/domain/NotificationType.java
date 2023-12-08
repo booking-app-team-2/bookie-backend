@@ -4,5 +4,5 @@ public enum NotificationType {
     ReservationRequest,
     ReservationCancellation,
     Review,
-    AccommodationReview
+    AccommodationReview,
 }
