@@ -1,36 +1,21 @@
 package booking_app_team_2.bookie.service;
 
-import booking_app_team_2.bookie.repository.GenericRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
-public class GenericService<T> {
-    protected final GenericRepository<T> repository;
+public interface GenericService<T> {
+    List<T> findAll();
 
-    public GenericService(GenericRepository<T> repository) {
-        this.repository = repository;
-    }
+    Page<T> findAll(Pageable pageable);
 
-    public List<T> findAll() {
-        return repository.findAll();
-    }
+    Optional<T> findOne(Long id);
 
-    public Page<T> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
+    T save(T t);
 
-    public Optional<T> findOne(Long id) {
-        return repository.findById(id);
-    }
+    abstract void remove(Long id);
 
-    public T save(T t) {
-        return repository.save(t);
-    }
-
-    public void remove(Long id) {
-        repository.deleteById(id);
-    }
+    // TODO: Declare shared service methods
 }

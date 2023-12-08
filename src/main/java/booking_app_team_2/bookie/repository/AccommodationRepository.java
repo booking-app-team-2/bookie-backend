@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AccommodationRepository extends GenericRepository<Accommodation> {
-    // Repository example
+    // Example repository interface
     // TODO: Declare accommodation-specific repository methods
 }
