@@ -4,6 +4,9 @@ import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.AccommodationAutoAcceptDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.OwnerDTO;
+import booking_app_team_2.bookie.service.AccommodationService;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +16,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+@Setter
 @RestController
 @RequestMapping("/api/v1/accommodations")
 public class AccommodationController {
+    private AccommodationService accommodationService;
+
+    @Autowired
+    public AccommodationController(AccommodationService accommodationService) {
+        this.accommodationService = accommodationService;
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Accommodation>> getAccommodations() {
-        Collection<Accommodation> accommodations = Collections.emptyList();
+        Collection<Accommodation> accommodations = accommodationService.findAll();
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
