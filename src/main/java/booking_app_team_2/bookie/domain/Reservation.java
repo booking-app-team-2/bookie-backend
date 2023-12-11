@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -41,6 +43,9 @@ public class Reservation {
     @Embedded
     @Column(nullable = false)
     private Period period;
+
+    @Column(nullable = false)
+    private BigDecimal price;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
