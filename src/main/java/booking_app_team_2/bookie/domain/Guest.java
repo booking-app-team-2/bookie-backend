@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
-import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
@@ -23,5 +21,5 @@ public class Guest extends User {
             joinColumns = @JoinColumn(name = "guest_id", referencedColumnName = "id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false)
     )
-    private HashSet<Accommodation> favouriteAccommodations;
+    private Set<Accommodation> favouriteAccommodations;
 }

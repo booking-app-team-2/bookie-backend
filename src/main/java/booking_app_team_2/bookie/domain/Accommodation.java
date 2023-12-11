@@ -7,8 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import java.util.EnumSet;
-import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
@@ -42,7 +41,7 @@ public class Accommodation {
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "amenity", nullable = false)
-    private EnumSet<Amenities> amenities;
+    private Set<Amenities> amenities;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(
@@ -50,7 +49,7 @@ public class Accommodation {
             joinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
     )
-    private HashSet<Image> images;
+    private Set<Image> images;
 
     @Column(name = "minimum_guests", nullable = false)
     private int minimumGuests;
@@ -84,7 +83,7 @@ public class Accommodation {
             joinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "availability_period_id", referencedColumnName = "id", nullable = false)
     )
-    private HashSet<AvailabilityPeriod> availabilityPeriods;
+    private Set<AvailabilityPeriod> availabilityPeriods;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
