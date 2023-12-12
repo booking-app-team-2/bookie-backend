@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.Accommodation;
+import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
+    public List<Accommodation> findAllByOwner(Owner owner) {
+        return accommodationRepository.findAllByOwner(owner);
+    }
+
+    @Override
     public Optional<Accommodation> findOne(Long id) {
         return accommodationRepository.findById(id);
     }
@@ -46,6 +52,4 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodationRepository.deleteById(id);
     }
 
-    // Service example
-    // TODO: Implement accommodation-specific service methods
 }
