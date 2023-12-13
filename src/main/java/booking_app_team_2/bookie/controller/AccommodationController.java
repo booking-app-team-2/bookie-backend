@@ -6,6 +6,7 @@ import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.OwnerDTO;
 import booking_app_team_2.bookie.service.AccommodationService;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 
 @Setter
 @RestController
 @RequestMapping("/api/v1/accommodations")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AccommodationController {
     private AccommodationService accommodationService;
 
@@ -30,14 +33,30 @@ public class AccommodationController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Accommodation>> getAccommodations() {
         Collection<Accommodation> accommodations = accommodationService.findAll();
-        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+        return new ResponseEntity<>(accommodations,HttpStatus.OK);
+    }
+    @GetMapping(value = "/cards", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsForCards() {
+        Collection<AccommodationDTO> accommodations = accommodationService.getAll();
+        return new ResponseEntity<>(accommodations,HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable Long id) {
-        AccommodationDTO accommodationDTO = new AccommodationDTO();
-        if (accommodationDTO.equals(null))
+        Optional<Accommodation> accommodation = accommodationService.findOne(id);
+        if (accommodation.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        AccommodationDTO accommodationDTO=accommodation.map(accommodation1 ->
+                        new AccommodationDTO(
+                                accommodation1.getId(),
+                                accommodation1.getName(),
+                                accommodation1.getDescription(),
+                                accommodation1.getMinimumGuests(),
+                                accommodation1.getMaximumGuests(),
+                                accommodation1.getLocation(),
+                                accommodation1.getReservationCancellationDeadline(),
+                                accommodation1.getType()
+                        )).orElse(null);
         return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
     }
 
