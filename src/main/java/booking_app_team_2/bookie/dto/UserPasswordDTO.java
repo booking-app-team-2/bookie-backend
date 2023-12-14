@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class UserPasswordDTO {
-    private String oldPassword;
+    private String currentPassword;
     private String newPassword;
 }

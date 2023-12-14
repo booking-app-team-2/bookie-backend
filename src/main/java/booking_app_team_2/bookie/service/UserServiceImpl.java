@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isCorrectPassword(UserPasswordDTO userPasswordDTO, User user) {
-        return userPasswordDTO.getOldPassword().equals(user.getPassword());
+        return userPasswordDTO.getCurrentPassword().equals(user.getPassword());
     }
 
     @Override
