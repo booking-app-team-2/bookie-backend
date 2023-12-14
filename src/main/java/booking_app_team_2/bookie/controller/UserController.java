@@ -57,37 +57,37 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/telephone", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> updateUserContactInfo(@PathVariable Long id,
-                                                                    @RequestBody String userTelephone) {
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserTelephoneDTO> updateUserContactInfo(@PathVariable Long id,
+                                                                    @RequestBody UserTelephoneDTO userTelephoneDTO) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         User user = userOptional.get();
 
-        user.setTelephone(userTelephone);
+        user.setTelephone(userTelephoneDTO.getTelephone());
 
         userService.save(user);
 
-        return new ResponseEntity<>(userTelephone, HttpStatus.OK);
+        return new ResponseEntity<>(userTelephoneDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}/addressOfResidence", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> updateUserAddressOfResidence(@PathVariable Long id,
-                                                                     @RequestBody String addressOfResidence) {
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserAddressDTO> updateUserAddressOfResidence(@PathVariable Long id,
+                                                                     @RequestBody UserAddressDTO userAddressDTO) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         User user = userOptional.get();
 
-        user.setAddressOfResidence(addressOfResidence);
+        user.setAddressOfResidence(userAddressDTO.getAddressOfResidence());
 
         userService.save(user);
 
-        return new ResponseEntity<>(addressOfResidence, HttpStatus.OK);
+        return new ResponseEntity<>(userAddressDTO, HttpStatus.OK);
     }
 
 
