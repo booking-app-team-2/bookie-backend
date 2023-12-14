@@ -15,7 +15,7 @@ public interface GenericService<T> {
 
     T save(T t);
 
-    abstract void remove(Long id);
+    void remove(Long id);
 
     // TODO: Declare shared service methods
 }
