@@ -1,7 +1,9 @@
 package booking_app_team_2.bookie.dto;
 
+import lombok.Getter;
+
+@Getter
 public class UserPasswordDTO {
-    private Long id;
-    private String oldPassword;
+    private String currentPassword;
     private String newPassword;
 }
