@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.Accommodation;
+import booking_app_team_2.bookie.domain.AvailabilityPeriod;
 import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,10 +28,27 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
+    public List<Accommodation> findSearched(String location,int numberOfGuests,long startDate,long endDate){
+        List<Accommodation> accommodations = accommodationRepository.findAll();
+        List<Accommodation> newAccommodations= new ArrayList<>(Collections.emptyList());
+        for(Accommodation accommodation:accommodations){
+            if(numberOfGuests>=accommodation.getMinimumGuests() && numberOfGuests<=accommodation.getMaximumGuests()){
+                //TODO:Add for location
+                for(AvailabilityPeriod availabilityPeriod:accommodation.getAvailabilityPeriods()){
+                    if(startDate>=availabilityPeriod.getPeriod().getStartDate() && endDate<=availabilityPeriod.getPeriod().getEndDate()){
+                        newAccommodations.add(accommodation);
+                        break;
+                    }
+                }
+            }
+        }
+        return newAccommodations;
+    }
+    @Override
     public List<AccommodationDTO> getAll(){
         List<Accommodation> accommodations = accommodationRepository.findAll();
         return accommodations.stream()
-                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getReservationCancellationDeadline(),accommodation.getType()))
+                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getReservationCancellationDeadline(),accommodation.getType()))
                 .collect(Collectors.toList());
     }
 

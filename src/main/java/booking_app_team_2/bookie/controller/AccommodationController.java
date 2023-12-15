@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Setter
 @RestController
@@ -54,6 +55,8 @@ public class AccommodationController {
                                 accommodation1.getMinimumGuests(),
                                 accommodation1.getMaximumGuests(),
                                 accommodation1.getLocation(),
+                                accommodation1.getAmenities(),
+                                accommodation1.getAvailabilityPeriods(),
                                 accommodation1.getReservationCancellationDeadline(),
                                 accommodation1.getType()
                         )).orElse(null);
@@ -77,7 +80,19 @@ public class AccommodationController {
         Collection<AccommodationDTO> accommodations = Collections.emptyList();
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
-
+    @GetMapping(value ="/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
+            @RequestParam(value = "location",required = false) String location,
+            @RequestParam(value = "numberOfGuests",required = false) Integer numberOfGuests,
+            @RequestParam(value = "startDate",required = false) Long startDate,
+            @RequestParam(value = "endDate",required = false) Long endDate
+            ){
+        Collection<Accommodation> accommodations = accommodationService.findSearched(location,numberOfGuests,startDate,endDate);
+        Collection<AccommodationDTO> accommodationDTO=accommodations.stream()
+                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getReservationCancellationDeadline(),accommodation.getType()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
+    }
     @GetMapping(value ="/owner-accommodations/{owner_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByOwner(@PathVariable Long owner_id) {
         Collection<AccommodationDTO> accommodations = Collections.emptyList();

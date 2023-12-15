@@ -10,4 +10,5 @@ public interface AccommodationService extends GenericService<Accommodation> {
     // Example service interface
     // TODO: Declare accommodation-specific service methods
     List<AccommodationDTO> getAll();
+    List<Accommodation> findSearched(String location,int numberOfGuests,long startDate,long endDate);
 }
