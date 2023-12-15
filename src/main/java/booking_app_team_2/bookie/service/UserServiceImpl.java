@@ -1,6 +1,8 @@
 package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.domain.User;
+import booking_app_team_2.bookie.dto.UserPasswordDTO;
 import booking_app_team_2.bookie.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +41,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findOne(Long id) {
-        return Optional.empty();
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public boolean isCorrectPassword(UserPasswordDTO userPasswordDTO, User user) {
+        return userPasswordDTO.getCurrentPassword().equals(user.getPassword());
     }
 
     @Override
     public User save(User user) {
-        return null;
+        return userRepository.save(user);
     }
 
     private boolean hasReservations(Guest guest) {
