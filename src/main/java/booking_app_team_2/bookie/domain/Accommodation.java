@@ -73,7 +73,7 @@ public class Accommodation {
     @Column(name = "is_reservation_auto_accepted", nullable = false)
     private boolean isReservationAutoAccepted = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private Owner owner;
 
