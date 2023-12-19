@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface AccommodationRepository extends GenericRepository<Accommodation> {
-    List<Accommodation> findAllByOwner(Owner owner);
 }
