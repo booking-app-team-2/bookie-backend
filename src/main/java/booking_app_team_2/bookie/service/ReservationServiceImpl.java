@@ -3,12 +3,14 @@ package booking_app_team_2.bookie.service;
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.Reservation;
+import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,13 +34,14 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> findAllByReservee(Guest reservee) {
-        return reservationRepository.findAllByReservee(reservee);
+    public List<Reservation> findAllByReserveeAndStatusIn(Guest reservee, EnumSet<ReservationStatus> reservationStatuses) {
+        return reservationRepository.findAllByReserveeAndStatusIn(reservee, reservationStatuses);
     }
 
     @Override
-    public List<Reservation> findAllByAccommodation(Accommodation accommodation) {
-        return reservationRepository.findAllByAccommodation(accommodation);
+    public List<Reservation> findAllByAccommodationAndStatusIn(Accommodation accommodation,
+                                                    EnumSet<ReservationStatus> reservationStatuses) {
+        return reservationRepository.findAllByAccommodationAndStatusIn(accommodation, reservationStatuses);
     }
 
     @Override
