@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AccommodationDTO {
+public class AccommodationBasicInfoDTO {
     private Long id = null;
     private String name;
     private String description;
@@ -20,9 +20,8 @@ public class AccommodationDTO {
     private int maximumGuests;
     private Location location;
     private Set<Amenities> amenities;
-    private Set<AvailabilityPeriod> availabilityPeriods;
     private Set<Image> images;
-    private int reservationCancellationDeadline;
     private AccommodationType type;
     private boolean isReservationAutoAccepted;
+    private Set<AvailabilityPeriod> availabilityPeriods;
 }

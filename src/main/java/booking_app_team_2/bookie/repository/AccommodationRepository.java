@@ -11,4 +11,5 @@ import java.util.List;
 public interface AccommodationRepository extends GenericRepository<Accommodation> {
     // Example repository interface
     // TODO: Declare accommodation-specific repository methods
+    List<Accommodation> findAccommodationByOwner(Owner owner);
 }

@@ -2,9 +2,12 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.AccommodationAutoAcceptDTO;
+import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.OwnerDTO;
 import booking_app_team_2.bookie.service.AccommodationService;
+import booking_app_team_2.bookie.service.OwnerService;
+import booking_app_team_2.bookie.service.OwnerServiceImpl;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +28,12 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AccommodationController {
     private AccommodationService accommodationService;
+    private OwnerService ownerService;
 
     @Autowired
-    public AccommodationController(AccommodationService accommodationService) {
+    public AccommodationController(AccommodationService accommodationService,OwnerService ownerService) {
         this.accommodationService = accommodationService;
+        this.ownerService=ownerService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,8 +62,10 @@ public class AccommodationController {
                                 accommodation1.getLocation(),
                                 accommodation1.getAmenities(),
                                 accommodation1.getAvailabilityPeriods(),
+                                accommodation1.getImages(),
                                 accommodation1.getReservationCancellationDeadline(),
-                                accommodation1.getType()
+                                accommodation1.getType(),
+                                accommodation1.isReservationAutoAccepted()
                         )).orElse(null);
         return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
     }
@@ -87,18 +94,44 @@ public class AccommodationController {
             @RequestParam(value = "startDate",required = false) Long startDate,
             @RequestParam(value = "endDate",required = false) Long endDate
             ){
-        Collection<Accommodation> accommodations = accommodationService.findSearched(location,numberOfGuests,startDate,endDate);
+        Collection<Accommodation> accommodations;
+        if(location==null && numberOfGuests==null && startDate==null && endDate==null){
+            accommodations=accommodationService.findAll();
+        }
+        else{
+            accommodations = accommodationService.findSearched(location,numberOfGuests != null ? numberOfGuests.intValue() : 0,startDate != null ? startDate.intValue() : 0,endDate != null ? endDate.intValue() : 0);
+        }
         Collection<AccommodationDTO> accommodationDTO=accommodations.stream()
-                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getReservationCancellationDeadline(),accommodation.getType()))
+                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getImages(),accommodation.getReservationCancellationDeadline(),accommodation.getType(),accommodation.isReservationAutoAccepted()))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
     }
     @GetMapping(value ="/owner-accommodations/{owner_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByOwner(@PathVariable Long owner_id) {
-        Collection<AccommodationDTO> accommodations = Collections.emptyList();
-        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+        Optional<Owner> owner=ownerService.findOne(owner_id);
+        if(owner.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Collection<Accommodation> accommodations = accommodationService.findAccommodationByOwner(owner.get());
+        Collection<AccommodationDTO> accommodationDTO=accommodations.stream()
+                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getImages(),accommodation.getReservationCancellationDeadline(),accommodation.getType(),accommodation.isReservationAutoAccepted()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
     }
 
+    @PutMapping(value="/{accommodationId}/basic-info",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationBasicInfoDTO> updateAccommodationBasicInfo(@PathVariable Long accommodationId,
+                                                                                  @RequestBody AccommodationBasicInfoDTO accommodationBasicInfoDTO){
+
+       Optional<Accommodation> accommodationOptional=accommodationService.findOne(accommodationId);
+        if(accommodationOptional.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        accommodationBasicInfoDTO=accommodationService.updateAccommodationBasicInfo(accommodationOptional.get(),accommodationBasicInfoDTO);
+        if(accommodationBasicInfoDTO==null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(accommodationBasicInfoDTO,HttpStatus.OK);
+    }
     @GetMapping(value = "/{accommodationId}/images")
     public ResponseEntity<Collection<Image>> getImages(@PathVariable Long accommodationId) {
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
