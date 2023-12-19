@@ -33,11 +33,6 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public List<Accommodation> findAllByOwner(Owner owner) {
-        return accommodationRepository.findAllByOwner(owner);
-    }
-
-    @Override
     public Optional<Accommodation> findOne(Long id) {
         return accommodationRepository.findById(id);
     }

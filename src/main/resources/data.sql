@@ -23,6 +23,11 @@ INSERT INTO user_bookie (id, email, password, name, surname, address_of_residenc
 VALUES (nextval('sequence_user'), 'ownernoaccs@gmail.com', 'owner123', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
         'Owner', false, false);
 
+INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
+                         is_deleted)
+VALUES (nextval('sequence_user'), 'owneraccsnores@gmail.com', 'owner123', 'Owner', 'Owner', 'Placeholder',
+        'Placeholder', 'Owner', false, false);
+
 INSERT INTO guest (id, receives_reservation_request_notifications)
 VALUES (2, true);
 
@@ -36,6 +41,10 @@ VALUES (4, true, true, true, true);
 INSERT INTO owner (id, receives_reservation_request_notifications, receives_reservation_cancellation_notifications,
                    receives_review_notifications, receives_accommodation_review_notifications)
 VALUES (5, true, true, true, true);
+
+INSERT INTO owner (id, receives_reservation_request_notifications, receives_reservation_cancellation_notifications,
+                   receives_review_notifications, receives_accommodation_review_notifications)
+VALUES (6, true, true, true, true);
 
 INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), 1702156470, true, 1, false);
@@ -52,23 +61,53 @@ VALUES (nextval('sequence_account_verificator'), 1702156608, true, 4, false);
 INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), 1702156608, true, 5, false);
 
+INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), 1702156608, true, 6, false);
+
 INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
                            reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
-                           is_reservation_auto_accepted, owner_id, is_deleted)
+                           is_reservation_auto_accepted, is_deleted)
 VALUES (nextval('sequence_accommodation'), 'Accommodation1', 'Accommodation1', '45.24611466641891',
-        '19.851694566067337', 2, 4, 7, 'Room', true, true, true, 4, false);
+        '19.851694566067337', 2, 4, 7, 'Room', true, true, true, false);
 
 INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
                            reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
-                           is_reservation_auto_accepted, owner_id, is_deleted)
+                           is_reservation_auto_accepted, is_deleted)
 VALUES (nextval('sequence_accommodation'), 'Accommodation2', 'Accommodation2', '45.24611466641891',
-        '19.851694566067337', 1, 2, 4, 'Studio', false, true, false, 4, false);
+        '19.851694566067337', 1, 2, 4, 'Studio', false, true, false, false);
 
 INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
                            reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
-                           is_reservation_auto_accepted, owner_id, is_deleted)
+                           is_reservation_auto_accepted, is_deleted)
 VALUES (nextval('sequence_accommodation'), 'Accommodation3', 'Accommodation3', '45.24493015677446',
-        '19.84771549825743', 1, 2, 5, 'Room', false, false, false, 4, false);
+        '19.84771549825743', 1, 2, 5, 'Room', false, false, false, false);
+
+INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
+                           reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
+                           is_reservation_auto_accepted, is_deleted)
+VALUES (nextval('sequence_accommodation'), 'Accommodation4', 'Accommodation4', '45.24493015677446',
+        '19.84771549825743', 10, 15, 14, 'Studio', false, true, false, false);
+
+INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
+                           reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
+                           is_reservation_auto_accepted, is_deleted)
+VALUES (nextval('sequence_accommodation'), 'Accommodation5', 'Accommodation5', '45.24611466641891',
+        '19.84771549825743', 1, 1, 1, 'Room', true, true, false, false);
+
+INSERT INTO owner_accommodations (accommodation_id, owner_id)
+VALUES (1, 4);
+
+INSERT INTO owner_accommodations (accommodation_id, owner_id)
+VALUES (2, 4);
+
+INSERT INTO owner_accommodations (accommodation_id, owner_id)
+VALUES (3, 4);
+
+INSERT INTO owner_accommodations (accommodation_id, owner_id)
+VALUES (4, 6);
+
+INSERT INTO owner_accommodations (accommodation_id, owner_id)
+VALUES (5, 6);
 
 INSERT INTO accommodation_amenities (accommodation_id, amenity)
 VALUES (1, 'Parking');

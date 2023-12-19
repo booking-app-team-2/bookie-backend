@@ -6,5 +6,4 @@ import booking_app_team_2.bookie.domain.Owner;
 import java.util.List;
 
 public interface AccommodationService extends GenericService<Accommodation> {
-    List<Accommodation> findAllByOwner(Owner owner);
 }
