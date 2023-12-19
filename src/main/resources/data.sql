@@ -18,6 +18,11 @@ INSERT INTO user_bookie (id, email, password, name, surname, address_of_residenc
 VALUES (nextval('sequence_user'), 'owner@gmail.com', 'owner123', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
         'Owner', false, false);
 
+INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
+                         is_deleted)
+VALUES (nextval('sequence_user'), 'ownernoaccs@gmail.com', 'owner123', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
+        'Owner', false, false);
+
 INSERT INTO guest (id, receives_reservation_request_notifications)
 VALUES (2, true);
 
@@ -27,6 +32,10 @@ VALUES (3, true);
 INSERT INTO owner (id, receives_reservation_request_notifications, receives_reservation_cancellation_notifications,
                    receives_review_notifications, receives_accommodation_review_notifications)
 VALUES (4, true, true, true, true);
+
+INSERT INTO owner (id, receives_reservation_request_notifications, receives_reservation_cancellation_notifications,
+                   receives_review_notifications, receives_accommodation_review_notifications)
+VALUES (5, true, true, true, true);
 
 INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), 1702156470, true, 1, false);
@@ -39,6 +48,9 @@ VALUES (nextval('sequence_account_verificator'), 1702156590, true, 3, false);
 
 INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), 1702156608, true, 4, false);
+
+INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), 1702156608, true, 5, false);
 
 INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
                            reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,

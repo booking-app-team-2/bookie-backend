@@ -2,6 +2,7 @@ package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.User;
 import booking_app_team_2.bookie.dto.UserPasswordDTO;
+import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,15 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
+    private ReservationService reservationService;
+    private AccommodationService accommodationService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ReservationService reservationService,
+                           AccommodationService accommodationService) {
         this.userRepository = userRepository;
+        this.reservationService = reservationService;
+        this.accommodationService = accommodationService;
     }
 
     @Override
@@ -47,8 +54,29 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    private boolean hasReservations(Guest guest) {
+        return !reservationService.findAllByReservee(guest).isEmpty();
+    }
+
+    private boolean accommodationsHaveReservations(Owner owner) {
+        List<Accommodation> ownerAccommodations = accommodationService.findAllByOwner(owner);
+        return ownerAccommodations
+                .stream()
+                .anyMatch(accommodation -> !reservationService.findAllByAccommodation(accommodation).isEmpty());
+    }
+
     @Override
     public void remove(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty())
+            return;
 
+        if (user.get().getRole().equals(UserRole.Guest) && hasReservations((Guest) user.get())) {
+            return;
+        }
+        else if (user.get().getRole().equals(UserRole.Owner) && accommodationsHaveReservations((Owner) user.get()))
+            return;
+
+        userRepository.deleteById(id);
     }
 }
