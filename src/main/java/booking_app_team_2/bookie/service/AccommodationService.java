@@ -16,7 +16,7 @@ public interface AccommodationService extends GenericService<Accommodation> {
 
     AccommodationBasicInfoDTO updateAccommodationBasicInfo(Accommodation accommodation, AccommodationBasicInfoDTO accommodationBasicInfoDTO);
 
-    List<Accommodation> findAllByApproved(boolean isApproved);
+    List<Accommodation> findAllByIsApproved(boolean isApproved);
 
     void updateIsApproved(Long id, AccommodationApprovalDTO accommodationApprovalDTO);
 }
