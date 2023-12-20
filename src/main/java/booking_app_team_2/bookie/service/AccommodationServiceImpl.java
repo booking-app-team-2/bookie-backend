@@ -105,8 +105,8 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public List<Accommodation> findAllByApproved(boolean isApproved) {
-        return accommodationRepository.findAllByApproved(isApproved);
+    public List<Accommodation> findAllByIsApproved(boolean isApproved) {
+        return accommodationRepository.findAllByIsApproved(isApproved);
     }
 
     @Override

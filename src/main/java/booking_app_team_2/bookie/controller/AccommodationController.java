@@ -8,9 +8,7 @@ import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.OwnerDTO;
 import booking_app_team_2.bookie.service.AccommodationService;
 import booking_app_team_2.bookie.service.OwnerService;
-import booking_app_team_2.bookie.service.OwnerServiceImpl;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 @Setter
 @RestController
 @RequestMapping("/api/v1/accommodations")
-@CrossOrigin(origins = "http://localhost:4200")
 public class AccommodationController {
     private AccommodationService accommodationService;
     private OwnerService ownerService;
@@ -51,7 +48,7 @@ public class AccommodationController {
     @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getUnapprovedAccommodations() {
         Collection<AccommodationDTO> accommodations = accommodationService
-                .findAllByApproved(false)
+                .findAllByIsApproved(false)
                 .stream()
                 .map(accommodation -> new AccommodationDTO())
                 .toList();
