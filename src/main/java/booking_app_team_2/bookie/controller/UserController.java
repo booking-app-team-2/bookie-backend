@@ -118,6 +118,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.remove(id);
 
