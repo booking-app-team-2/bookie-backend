@@ -2,6 +2,9 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.repository.GuestRepository;
+import booking_app_team_2.bookie.service.GuestService;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,12 +14,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Collections;
 
+@Setter
 @RestController
 @RequestMapping("/api/v1/guests")
 public class GuestController {
+
+    private GuestService guestService;
+    @Autowired
+    public GuestController(GuestService guestService){
+        this.guestService=guestService;
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Guest>> getGuests() {
-        Collection<Guest> guests = Collections.emptyList();
+        Collection<Guest> guests = guestService.findAll();
         return new ResponseEntity<>(guests, HttpStatus.OK);
     }
 
