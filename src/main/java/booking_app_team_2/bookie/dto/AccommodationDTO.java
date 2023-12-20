@@ -1,5 +1,9 @@
 package booking_app_team_2.bookie.dto;
 
+import booking_app_team_2.bookie.domain.AccommodationType;
+import booking_app_team_2.bookie.domain.Amenities;
+import booking_app_team_2.bookie.domain.AvailabilityPeriod;
+import booking_app_team_2.bookie.domain.Location;
 import booking_app_team_2.bookie.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
