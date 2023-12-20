@@ -101,18 +101,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
     public ResponseEntity<UserPasswordDTO> updateUserPassword(@PathVariable Long id,
                                                              @RequestBody UserPasswordDTO userPasswordDTO) {
-        Optional<User> userOptional = userService.findOne(id);
-        if (userOptional.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        User user = userOptional.get();
-
-        if (!userService.isCorrectPassword(userPasswordDTO, user))
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
-        user.setPassword(userPasswordDTO.getNewPassword());
-
-        userService.save(user);
+        userService.updatePassword(id, userPasswordDTO);
 
         return new ResponseEntity<>(userPasswordDTO, HttpStatus.OK);
     }

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -69,8 +70,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePassword(Long id, UserPasswordDTO userPasswordDTO) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty())
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "No such user exists.");
+
+        User user = userOptional.get();
+
+        if (!isCorrectPassword(userPasswordDTO, user))
+            throw new HttpTransferException(HttpStatus.FORBIDDEN, "Current password is incorrect.");
+
+        user.setPassword(passwordEncoder.encode(userPasswordDTO.getNewPassword()));
+
+        userRepository.save(user);
+    }
+
+    @Override
     public boolean isCorrectPassword(UserPasswordDTO userPasswordDTO, User user) {
-        return userPasswordDTO.getCurrentPassword().equals(user.getPassword());
+        return passwordEncoder.matches(userPasswordDTO.getCurrentPassword(), user.getPassword());
     }
 
     @Override
