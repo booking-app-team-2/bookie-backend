@@ -3,14 +3,13 @@ package booking_app_team_2.bookie.service;
 import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.domain.User;
 import booking_app_team_2.bookie.dto.UserPasswordDTO;
-import booking_app_team_2.bookie.exception.GuestHasReservationsException;
-import booking_app_team_2.bookie.exception.OwnerAccommodationsHaveReservationsException;
-import booking_app_team_2.bookie.exception.UserNotFoundException;
+import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
@@ -72,17 +71,17 @@ public class UserServiceImpl implements UserService {
     public void remove(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty())
-            throw new UserNotFoundException("User has not been found.");
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "User has not been found.");
 
         User user = userOptional.get();
         UserRole userRole = user.getRole();
 
         if (userRole.equals(UserRole.Guest) && hasReservations((Guest) user))
-            throw new GuestHasReservationsException("Profile cannot be deleted as it has accepted reservations, " +
-                    "or reservations in waiting.");
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST, "Profile cannot be deleted as it has accepted " +
+                    "reservations, or reservations in waiting.");
         else if (userRole.equals(UserRole.Owner) && accommodationsHaveReservations(((Owner) user).getAccommodations()))
-            throw new OwnerAccommodationsHaveReservationsException
-                    ("Profile cannot be deleted as it owns accommodations which have been reserved in the future.");
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Profile cannot be deleted as it owns accommodations which have been reserved in the future.");
 
         userRepository.deleteById(id);
     }
