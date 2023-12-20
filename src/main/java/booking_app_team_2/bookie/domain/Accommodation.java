@@ -73,15 +73,15 @@ public class Accommodation {
     @Column(name = "is_reservation_auto_accepted", nullable = false)
     private boolean isReservationAutoAccepted = false;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
-    private Owner owner;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(
             name = "accommodation_availability_periods",
             joinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "availability_period_id", referencedColumnName = "id", nullable = false)
+            inverseJoinColumns = @JoinColumn(
+                    name = "availability_period_id",
+                    referencedColumnName = "id",
+                    nullable = false
+            )
     )
     private Set<AvailabilityPeriod> availabilityPeriods;
 

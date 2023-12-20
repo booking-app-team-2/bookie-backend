@@ -3,6 +3,8 @@ package booking_app_team_2.bookie.service;
 import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
+import booking_app_team_2.bookie.domain.Accommodation;
+import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import lombok.Setter;
@@ -42,11 +44,6 @@ public class AccommodationServiceImpl implements AccommodationService {
             }
         }
         return newAccommodations;
-    }
-
-    @Override
-    public List<Accommodation> findAccommodationByOwner(Owner owner){
-        return accommodationRepository.findAccommodationByOwner(owner);
     }
     @Override
     public List<AccommodationDTO> getAll(){
@@ -118,6 +115,4 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodationRepository.deleteById(id);
     }
 
-    // Service example
-    // TODO: Implement accommodation-specific service methods
 }
