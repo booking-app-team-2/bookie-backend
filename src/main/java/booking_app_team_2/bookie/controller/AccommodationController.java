@@ -20,6 +20,7 @@ import java.util.HashSet;
 @Setter
 @RestController
 @RequestMapping("/api/v1/accommodations")
+@CrossOrigin
 public class AccommodationController {
     private AccommodationService accommodationService;
 
@@ -37,7 +38,7 @@ public class AccommodationController {
     @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getUnapprovedAccommodations() {
         Collection<AccommodationDTO> accommodations = accommodationService
-                .findAllByApproved(false)
+                .findAllByIsApproved(false)
                 .stream()
                 .map(accommodation -> new AccommodationDTO())
                 .toList();
