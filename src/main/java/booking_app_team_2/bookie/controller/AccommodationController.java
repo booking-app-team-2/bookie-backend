@@ -1,15 +1,14 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
 import booking_app_team_2.bookie.dto.AccommodationAutoAcceptDTO;
 import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.OwnerDTO;
 import booking_app_team_2.bookie.service.AccommodationService;
 import booking_app_team_2.bookie.service.OwnerService;
-import booking_app_team_2.bookie.service.OwnerServiceImpl;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 @Setter
 @RestController
 @RequestMapping("/api/v1/accommodations")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class AccommodationController {
     private AccommodationService accommodationService;
     private OwnerService ownerService;
@@ -46,6 +45,17 @@ public class AccommodationController {
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsForCards() {
         Collection<AccommodationDTO> accommodations = accommodationService.getAll();
         return new ResponseEntity<>(accommodations,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getUnapprovedAccommodations() {
+        Collection<AccommodationDTO> accommodations = accommodationService
+                .findAllByIsApproved(false)
+                .stream()
+                .map(accommodation -> new AccommodationDTO())
+                .toList();
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -167,6 +177,18 @@ public class AccommodationController {
     public ResponseEntity<Accommodation> createAccommodation(@RequestBody Accommodation accommodation) {
         Accommodation savedAccommodation = new Accommodation() {};
         return new ResponseEntity<>(savedAccommodation, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/{id}/is-approved", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<AccommodationApprovalDTO> updateAccommodationIsApproved(
+            @PathVariable Long id,
+            @RequestBody AccommodationApprovalDTO accommodationApprovalDTO
+    ) {
+        accommodationService.updateIsApproved(id, accommodationApprovalDTO);
+
+        return new ResponseEntity<>(accommodationApprovalDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}/reservation-auto-accept", consumes = MediaType.APPLICATION_JSON_VALUE,
