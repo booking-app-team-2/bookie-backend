@@ -8,6 +8,7 @@ import booking_app_team_2.bookie.dto.UserRegistrationDTO;
 import booking_app_team_2.bookie.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ReservationService reservationService,
+    public UserServiceImpl(UserRepository userRepository, @Lazy ReservationService reservationService,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.reservationService = reservationService;
