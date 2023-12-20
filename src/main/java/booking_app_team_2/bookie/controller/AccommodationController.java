@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @Setter
 @RestController
 @RequestMapping("/api/v1/accommodations")
+@CrossOrigin
 public class AccommodationController {
     private AccommodationService accommodationService;
     private OwnerService ownerService;
