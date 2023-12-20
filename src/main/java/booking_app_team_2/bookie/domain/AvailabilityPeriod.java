@@ -1,5 +1,6 @@
 package booking_app_team_2.bookie.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class AvailabilityPeriod {
         this.period = period;
     }
 
+    @JsonIgnore
     public boolean canFitPeriod(Period period) {
         return this.period.overlaps(period);
     }

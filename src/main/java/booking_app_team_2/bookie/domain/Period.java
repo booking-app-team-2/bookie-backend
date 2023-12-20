@@ -1,5 +1,6 @@
 package booking_app_team_2.bookie.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class Period {
     @Column(name = "end_date", nullable = false)
     private long endDate;
 
+    @JsonIgnore
     public int getInDays() {
         return (int) ((endDate - startDate) / (60 * 60 * 24));
     }
