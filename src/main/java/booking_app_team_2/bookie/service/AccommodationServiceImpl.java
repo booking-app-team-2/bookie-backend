@@ -6,12 +6,14 @@ import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.AvailabilityPeriod;
 import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
+import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,10 +125,7 @@ public class AccommodationServiceImpl implements AccommodationService {
     public void updateIsApproved(Long id, AccommodationApprovalDTO accommodationApprovalDTO) {
         Optional<Accommodation> accommodationOptional = accommodationRepository.findById(id);
         if (accommodationOptional.isEmpty())
-
-            // TODO: Throw accommodation not found error
-
-            return;
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "No such accommodation exists.");
 
         Accommodation accommodation = accommodationOptional.get();
 
