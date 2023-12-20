@@ -111,7 +111,7 @@ public class AccommodationController {
         Optional<Owner> owner=ownerService.findOne(owner_id);
         if(owner.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        Collection<Accommodation> accommodations = accommodationService.findAccommodationByOwner(owner.get());
+        Collection<Accommodation> accommodations = owner.get().getAccommodations();
         Collection<AccommodationDTO> accommodationDTO=accommodations.stream()
                 .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getImages(),accommodation.getReservationCancellationDeadline(),accommodation.getType(),accommodation.isReservationAutoAccepted()))
                 .collect(Collectors.toList());
