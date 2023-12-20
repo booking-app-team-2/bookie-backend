@@ -56,6 +56,17 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getUnapprovedAccommodations() {
+        Collection<AccommodationDTO> accommodations = accommodationService
+                .findAllByApproved(false)
+                .stream()
+                .map(accommodation -> new AccommodationDTO())
+                .toList();
+
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable Long id) {
         Optional<Accommodation> accommodation = accommodationService.findOne(id);
