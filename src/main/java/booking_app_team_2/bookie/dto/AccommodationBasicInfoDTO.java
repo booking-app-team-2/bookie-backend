@@ -1,9 +1,5 @@
 package booking_app_team_2.bookie.dto;
 
-import booking_app_team_2.bookie.domain.AccommodationType;
-import booking_app_team_2.bookie.domain.Amenities;
-import booking_app_team_2.bookie.domain.AvailabilityPeriod;
-import booking_app_team_2.bookie.domain.Location;
 import booking_app_team_2.bookie.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AccommodationDTO {
+public class AccommodationBasicInfoDTO {
     private Long id = null;
     private String name;
     private String description;
@@ -24,9 +20,8 @@ public class AccommodationDTO {
     private int maximumGuests;
     private Location location;
     private Set<Amenities> amenities;
-    private Set<AvailabilityPeriod> availabilityPeriods;
     private Set<Image> images;
-    private int reservationCancellationDeadline;
     private AccommodationType type;
     private boolean isReservationAutoAccepted;
+    private Set<AvailabilityPeriod> availabilityPeriods;
 }
