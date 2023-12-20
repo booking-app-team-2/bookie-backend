@@ -3,8 +3,9 @@ package booking_app_team_2.bookie.repository;
 import booking_app_team_2.bookie.domain.Accommodation;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AccommodationRepository extends GenericRepository<Accommodation> {
-    // Example repository interface
-    // TODO: Declare accommodation-specific repository methods
+    List<Accommodation> findAllByApproved(boolean isApproved);
 }
