@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface UserService extends GenericService<User>, UserDetailsService {
     Optional<User> findOneByUsername(String username);
 
+    void updatePassword(Long id, UserPasswordDTO userPasswordDTO);
+
     boolean isCorrectPassword(UserPasswordDTO userPasswordDTO, User user);
 
     User save(UserRegistrationDTO userRegistrationDTO);
