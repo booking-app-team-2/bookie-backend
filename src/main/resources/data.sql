@@ -80,7 +80,7 @@ INSERT INTO accommodation_amenities (accommodation_id, amenity)
 VALUES (3, 'Kitchen');
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
-VALUES (nextval('sequence_availability_period'), 15, 1702252800, 1702684800, false);
+VALUES (nextval('sequence_availability_period'), 15, 1703113200, 1703545200, false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 20, 1702684800, 1702857600, false);
