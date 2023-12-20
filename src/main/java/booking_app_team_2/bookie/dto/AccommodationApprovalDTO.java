@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class AccommodationApprovalDTO {
-    private boolean isApproved;
+    private boolean approved;
 }
