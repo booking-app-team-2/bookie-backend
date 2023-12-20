@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.Accommodation;
+import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,21 @@ public class AccommodationServiceImpl implements AccommodationService {
     @Override
     public Accommodation save(Accommodation accommodation) {
         return accommodationRepository.save(accommodation);
+    }
+
+    @Override
+    public void updateIsApproved(Long id, AccommodationApprovalDTO accommodationApprovalDTO) {
+        Optional<Accommodation> accommodationOptional = accommodationRepository.findById(id);
+        if (accommodationOptional.isEmpty())
+
+            // TODO: Throw accommodation not found error
+
+            return;
+
+        Accommodation accommodation = accommodationOptional.get();
+
+        accommodation.setApproved(accommodationApprovalDTO.isApproved());
+        accommodationRepository.save(accommodation);
     }
 
     @Override
