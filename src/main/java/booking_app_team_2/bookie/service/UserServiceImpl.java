@@ -4,12 +4,16 @@ import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.domain.User;
 import booking_app_team_2.bookie.dto.UserPasswordDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
+import booking_app_team_2.bookie.dto.UserRegistrationDTO;
 import booking_app_team_2.bookie.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
@@ -24,10 +28,14 @@ public class UserServiceImpl implements UserService {
 
     private ReservationService reservationService;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ReservationService reservationService) {
+    public UserServiceImpl(UserRepository userRepository, ReservationService reservationService,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.reservationService = reservationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -46,6 +54,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findOneByUsername(String username) {
+        return userRepository.findOneByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findOneByUsername(username);
+        if (userOptional.isEmpty())
+            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
+
+        return userOptional.get();
+    }
+
+    @Override
     public boolean isCorrectPassword(UserPasswordDTO userPasswordDTO, User user) {
         return userPasswordDTO.getCurrentPassword().equals(user.getPassword());
     }
@@ -53,6 +75,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         return userRepository.save(user);
+    }
+    @Override
+    public User save(UserRegistrationDTO userRegistrationDTO) {
+    return userRepository.save(new User(userRegistrationDTO.getUsername(),
+        passwordEncoder.encode(userRegistrationDTO.getPassword()), userRegistrationDTO.getName(),
+        userRegistrationDTO.getSurname(), userRegistrationDTO.getAddressOfResidence(),
+        userRegistrationDTO.getTelephone(), userRegistrationDTO.getRole()));
     }
 
     private boolean hasReservations(Guest guest) {
