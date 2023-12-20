@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
 import booking_app_team_2.bookie.dto.AccommodationAutoAcceptDTO;
 import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
@@ -178,6 +179,17 @@ public class AccommodationController {
     public ResponseEntity<Accommodation> createAccommodation(@RequestBody Accommodation accommodation) {
         Accommodation savedAccommodation = new Accommodation() {};
         return new ResponseEntity<>(savedAccommodation, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/{id}/is-approved", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationApprovalDTO> updateAccommodationIsApproved(
+            @PathVariable Long id,
+            @RequestBody AccommodationApprovalDTO accommodationApprovalDTO
+    ) {
+        accommodationService.updateIsApproved(id, accommodationApprovalDTO);
+
+        return new ResponseEntity<>(accommodationApprovalDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}/reservation-auto-accept", consumes = MediaType.APPLICATION_JSON_VALUE,
