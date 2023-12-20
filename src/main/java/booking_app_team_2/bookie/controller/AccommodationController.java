@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -180,6 +181,7 @@ public class AccommodationController {
 
     @PutMapping(value = "/{id}/is-approved", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<AccommodationApprovalDTO> updateAccommodationIsApproved(
             @PathVariable Long id,
             @RequestBody AccommodationApprovalDTO accommodationApprovalDTO
