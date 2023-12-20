@@ -1,18 +1,25 @@
 package booking_app_team_2.bookie.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
 public class Owner extends User {
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(
+            name = "owner_accommodations",
+            joinColumns = @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false)
+    )
+    private Set<Accommodation> accommodations;
+
     @Column(name = "receives_reservation_request_notifications", nullable = false)
     private boolean receivesReservationRequestNotifications = true;
 
