@@ -87,4 +87,16 @@ public class Accommodation {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    public boolean addAvailabilityPeriod(AvailabilityPeriod availabilityPeriod) {
+        return availabilityPeriods.add(availabilityPeriod);
+    }
+
+    public boolean removeAvailabilityPeriod(AvailabilityPeriod availabilityPeriod) {
+        return availabilityPeriods.remove(availabilityPeriod);
+    }
+
+    public boolean canAccommodate(int numberOfGuests) {
+        return minimumGuests <= numberOfGuests && maximumGuests >= numberOfGuests;
+    }
 }
