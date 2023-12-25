@@ -77,7 +77,7 @@ public class UserController {
         return new ResponseEntity<>(userTelephoneDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}/addressOfResidence", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/{id}/address-of-residence", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
     public ResponseEntity<UserAddressDTO> updateUserAddressOfResidence(@PathVariable Long id,
