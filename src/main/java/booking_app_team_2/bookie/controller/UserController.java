@@ -2,6 +2,7 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.User;
 import booking_app_team_2.bookie.dto.*;
+import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.service.UserService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "User not found.");
 
         User user = userOptional.get();
 
@@ -47,7 +48,7 @@ public class UserController {
                                                                 @RequestBody UserBasicInfoDTO userBasicInfoDTO) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "User not found.");
 
         User user = userOptional.get();
 
@@ -66,7 +67,7 @@ public class UserController {
                                                                     @RequestBody UserTelephoneDTO userTelephoneDTO) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "User not found.");
 
         User user = userOptional.get();
 
@@ -77,14 +78,14 @@ public class UserController {
         return new ResponseEntity<>(userTelephoneDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}/addressOfResidence", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/{id}/address-of-residence", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
     public ResponseEntity<UserAddressDTO> updateUserAddressOfResidence(@PathVariable Long id,
                                                                      @RequestBody UserAddressDTO userAddressDTO) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "User not found.");
 
         User user = userOptional.get();
 
@@ -94,7 +95,6 @@ public class UserController {
 
         return new ResponseEntity<>(userAddressDTO, HttpStatus.OK);
     }
-
 
     @PutMapping(value = "/{id}/password", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
