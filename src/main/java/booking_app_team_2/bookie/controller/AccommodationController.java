@@ -52,7 +52,20 @@ public class AccommodationController {
         Collection<AccommodationDTO> accommodations = accommodationService
                 .findAllByIsApproved(false)
                 .stream()
-                .map(accommodation -> new AccommodationDTO())
+                .map(accommodation -> new AccommodationDTO(
+                        accommodation.getId(),
+                        accommodation.getName(),
+                        accommodation.getDescription(),
+                        accommodation.getMaximumGuests(),
+                        accommodation.getMinimumGuests(),
+                        accommodation.getLocation(),
+                        accommodation.getAmenities(),
+                        accommodation.getAvailabilityPeriods(),
+                        accommodation.getImages(),
+                        accommodation.getReservationCancellationDeadline(),
+                        accommodation.getType(),
+                        accommodation.isReservationAutoAccepted()
+                ))
                 .toList();
 
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
