@@ -7,4 +7,5 @@ import java.util.List;
 
 @Repository
 public interface AccommodationRepository extends GenericRepository<Accommodation> {
+    List<Accommodation> findAllByIsApproved(boolean isApproved);
 }
