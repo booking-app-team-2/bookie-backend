@@ -140,7 +140,6 @@ public class AccommodationServiceImpl implements AccommodationService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // Parse and extract the city name from the JSON response
                 String cityName=extractCityName(response.body());
                 return transliterateToLatin(cityName);
             } else {
@@ -155,17 +154,12 @@ public class AccommodationServiceImpl implements AccommodationService {
 
     private static String extractCityName(String jsonResponse) throws JSONException {
         JSONObject json = new JSONObject(jsonResponse);
-
-        // Check if the "address" field is present in the JSON
         if (json.has("address")) {
-            // Get the "city" field from the "address" JSON object
             JSONObject addressObject = json.getJSONObject("address");
             if (addressObject.has("city")) {
                 return addressObject.getString("city");
             }
         }
-
-        // If the expected structure is not found, return the full display name
         return json.getString("display_name");
     }
     private static String transliterateToLatin(String text) {
