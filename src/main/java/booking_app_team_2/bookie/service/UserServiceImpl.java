@@ -4,12 +4,18 @@ import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.domain.User;
 import booking_app_team_2.bookie.dto.UserPasswordDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
+import booking_app_team_2.bookie.dto.UserRegistrationDTO;
 import booking_app_team_2.bookie.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
@@ -24,10 +30,14 @@ public class UserServiceImpl implements UserService {
 
     private ReservationService reservationService;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ReservationService reservationService) {
+    public UserServiceImpl(UserRepository userRepository, @Lazy ReservationService reservationService,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.reservationService = reservationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -46,13 +56,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findOneByUsername(String username) {
+        return userRepository.findOneByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findOneByUsername(username);
+        if (userOptional.isEmpty())
+            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
+
+        return userOptional.get();
+    }
+
+    @Override
+    public void updatePassword(Long id, UserPasswordDTO userPasswordDTO) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty())
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "No such user exists.");
+
+        User user = userOptional.get();
+
+        if (!isCorrectPassword(userPasswordDTO, user))
+            throw new HttpTransferException(HttpStatus.FORBIDDEN, "Current password is incorrect.");
+
+        user.setPassword(passwordEncoder.encode(userPasswordDTO.getNewPassword()));
+
+        userRepository.save(user);
+    }
+
+    @Override
     public boolean isCorrectPassword(UserPasswordDTO userPasswordDTO, User user) {
-        return userPasswordDTO.getCurrentPassword().equals(user.getPassword());
+        return passwordEncoder.matches(userPasswordDTO.getCurrentPassword(), user.getPassword());
     }
 
     @Override
     public User save(User user) {
         return userRepository.save(user);
+    }
+    @Override
+    public User save(UserRegistrationDTO userRegistrationDTO) {
+    return userRepository.save(new User(userRegistrationDTO.getUsername(),
+        passwordEncoder.encode(userRegistrationDTO.getPassword()), userRegistrationDTO.getName(),
+        userRegistrationDTO.getSurname(), userRegistrationDTO.getAddressOfResidence(),
+        userRegistrationDTO.getTelephone(), userRegistrationDTO.getRole()));
     }
 
     private boolean hasReservations(Guest guest) {

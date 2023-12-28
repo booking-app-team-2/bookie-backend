@@ -1,9 +1,7 @@
 package booking_app_team_2.bookie.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -49,4 +47,13 @@ public class Reservation {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    public Reservation(int numberOfGuests, Accommodation accommodation, Guest reservee, Period period,
+                       BigDecimal price) {
+        this.numberOfGuests = numberOfGuests;
+        this.accommodation = accommodation;
+        this.reservee = reservee;
+        this.period = period;
+        this.price = price;
+    }
 }

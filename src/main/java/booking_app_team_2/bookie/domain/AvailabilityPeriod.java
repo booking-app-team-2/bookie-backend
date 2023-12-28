@@ -1,6 +1,8 @@
 package booking_app_team_2.bookie.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,4 +39,29 @@ public class AvailabilityPeriod {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
+    public AvailabilityPeriod(BigDecimal price, Period period) {
+        this.price = price;
+        this.period = period;
+    }
+
+    @JsonIgnore
+    public boolean canFitPeriod(Period period) {
+        return this.period.overlaps(period);
+    }
+
+    public boolean periodOverlapsBottomOnly(Period period) {
+        return this.period.overlapsBottomOnly(period);
+    }
+
+    public boolean periodOverlapsTopOnly(Period period) {
+        return this.period.overlapsTopOnly(period);
+    }
+
+    public boolean periodExclusivelyOverlaps(Period period) {
+        return this.period.exclusivelyOverlaps(period);
+    }
+
+    public boolean isPeriodEqualTo(Period period) {
+        return this.period.isEqualTo(period);
+    }
 }

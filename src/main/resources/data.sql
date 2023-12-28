@@ -1,32 +1,34 @@
-INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
-                         is_deleted)
-VALUES (nextval('sequence_user'), 'bookie@gmail.com', 'bookie123', 'Bookie', 'Bookie', 'Bookshelf', 'Placeholder',
-        'Admin', false, false);
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'bookie@gmail.com', '$2a$10$vudjSlPv/HU4rH9n/uwXXezmoG9zCZb1KKhTvErQTWRp9Ln5gwdQe',
+        'Bookie', 'Bookie', 'Bookshelf', 'Placeholder', '2023-12-09', 'Admin', false, false);
 
-INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
-                         is_deleted)
-VALUES (nextval('sequence_user'), 'eikoob@gmail.com', 'eikoob123', 'Eikoob', 'Eikoob', 'Fleshbook', 'Placeholder',
-        'Guest', false, false);
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'eikoob@gmail.com', '$2a$10$QRX9ZJEotdh.5sph3O6PRe1oeloCgF12fjJXo9Pa5oYZ3P..Zw3US',
+        'Eikoob', 'Eikoob', 'Fleshbook', 'Placeholder', '2023-12-09', 'Guest', false, false);
 
-INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
-                         is_deleted)
-VALUES (nextval('sequence_user'), 'darko@gmail.com', 'darko123', 'Darko', 'Svilar', 'No', 'No',
-        'Guest', false, false);
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'darko@gmail.com', '$2a$10$ucvB0UzXjwIvnEhz9wTDBu3En9Ig7u2Ni7TRuqCJckF8tnhXdo58S',
+        'Darko', 'Svilar', 'No', 'No', '2023-12-09', 'Guest', false, false);
 
-INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
-                         is_deleted)
-VALUES (nextval('sequence_user'), 'owner@gmail.com', 'owner123', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
-        'Owner', false, false);
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'owner@gmail.com', '$2a$10$IF6wgXHgzupWmoO6BNfqL.AooesY2oLhC4Lo8MnFLfxuEx12hg6Rq',
+        'Owner', 'Owner', 'Placeholder', 'Placeholder', '2023-12-09', 'Owner', false, false);
 
-INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
-                         is_deleted)
-VALUES (nextval('sequence_user'), 'ownernoaccs@gmail.com', 'owner123', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
-        'Owner', false, false);
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'ownernoaccs@gmail.com',
+        '$2a$10$ijDyoU05pvIjQHC4aLkzn.wjgJuBVV6zOa0xMeNJ6FB250zXUg0Lq', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
+        '2023-12-09', 'Owner', false, false);
 
-INSERT INTO user_bookie (id, email, password, name, surname, address_of_residence, telephone, role, is_blocked,
-                         is_deleted)
-VALUES (nextval('sequence_user'), 'owneraccsnores@gmail.com', 'owner123', 'Owner', 'Owner', 'Placeholder',
-        'Placeholder', 'Owner', false, false);
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'owneraccsnores@gmail.com',
+        '$2a$10$pe4FvwSCNyOGUAHdokhwrOr9lCRrba/TYzVHGGhyEIeMGyGNGtEZ.', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
+        '2023-12-09', 'Owner', false, false);
 
 INSERT INTO guest (id, receives_reservation_request_notifications)
 VALUES (2, true);
@@ -131,7 +133,7 @@ INSERT INTO accommodation_amenities (accommodation_id, amenity)
 VALUES (3, 'Kitchen');
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
-VALUES (nextval('sequence_availability_period'), 15, 1702252800, 1702684800, false);
+VALUES (nextval('sequence_availability_period'), 15, 1703113200, 1703545200, false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 20, 1702684800, 1702857600, false);
