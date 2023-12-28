@@ -1,32 +1,21 @@
 package booking_app_team_2.bookie.service;
 
-import booking_app_team_2.bookie.domain.*;
-import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
-import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.AvailabilityPeriod;
+import booking_app_team_2.bookie.domain.Image;
+import booking_app_team_2.bookie.domain.Reservation;
+import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
-import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.ReservationRepository;
-import com.ibm.icu.text.Transliterator;
 import lombok.Setter;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+
 import java.util.*;
 import java.util.stream.Collectors;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import org.json.JSONObject;
 
 @Setter
 @Service
@@ -35,21 +24,21 @@ public class AccommodationServiceImpl implements AccommodationService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository,ReservationRepository reservationRepository) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository) {
         this.accommodationRepository = accommodationRepository;
-        this.reservationRepository=reservationRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
-    public List<Accommodation> findSearched(String location,int numberOfGuests,long startDate,long endDate){
+    public List<Accommodation> findSearched(String location, int numberOfGuests, long startDate, long endDate) {
         List<Accommodation> accommodations = accommodationRepository.findAll();
-        List<Accommodation> newAccommodations= new ArrayList<>(Collections.emptyList());
-        for(Accommodation accommodation:accommodations){
-            if((numberOfGuests>=accommodation.getMinimumGuests() && numberOfGuests<=accommodation.getMaximumGuests())||(numberOfGuests==0)){
+        List<Accommodation> newAccommodations = new ArrayList<>(Collections.emptyList());
+        for (Accommodation accommodation : accommodations) {
+            if ((numberOfGuests >= accommodation.getMinimumGuests() && numberOfGuests <= accommodation.getMaximumGuests()) || (numberOfGuests == 0)) {
                 //TODO:Add for location
-                for(AvailabilityPeriod availabilityPeriod:accommodation.getAvailabilityPeriods()){
-                    if((startDate>=availabilityPeriod.getPeriod().getStartDate() && endDate<=availabilityPeriod.getPeriod().getEndDate())||(startDate==0 && endDate==0)){
-                        if(Objects.equals(location, getCityName(accommodation.getLocation().getLatitude(), accommodation.getLocation().getLongitude()))||location==""){
+                for (AvailabilityPeriod availabilityPeriod : accommodation.getAvailabilityPeriods()) {
+                    if ((startDate >= availabilityPeriod.getPeriod().getStartDate() && endDate <= availabilityPeriod.getPeriod().getEndDate()) || (startDate == 0 && endDate == 0)) {
+                        if (accommodation.getLocation().isInProximity(location) || Objects.equals(location, "")) {
                             newAccommodations.add(accommodation);
                             break;
                         }
@@ -59,43 +48,45 @@ public class AccommodationServiceImpl implements AccommodationService {
         }
         return newAccommodations;
     }
+
     @Override
-    public List<AccommodationDTO> getAll(){
+    public List<AccommodationDTO> getAll() {
         List<Accommodation> accommodations = accommodationRepository.findAll();
         return accommodations.stream()
-                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getImages(),accommodation.getReservationCancellationDeadline(),accommodation.getType(),accommodation.isReservationAutoAccepted()))
+                .map(accommodation -> new AccommodationDTO(accommodation.getId(), accommodation.getName(), accommodation.getDescription(), accommodation.getMinimumGuests(), accommodation.getMaximumGuests(), accommodation.getLocation(), accommodation.getAmenities(), accommodation.getAvailabilityPeriods(), accommodation.getImages(), accommodation.getReservationCancellationDeadline(), accommodation.getType(), accommodation.isReservationAutoAccepted()))
                 .collect(Collectors.toList());
     }
+
     @Override
-    public AccommodationBasicInfoDTO updateAccommodationBasicInfo(Accommodation accommodation, AccommodationBasicInfoDTO accommodationBasicInfoDTO){
+    public AccommodationBasicInfoDTO updateAccommodationBasicInfo(Accommodation accommodation, AccommodationBasicInfoDTO accommodationBasicInfoDTO) {
         accommodation.setName(accommodationBasicInfoDTO.getName());
         accommodation.setDescription(accommodationBasicInfoDTO.getDescription());
         accommodation.setLocation(accommodationBasicInfoDTO.getLocation());
         accommodation.getImages().clear();
-        Set<Image> images=accommodationBasicInfoDTO.getImages();
+        Set<Image> images = accommodationBasicInfoDTO.getImages();
         accommodation.getImages().addAll(images);
         accommodation.setAmenities(accommodationBasicInfoDTO.getAmenities());
-        for(Reservation reservation:reservationRepository.findReservationsByAccommodation_Id(accommodation.getId())){
-            if(accommodationBasicInfoDTO.getMinimumGuests()>reservation.getNumberOfGuests() || accommodationBasicInfoDTO.getMaximumGuests()<reservation.getNumberOfGuests()){
+        for (Reservation reservation : reservationRepository.findReservationsByAccommodation_Id(accommodation.getId())) {
+            if (accommodationBasicInfoDTO.getMinimumGuests() > reservation.getNumberOfGuests() || accommodationBasicInfoDTO.getMaximumGuests() < reservation.getNumberOfGuests()) {
                 return null;
             }
-            for(AvailabilityPeriod period:accommodation.getAvailabilityPeriods()){
-                if(reservation.getPeriod().getStartDate()>=period.getPeriod().getStartDate() && reservation.getPeriod().getEndDate()<=period.getPeriod().getEndDate()){
-                    boolean flag=true;
-                    for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
-                        if(afterPeriod.getId()==period.getId() && afterPeriod.getPeriod().getEndDate()==period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate()==period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted()==period.isDeleted()){
-                            flag=false;
+            for (AvailabilityPeriod period : accommodation.getAvailabilityPeriods()) {
+                if (reservation.getPeriod().getStartDate() >= period.getPeriod().getStartDate() && reservation.getPeriod().getEndDate() <= period.getPeriod().getEndDate()) {
+                    boolean flag = true;
+                    for (AvailabilityPeriod afterPeriod : accommodationBasicInfoDTO.getAvailabilityPeriods()) {
+                        if (afterPeriod.getId() == period.getId() && afterPeriod.getPeriod().getEndDate() == period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate() == period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted() == period.isDeleted()) {
+                            flag = false;
                             break;
                         }
                     }
-                    if(flag){
+                    if (flag) {
                         return null;
                     }
                 }
             }
         }
         accommodation.getAvailabilityPeriods().clear();
-        Set<AvailabilityPeriod> availabilityPeriods=accommodationBasicInfoDTO.getAvailabilityPeriods();
+        Set<AvailabilityPeriod> availabilityPeriods = accommodationBasicInfoDTO.getAvailabilityPeriods();
         accommodation.getAvailabilityPeriods().addAll(availabilityPeriods);
         accommodation.setType(accommodationBasicInfoDTO.getType());
         accommodation.setMinimumGuests(accommodationBasicInfoDTO.getMinimumGuests());
@@ -104,6 +95,7 @@ public class AccommodationServiceImpl implements AccommodationService {
         this.save(accommodation);
         return accommodationBasicInfoDTO;
     }
+
     @Override
     public List<Accommodation> findAll() {
         return accommodationRepository.findAll();
@@ -128,42 +120,5 @@ public class AccommodationServiceImpl implements AccommodationService {
     public void remove(Long id) {
         accommodationRepository.deleteById(id);
     }
-    public static String getCityName(double latitude, double longitude) {
-        try {
-            String url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + latitude + "&lon=" + longitude;
-            HttpClient httpClient = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .GET()
-                    .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                String cityName=extractCityName(response.body());
-                return transliterateToLatin(cityName);
-            } else {
-                System.out.println("Error: " + response.statusCode());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    private static String extractCityName(String jsonResponse) throws JSONException {
-        JSONObject json = new JSONObject(jsonResponse);
-        if (json.has("address")) {
-            JSONObject addressObject = json.getJSONObject("address");
-            if (addressObject.has("city")) {
-                return addressObject.getString("city");
-            }
-        }
-        return json.getString("display_name");
-    }
-    private static String transliterateToLatin(String text) {
-        Transliterator latinTransliterator = Transliterator.getInstance("Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC");
-        return latinTransliterator.transliterate(text);
-    }
 }
