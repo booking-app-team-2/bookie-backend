@@ -142,7 +142,7 @@ VALUES (nextval('sequence_availability_period'), 20, date_part('EPOCH', current_
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 30, date_part('EPOCH', current_date),
-        date_part('EPOCH', current_date + 3), false);
+        date_part('EPOCH', current_date + 6), false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 10, date_part('EPOCH', current_date - 5),
