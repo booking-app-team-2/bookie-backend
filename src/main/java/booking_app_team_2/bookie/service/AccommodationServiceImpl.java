@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.dto.AccommodationAutoAcceptDTO;
 import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.domain.Accommodation;
@@ -9,7 +10,8 @@ import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.ReservationRepository;
-import lombok.Setter;
+import booking_app_team_2.bookie.util.TokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,16 +24,26 @@ import java.util.Optional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Setter
 @Service
 public class AccommodationServiceImpl implements AccommodationService {
     private AccommodationRepository accommodationRepository;
     private ReservationRepository reservationRepository;
 
+    private UserService userService;
+    private AccountVerificatorService accountVerificatorService;
+
+    private final TokenUtils tokenUtils;
+
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository,ReservationRepository reservationRepository) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository,
+                                    ReservationRepository reservationRepository,
+                                    UserService userService, TokenUtils tokenUtils,
+                                    AccountVerificatorService accountVerificatorService) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository=reservationRepository;
+        this.userService = userService;
+        this.tokenUtils = tokenUtils;
+        this.accountVerificatorService = accountVerificatorService;
     }
 
     @Override
@@ -134,8 +146,50 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
+    public void updateAutoAccept(Long id, AccommodationAutoAcceptDTO accommodationAutoAcceptDTO,
+                                 HttpServletRequest httpServletRequest) {
+        Accommodation accommodation = accommodationRepository
+                .findById(id)
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Accommodation not found."));
+
+        Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
+                        "A non-existing owner cannot change the reservation auto-acceptance."));
+
+        if (owner.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A blocked owner cannot change the reservation auto-acceptance.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(owner);
+        if (accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified owner cannot change the reservation auto-acceptance.");
+
+        if (!owner.owns(accommodation))
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Only the owner of the accommodation can change it's reservation auto-acceptance status.");
+
+        accommodation.setReservationAutoAccepted(accommodationAutoAcceptDTO.isReservationAutoAccepted());
+        accommodationRepository.save(accommodation);
+    }
+
+    @Override
     public void remove(Long id) {
         accommodationRepository.deleteById(id);
     }
 
+    @Autowired
+    public void setAccommodationRepository(AccommodationRepository accommodationRepository) {
+        this.accommodationRepository = accommodationRepository;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    public void setAccountVerificatorService(AccountVerificatorService accountVerificatorService) {
+        this.accountVerificatorService = accountVerificatorService;
+    }
 }
