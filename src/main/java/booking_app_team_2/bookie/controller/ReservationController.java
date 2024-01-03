@@ -4,6 +4,7 @@ import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.service.ReservationService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -62,13 +63,15 @@ public class ReservationController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationStatusDTO> updateReservation(@RequestBody ReservationStatusDTO reservationDTO,
-                                                            @PathVariable Long id) {
-        ReservationStatusDTO reservationDTO1 = new ReservationStatusDTO();
-        if (reservationDTO1.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<ReservationStatusDTO> updateReservationStatus(
+            @PathVariable Long id,
+            @RequestBody ReservationStatusDTO reservationStatusDTO,
+            HttpServletRequest httpServletRequest
+    ) {
+        reservationService.updateStatus(id, reservationStatusDTO, httpServletRequest);
 
-        return new ResponseEntity<>(reservationDTO1, HttpStatus.OK);
+        return new ResponseEntity<>(reservationStatusDTO, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
