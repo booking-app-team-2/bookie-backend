@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -43,5 +45,9 @@ public class Period {
 
     public boolean isEqualTo(Period period) {
         return this.startDate == period.getStartDate() && this.endDate == period.getEndDate();
+    }
+
+    public boolean hasBegun() {
+        return startDate < (new Date().getTime() / 1000);
     }
 }

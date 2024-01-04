@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.EnumSet;
 
 import java.math.BigDecimal;
@@ -173,8 +172,8 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
 
         Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
-                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
-                        "A non-existing owner cannot accept reservations."));
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot accept reservations."));
 
         if (owner.isBlocked())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
@@ -193,7 +192,7 @@ public class ReservationServiceImpl implements ReservationService {
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already been accepted, declined or cancelled");
 
-        if (reservation.getPeriod().getStartDate() < new Date().getTime() / 1000)
+        if (reservation.hasBegun())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already begun and cannot be accepted.");
 
@@ -224,8 +223,8 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
 
         Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
-                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
-                        "A non-existing owner cannot decline reservations."));
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot decline reservations."));
 
         if (owner.isBlocked())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
@@ -244,7 +243,7 @@ public class ReservationServiceImpl implements ReservationService {
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already been accepted, denied or cancelled");
 
-        if (reservation.getPeriod().getStartDate() < new Date().getTime() / 1000)
+        if (reservation.hasBegun())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already begun and cannot be declined.");
 
