@@ -1,9 +1,11 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.service.ReservationService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,15 +62,12 @@ public class ReservationController {
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationStatusDTO> updateReservation(@RequestBody ReservationStatusDTO reservationDTO,
-                                                            @PathVariable Long id) {
-        ReservationStatusDTO reservationDTO1 = new ReservationStatusDTO();
-        if (reservationDTO1.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PutMapping(value = "/{id}/status/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReservationStatusDTO> updateReservation(@PathVariable Long id,
+                                                                  HttpServletRequest httpServletRequest) {
+        reservationService.cancelReservation(id, httpServletRequest);
 
-        return new ResponseEntity<>(reservationDTO1, HttpStatus.OK);
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Cancelled), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")

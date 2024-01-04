@@ -8,8 +8,9 @@ import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.ReservationRepository;
+import booking_app_team_2.bookie.util.TokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,15 +30,19 @@ public class ReservationServiceImpl implements ReservationService {
     private UserService userService;
     private AccountVerificatorService accountVerificatorService;
 
+    private final TokenUtils tokenUtils;
+
     @Autowired
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                   AccommodationService accommodationService,
                                   UserService userService,
-                                  AccountVerificatorService accountVerificatorService) {
+                                  AccountVerificatorService accountVerificatorService,
+                                  TokenUtils tokenUtils) {
         this.reservationRepository = reservationRepository;
         this.accommodationService = accommodationService;
         this.userService = userService;
         this.accountVerificatorService = accountVerificatorService;
+        this.tokenUtils = tokenUtils;
     }
 
     @Override
@@ -146,6 +151,41 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation save(Reservation reservation) {
         return null;
+    }
+
+    @Override
+    public void cancelReservation(Long id, HttpServletRequest httpServletRequest) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
+
+        Guest reservee = (Guest) userService
+                .findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent guest cannot cancel a reservation."));
+
+        if (reservee.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST, "A blocked guest cannot cancel a reservation.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(reservee);
+        if (accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified guest cannot cancel a reservation.");
+
+        if (!reservation.getReservee().equals(reservee))
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Only the reservee that made the reservation can cancel it.");
+
+        if (!reservation.isCancellable())
+            throw new HttpTransferException(
+                    HttpStatus.BAD_REQUEST,
+                    "Only an accepted reservation that has not yet reached the cancellation deadline can be cancelled."
+            );
+
+        // TODO: Implement making the accommodation available again in the period taken by the cancelled reservation
+
+        reservation.setStatus(ReservationStatus.Cancelled);
+        reservationRepository.save(reservation);
     }
 
     @Override

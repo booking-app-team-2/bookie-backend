@@ -125,6 +125,17 @@ public class TokenUtils {
         }
     }
 
+    public Long getIdFromToken(String token) {
+        try {
+            final Claims claims = getAllClaimsFromToken(token);
+            return claims.get("id", Long.class);
+        } catch (ExpiredJwtException ex) {
+            throw ex;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private Boolean isCreatedBeforeLastPasswordReset(Date dateOfCreation, Date lastPasswordResetDate) {
         return (lastPasswordResetDate != null && dateOfCreation.before(lastPasswordResetDate));
     }
