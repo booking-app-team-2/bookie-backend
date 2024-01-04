@@ -1,6 +1,7 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.service.ReservationService;
@@ -61,17 +62,26 @@ public class ReservationController {
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}/status/accepted", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Owner')")
-    public ResponseEntity<ReservationStatusDTO> updateReservationStatus(
+    public ResponseEntity<ReservationStatusDTO> acceptReservation(
             @PathVariable Long id,
-            @RequestBody ReservationStatusDTO reservationStatusDTO,
             HttpServletRequest httpServletRequest
     ) {
-        reservationService.updateStatus(id, reservationStatusDTO, httpServletRequest);
+        reservationService.acceptReservation(id, httpServletRequest);
 
-        return new ResponseEntity<>(reservationStatusDTO, HttpStatus.OK);
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Accepted), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/status/declined", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<ReservationStatusDTO> declineReservation(
+            @PathVariable Long id,
+            HttpServletRequest httpServletRequest
+    ) {
+        reservationService.declineReservation(id, httpServletRequest);
+
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Declined), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")

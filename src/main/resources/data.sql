@@ -141,8 +141,8 @@ VALUES (nextval('sequence_availability_period'), 20, date_part('EPOCH', current_
         date_part('EPOCH', current_date + 12), false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
-VALUES (nextval('sequence_availability_period'), 30, date_part('EPOCH', current_date),
-        date_part('EPOCH', current_date + 6), false);
+VALUES (nextval('sequence_availability_period'), 30, date_part('EPOCH', current_date + 1),
+        date_part('EPOCH', current_date + 8), false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 10, date_part('EPOCH', current_date - 5),
@@ -172,8 +172,8 @@ VALUES (nextval('sequence_reservation'), 2, 'Accepted', 1, 3, date_part('EPOCH',
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', current_date + 4),
-        date_part('EPOCH', current_date + 6), 90, false);
+VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', current_date + 5),
+        date_part('EPOCH', current_date + 5), 90, false);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
@@ -187,7 +187,7 @@ VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', 
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', current_date),
+VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', current_date + 1),
         date_part('EPOCH', current_date + 4), 150, false);
 
 -- TODO: Insert images and connect them to accommodations

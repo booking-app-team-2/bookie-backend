@@ -36,6 +36,7 @@ public class Period {
     public boolean overlapsTopOnly(Period period) {
         return this.startDate == period.getStartDate() && this.endDate > period.getEndDate();
     }
+
     public boolean exclusivelyOverlaps(Period period) {
         return this.startDate < period.getStartDate() && this.endDate > period.getEndDate();
     }
