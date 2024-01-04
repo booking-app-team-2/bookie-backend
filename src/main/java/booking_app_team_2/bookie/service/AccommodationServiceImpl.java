@@ -153,8 +153,8 @@ public class AccommodationServiceImpl implements AccommodationService {
                 .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Accommodation not found."));
 
         Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
-                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
-                        "A non-existing owner cannot change the reservation auto-acceptance."));
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot change the reservation auto-acceptance."));
 
         if (owner.isBlocked())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
