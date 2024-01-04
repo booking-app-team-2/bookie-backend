@@ -4,6 +4,7 @@ import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.service.ReservationService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -72,10 +73,9 @@ public class ReservationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        ReservationDTO reservationDTO = new ReservationDTO();
-        if (reservationDTO.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PreAuthorize("hasAuthority('Guest')")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, HttpServletRequest httpServletRequest) {
+        reservationService.remove(id, httpServletRequest);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
