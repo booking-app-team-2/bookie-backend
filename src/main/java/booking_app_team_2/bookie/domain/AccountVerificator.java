@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -24,8 +26,8 @@ public class AccountVerificator {
     @Column(unique = true, nullable = false)
     private Long id = null;
 
-    @Column(name = "date_of_registration", nullable = false)
-    private long dateOfRegistration;
+    @Column(name = "timestamp_of_registration", nullable = false)
+    private LocalDateTime timestampOfRegistration;
 
     @Column(name = "is_verified", nullable = false)
     private boolean isVerified = false;

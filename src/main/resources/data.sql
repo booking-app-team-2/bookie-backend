@@ -1,34 +1,34 @@
 INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
                          last_password_reset_date, role, is_blocked, is_deleted)
 VALUES (nextval('sequence_user'), 'bookie@gmail.com', '$2a$10$vudjSlPv/HU4rH9n/uwXXezmoG9zCZb1KKhTvErQTWRp9Ln5gwdQe',
-        'Bookie', 'Bookie', 'Bookshelf', 'Placeholder', '2023-12-09', 'Admin', false, false);
+        'Bookie', 'Bookie', 'Bookshelf', 'Placeholder', timestamp '2023-12-09 22:14:30', 'Admin', false, false);
 
 INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
                          last_password_reset_date, role, is_blocked, is_deleted)
 VALUES (nextval('sequence_user'), 'eikoob@gmail.com', '$2a$10$QRX9ZJEotdh.5sph3O6PRe1oeloCgF12fjJXo9Pa5oYZ3P..Zw3US',
-        'Eikoob', 'Eikoob', 'Fleshbook', 'Placeholder', '2023-12-09', 'Guest', false, false);
+        'Eikoob', 'Eikoob', 'Fleshbook', 'Placeholder', timestamp '2023-12-09 22:16:19', 'Guest', false, false);
 
 INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
                          last_password_reset_date, role, is_blocked, is_deleted)
 VALUES (nextval('sequence_user'), 'darko@gmail.com', '$2a$10$ucvB0UzXjwIvnEhz9wTDBu3En9Ig7u2Ni7TRuqCJckF8tnhXdo58S',
-        'Darko', 'Svilar', 'No', 'No', '2023-12-09', 'Guest', false, false);
+        'Darko', 'Svilar', 'No', 'No', timestamp '2023-12-09 22:16:30', 'Guest', false, false);
 
 INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
                          last_password_reset_date, role, is_blocked, is_deleted)
 VALUES (nextval('sequence_user'), 'owner@gmail.com', '$2a$10$IF6wgXHgzupWmoO6BNfqL.AooesY2oLhC4Lo8MnFLfxuEx12hg6Rq',
-        'Owner', 'Owner', 'Placeholder', 'Placeholder', '2023-12-09', 'Owner', false, false);
+        'Owner', 'Owner', 'Placeholder', 'Placeholder', timestamp '2023-12-09 22:16:48', 'Owner', false, false);
 
 INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
                          last_password_reset_date, role, is_blocked, is_deleted)
 VALUES (nextval('sequence_user'), 'ownernoaccs@gmail.com',
         '$2a$10$ijDyoU05pvIjQHC4aLkzn.wjgJuBVV6zOa0xMeNJ6FB250zXUg0Lq', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
-        '2023-12-09', 'Owner', false, false);
+        timestamp '2023-12-09 22:16:48', 'Owner', false, false);
 
 INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
                          last_password_reset_date, role, is_blocked, is_deleted)
 VALUES (nextval('sequence_user'), 'owneraccsnores@gmail.com',
         '$2a$10$pe4FvwSCNyOGUAHdokhwrOr9lCRrba/TYzVHGGhyEIeMGyGNGtEZ.', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
-        '2023-12-09', 'Owner', false, false);
+        timestamp '2023-12-09 22:16:48', 'Owner', false, false);
 
 INSERT INTO guest (id, receives_reservation_request_notifications)
 VALUES (2, true);
@@ -48,23 +48,23 @@ INSERT INTO owner (id, receives_reservation_request_notifications, receives_rese
                    receives_review_notifications, receives_accommodation_review_notifications)
 VALUES (6, true, true, true, true);
 
-INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
-VALUES (nextval('sequence_account_verificator'), 1702156470, true, 1, false);
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:14:30', true, 1, false);
 
-INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
-VALUES (nextval('sequence_account_verificator'), 1702156579, false, 2, false);
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:19', false, 2, false);
 
-INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
-VALUES (nextval('sequence_account_verificator'), 1702156590, true, 3, false);
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:30', true, 3, false);
 
-INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
-VALUES (nextval('sequence_account_verificator'), 1702156608, true, 4, false);
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:48', true, 4, false);
 
-INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
-VALUES (nextval('sequence_account_verificator'), 1702156608, true, 5, false);
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:48', true, 5, false);
 
-INSERT INTO account_verificator (id, date_of_registration, is_verified, user_id, is_deleted)
-VALUES (nextval('sequence_account_verificator'), 1702156608, true, 6, false);
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:48', true, 6, false);
 
 INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
                            reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
