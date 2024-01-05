@@ -23,5 +23,8 @@ public class AccommodationBasicInfoDTO {
     private Set<Image> images;
     private AccommodationType type;
     private boolean isReservationAutoAccepted;
+
+    // TODO: Refactor this, unless you want to send dates over HTTP.
+
     private Set<AvailabilityPeriod> availabilityPeriods;
 }

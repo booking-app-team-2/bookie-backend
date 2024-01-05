@@ -9,12 +9,12 @@ import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.EnumSet;
 
 import java.math.BigDecimal;
@@ -128,7 +128,7 @@ public class ReservationServiceImpl implements ReservationService {
             else if (availabilityPeriod.periodOverlapsTopOnly(period))
                 availabilityPeriod.getPeriod().setStartDate(period.getEndDate());
             else if (availabilityPeriod.periodExclusivelyOverlaps(period)) {
-                long availabilityPeriodEndDate = availabilityPeriod.getPeriod().getEndDate();
+                LocalDate availabilityPeriodEndDate = availabilityPeriod.getPeriod().getEndDate();
                 availabilityPeriod.getPeriod().setEndDate(period.getStartDate());
                  accommodation.addAvailabilityPeriod(
                          new AvailabilityPeriod(

@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.*;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -15,32 +18,34 @@ import lombok.Setter;
 @Embeddable
 public class Period {
     @Column(name = "start_date", nullable = false)
-    private long startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private long endDate;
+    private LocalDate endDate;
 
     @JsonIgnore
     public int getInDays() {
-        return (int) ((endDate - startDate) / (60 * 60 * 24));
+        return (int) DAYS.between(startDate, endDate);
     }
 
     public boolean overlaps(Period period) {
-        return this.startDate <= period.getStartDate() && this.endDate >= period.getEndDate();
+        return (startDate.isBefore(period.getStartDate()) || startDate.isEqual(period.getStartDate()))
+                && (endDate.isAfter(period.getEndDate()) || endDate.isEqual(period.getEndDate()));
     }
 
     public boolean overlapsBottomOnly(Period period) {
-        return this.startDate < period.getStartDate() && this.endDate == period.getEndDate();
+        return startDate.isBefore(period.getStartDate()) && endDate.isEqual(period.getEndDate());
     }
 
     public boolean overlapsTopOnly(Period period) {
-        return this.startDate == period.getStartDate() && this.endDate > period.getEndDate();
+        return startDate.isEqual(period.getStartDate()) && endDate.isAfter(period.getEndDate());
     }
+
     public boolean exclusivelyOverlaps(Period period) {
-        return this.startDate < period.getStartDate() && this.endDate > period.getEndDate();
+        return startDate.isBefore(period.getStartDate()) && endDate.isAfter(period.getEndDate());
     }
 
     public boolean isEqualTo(Period period) {
-        return this.startDate == period.getStartDate() && this.endDate == period.getEndDate();
+        return startDate.isEqual(period.getStartDate()) && endDate.isEqual(period.getEndDate());
     }
 }

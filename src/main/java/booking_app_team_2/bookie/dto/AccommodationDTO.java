@@ -24,6 +24,9 @@ public class AccommodationDTO {
     private int maximumGuests;
     private Location location;
     private Set<Amenities> amenities;
+
+    // TODO: Refactor this, unless you want to send dates over HTTP.
+
     private Set<AvailabilityPeriod> availabilityPeriods;
     private Set<Image> images;
     private int reservationCancellationDeadline;

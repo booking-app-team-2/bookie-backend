@@ -42,6 +42,9 @@ public class AccommodationServiceImpl implements AccommodationService {
             if((numberOfGuests>=accommodation.getMinimumGuests() && numberOfGuests<=accommodation.getMaximumGuests())||(numberOfGuests==0)){
                 //TODO:Add for location
                 for(AvailabilityPeriod availabilityPeriod:accommodation.getAvailabilityPeriods()){
+
+                    // TODO: Refactor this. A method for this already exists.
+
                     if((startDate>=availabilityPeriod.getPeriod().getStartDate() && endDate<=availabilityPeriod.getPeriod().getEndDate())||(startDate==0 && endDate==0)){
                         newAccommodations.add(accommodation);
                         break;
@@ -72,6 +75,9 @@ public class AccommodationServiceImpl implements AccommodationService {
                 return null;
             }
             for(AvailabilityPeriod period:accommodation.getAvailabilityPeriods()){
+
+                // TODO: Refactor this.
+
                 if(reservation.getPeriod().getStartDate()>=period.getPeriod().getStartDate() && reservation.getPeriod().getEndDate()<=period.getPeriod().getEndDate()){
                     boolean flag=true;
                     for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
