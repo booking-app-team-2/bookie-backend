@@ -45,10 +45,10 @@ public class AccommodationServiceImpl implements AccommodationService {
 
                     // TODO: Refactor this. A method for this already exists.
 
-                    if((startDate>=availabilityPeriod.getPeriod().getStartDate() && endDate<=availabilityPeriod.getPeriod().getEndDate())||(startDate==0 && endDate==0)){
-                        newAccommodations.add(accommodation);
-                        break;
-                    }
+//                    if((startDate>=availabilityPeriod.getPeriod().getStartDate() && endDate<=availabilityPeriod.getPeriod().getEndDate())||(startDate==0 && endDate==0)){
+//                        newAccommodations.add(accommodation);
+//                        break;
+//                    }
                 }
             }
         }
@@ -78,18 +78,18 @@ public class AccommodationServiceImpl implements AccommodationService {
 
                 // TODO: Refactor this.
 
-                if(reservation.getPeriod().getStartDate()>=period.getPeriod().getStartDate() && reservation.getPeriod().getEndDate()<=period.getPeriod().getEndDate()){
-                    boolean flag=true;
-                    for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
-                        if(afterPeriod.getId()==period.getId() && afterPeriod.getPeriod().getEndDate()==period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate()==period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted()==period.isDeleted()){
-                            flag=false;
-                            break;
-                        }
-                    }
-                    if(flag){
-                        return null;
-                    }
-                }
+//                if(reservation.getPeriod().getStartDate()>=period.getPeriod().getStartDate() && reservation.getPeriod().getEndDate()<=period.getPeriod().getEndDate()){
+//                    boolean flag=true;
+//                    for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
+//                        if(afterPeriod.getId()==period.getId() && afterPeriod.getPeriod().getEndDate()==period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate()==period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted()==period.isDeleted()){
+//                            flag=false;
+//                            break;
+//                        }
+//                    }
+//                    if(flag){
+//                        return null;
+//                    }
+//                }
             }
         }
         accommodation.getAvailabilityPeriods().clear();

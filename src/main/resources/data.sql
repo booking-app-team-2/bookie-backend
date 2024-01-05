@@ -133,16 +133,16 @@ INSERT INTO accommodation_amenities (accommodation_id, amenity)
 VALUES (3, 'Kitchen');
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
-VALUES (nextval('sequence_availability_period'), 15, 1703113200, 1703545200, false);
+VALUES (nextval('sequence_availability_period'), 15, current_date - 2, current_date + 4, false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
-VALUES (nextval('sequence_availability_period'), 20, 1702684800, 1702857600, false);
+VALUES (nextval('sequence_availability_period'), 20, current_date + 10, current_date + 12, false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
-VALUES (nextval('sequence_availability_period'), 30, 1702944000, 1703462400, false);
+VALUES (nextval('sequence_availability_period'), 30, current_date + 1, current_date + 8, false);
 
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
-VALUES (nextval('sequence_availability_period'), 10, 1702944000, 1703462400, false);
+VALUES (nextval('sequence_availability_period'), 10, current_date - 5, current_date - 1, false);
 
 INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
 VALUES (1, 1);
@@ -158,14 +158,14 @@ VALUES (3, 4);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, 1702857600, 1703030400, 160, false);
+VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date + 5, current_date + 9, 300, false);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 2, 'Accepted', 1, 3, 1703030400, 1703376000, 160, false);
+VALUES (nextval('sequence_reservation'), 2, 'Accepted', 1, 3, current_date + 13, current_date + 15, 120, false);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, 1703289600, 1703462400, 60, false);
+VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, current_date + 5, current_date + 5, 30, false);
 
 -- TODO: Insert images and connect them to accommodations
