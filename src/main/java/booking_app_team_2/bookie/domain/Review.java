@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -29,8 +31,8 @@ public abstract class Review {
 
     private String comment;
 
-    @Column(name = "date_of_creation", nullable = false)
-    private long dateOfCreation;
+    @Column(name = "timestamp_of_creation", nullable = false)
+    private LocalDateTime dateOfCreation;
 
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved = false;
