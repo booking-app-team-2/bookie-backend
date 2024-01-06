@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+
 import static java.time.temporal.ChronoUnit.*;
 
 @NoArgsConstructor
@@ -26,6 +29,19 @@ public class Period {
     @JsonIgnore
     public int getInDays() {
         return (int) DAYS.between(startDate, endDate);
+    }
+
+    public Period(String startDate,String endDate){
+        this.startDate=convertToLocalDate(startDate);
+        this.endDate=convertToLocalDate(endDate);
+    }
+
+    private LocalDate convertToLocalDate(String dateString) {
+        if(dateString==""){
+            return null;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(dateString, formatter);
     }
 
     public boolean overlaps(Period period) {

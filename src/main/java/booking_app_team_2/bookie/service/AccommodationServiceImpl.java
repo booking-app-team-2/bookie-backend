@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,20 +37,22 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public List<Accommodation> findSearched(String location,int numberOfGuests,long startDate,long endDate){
+    public List<Accommodation> findSearched(String location, int numberOfGuests, String startDate, String endDate){
         List<Accommodation> accommodations = accommodationRepository.findAll();
         List<Accommodation> newAccommodations= new ArrayList<>(Collections.emptyList());
+        Period period=new Period(startDate,endDate);
         for(Accommodation accommodation:accommodations){
             if((numberOfGuests>=accommodation.getMinimumGuests() && numberOfGuests<=accommodation.getMaximumGuests())||(numberOfGuests==0)){
                 //TODO:Add for location
                 for(AvailabilityPeriod availabilityPeriod:accommodation.getAvailabilityPeriods()){
-
-                    // TODO: Refactor this. A method for this already exists.
-
-//                    if((startDate>=availabilityPeriod.getPeriod().getStartDate() && endDate<=availabilityPeriod.getPeriod().getEndDate())||(startDate==0 && endDate==0)){
-//                        newAccommodations.add(accommodation);
-//                        break;
-//                    }
+                    if(period.getStartDate()==null && period.getEndDate()==null){
+                        newAccommodations.add(accommodation);
+                        break;
+                    }
+                    if(availabilityPeriod.getPeriod().overlaps(period)){
+                        newAccommodations.add(accommodation);
+                        break;
+                   }
                 }
             }
         }
@@ -75,21 +79,18 @@ public class AccommodationServiceImpl implements AccommodationService {
                 return null;
             }
             for(AvailabilityPeriod period:accommodation.getAvailabilityPeriods()){
-
-                // TODO: Refactor this.
-
-//                if(reservation.getPeriod().getStartDate()>=period.getPeriod().getStartDate() && reservation.getPeriod().getEndDate()<=period.getPeriod().getEndDate()){
-//                    boolean flag=true;
-//                    for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
-//                        if(afterPeriod.getId()==period.getId() && afterPeriod.getPeriod().getEndDate()==period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate()==period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted()==period.isDeleted()){
-//                            flag=false;
-//                            break;
-//                        }
-//                    }
-//                    if(flag){
-//                        return null;
-//                    }
-//                }
+                if(period.getPeriod().overlaps(reservation.getPeriod())){
+                    boolean flag=true;
+                    for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
+                        if(Objects.equals(afterPeriod.getId(), period.getId()) && afterPeriod.getPeriod().getEndDate()==period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate()==period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted()==period.isDeleted()){
+                            flag=false;
+                            break;
+                        }
+                    }
+                    if(flag){
+                        return null;
+                   }
+                }
             }
         }
         accommodation.getAvailabilityPeriods().clear();
