@@ -41,14 +41,13 @@ public class AccommodationServiceImpl implements AccommodationService {
         List<Accommodation> accommodations = accommodationRepository.findAll();
         List<Accommodation> newAccommodations= new ArrayList<>(Collections.emptyList());
         Period period=new Period(startDate,endDate);
+        if(period.getStartDate()==null && period.getEndDate()==null){
+            return accommodations;
+        }
         for(Accommodation accommodation:accommodations){
             if((numberOfGuests>=accommodation.getMinimumGuests() && numberOfGuests<=accommodation.getMaximumGuests())||(numberOfGuests==0)){
                 //TODO:Add for location
                 for(AvailabilityPeriod availabilityPeriod:accommodation.getAvailabilityPeriods()){
-                    if(period.getStartDate()==null && period.getEndDate()==null){
-                        newAccommodations.add(accommodation);
-                        break;
-                    }
                     if(availabilityPeriod.getPeriod().overlaps(period)){
                         newAccommodations.add(accommodation);
                         break;
