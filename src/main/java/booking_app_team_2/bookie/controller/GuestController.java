@@ -2,7 +2,6 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
-import booking_app_team_2.bookie.repository.GuestRepository;
 import booking_app_team_2.bookie.service.GuestService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;

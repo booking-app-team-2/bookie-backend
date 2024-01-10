@@ -16,7 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,19 +37,20 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public List<Accommodation> findSearched(String location, int numberOfGuests, long startDate, long endDate) {
+    public List<Accommodation> findSearched(String location, int numberOfGuests, String startDate, String endDate){
         List<Accommodation> accommodations = accommodationRepository.findAll();
-        List<Accommodation> newAccommodations = new ArrayList<>(Collections.emptyList());
-        for (Accommodation accommodation : accommodations) {
-            if ((numberOfGuests >= accommodation.getMinimumGuests() && numberOfGuests <= accommodation.getMaximumGuests()) || (numberOfGuests == 0)) {
-                //TODO:Add for location
-                for (AvailabilityPeriod availabilityPeriod : accommodation.getAvailabilityPeriods()) {
-                    if ((startDate >= availabilityPeriod.getPeriod().getStartDate() && endDate <= availabilityPeriod.getPeriod().getEndDate()) || (startDate == 0 && endDate == 0)) {
-                        if (accommodation.getLocation().isInProximity(location) || Objects.equals(location, "")) {
-                            newAccommodations.add(accommodation);
-                            break;
-                        }
-                    }
+        List<Accommodation> newAccommodations= new ArrayList<>(Collections.emptyList());
+        Period period=new Period(startDate,endDate);
+        if(period.getStartDate()==null && period.getEndDate()==null){
+            return accommodations;
+        }
+        for(Accommodation accommodation:accommodations){
+            if((numberOfGuests>=accommodation.getMinimumGuests() && numberOfGuests<=accommodation.getMaximumGuests())||(numberOfGuests==0)){
+                for(AvailabilityPeriod availabilityPeriod:accommodation.getAvailabilityPeriods()){
+                    if(availabilityPeriod.getPeriod().overlaps(period)){
+                        newAccommodations.add(accommodation);
+                        break;
+                   }
                 }
             }
         }
@@ -73,18 +78,18 @@ public class AccommodationServiceImpl implements AccommodationService {
             if (accommodationBasicInfoDTO.getMinimumGuests() > reservation.getNumberOfGuests() || accommodationBasicInfoDTO.getMaximumGuests() < reservation.getNumberOfGuests()) {
                 return null;
             }
-            for (AvailabilityPeriod period : accommodation.getAvailabilityPeriods()) {
-                if (reservation.getPeriod().getStartDate() >= period.getPeriod().getStartDate() && reservation.getPeriod().getEndDate() <= period.getPeriod().getEndDate()) {
-                    boolean flag = true;
-                    for (AvailabilityPeriod afterPeriod : accommodationBasicInfoDTO.getAvailabilityPeriods()) {
-                        if (afterPeriod.getId() == period.getId() && afterPeriod.getPeriod().getEndDate() == period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate() == period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted() == period.isDeleted()) {
-                            flag = false;
+            for(AvailabilityPeriod period:accommodation.getAvailabilityPeriods()){
+                if(period.getPeriod().overlaps(reservation.getPeriod())){
+                    boolean flag=true;
+                    for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
+                        if(Objects.equals(afterPeriod.getId(), period.getId()) && afterPeriod.getPeriod().getEndDate()==period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate()==period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted()==period.isDeleted()){
+                            flag=false;
                             break;
                         }
                     }
                     if (flag) {
                         return null;
-                    }
+                   }
                 }
             }
         }
