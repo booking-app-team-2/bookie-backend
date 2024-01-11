@@ -99,7 +99,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (!user.getRole().equals(UserRole.Guest))
             throw new HttpTransferException(HttpStatus.BAD_REQUEST, "Only guests can create reservations.");
 
-        Period period = reservationDTO.getPeriod();
+        Period period = new Period(reservationDTO.getPeriodDTO());
         Optional<AvailabilityPeriod> availabilityPeriodOptional = accommodation
                 .getAvailabilityPeriods()
                 .stream()

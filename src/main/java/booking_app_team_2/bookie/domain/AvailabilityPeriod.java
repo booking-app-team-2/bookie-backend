@@ -23,7 +23,11 @@ import java.math.BigDecimal;
 @Table(name = "availability_period")
 public class AvailabilityPeriod {
     @Id
-    @SequenceGenerator(name = "availability_period_seq", sequenceName = "sequence_availability_period", allocationSize = 1)
+    @SequenceGenerator(
+            name = "availability_period_seq",
+            sequenceName = "sequence_availability_period",
+            allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "availability_period_seq")
     @Column(unique = true, nullable = false)
     private Long id = null;
