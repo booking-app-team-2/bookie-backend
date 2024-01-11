@@ -36,6 +36,9 @@ public class AccommodationServiceImpl implements AccommodationService {
     public List<Accommodation> findSearched(String location, int numberOfGuests, String startDate, String endDate){
         List<Accommodation> accommodations = accommodationRepository.findAll();
         List<Accommodation> newAccommodations= new ArrayList<>(Collections.emptyList());
+
+        // TODO: Update this to use new constructor
+
         Period period = new Period(startDate,endDate);
         if(period.getStartDate()==null && period.getEndDate()==null){
             return accommodations;
