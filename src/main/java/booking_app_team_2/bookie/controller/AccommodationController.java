@@ -7,19 +7,24 @@ import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.OwnerDTO;
 import booking_app_team_2.bookie.service.AccommodationService;
+import booking_app_team_2.bookie.service.ImageService;
 import booking_app_team_2.bookie.service.OwnerService;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Setter
@@ -29,11 +34,13 @@ import java.util.stream.Collectors;
 public class AccommodationController {
     private AccommodationService accommodationService;
     private OwnerService ownerService;
+    private ImageService imageService;
 
     @Autowired
-    public AccommodationController(AccommodationService accommodationService,OwnerService ownerService) {
+    public AccommodationController(AccommodationService accommodationService,OwnerService ownerService,ImageService imageService) {
         this.accommodationService = accommodationService;
         this.ownerService=ownerService;
+        this.imageService=imageService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -156,11 +163,29 @@ public class AccommodationController {
         }
         return new ResponseEntity<>(accommodationBasicInfoDTO,HttpStatus.OK);
     }
-    @GetMapping(value = "/{accommodationId}/images")
-    public ResponseEntity<Collection<Image>> getImages(@PathVariable Long accommodationId) {
-        return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
+    @GetMapping(value = "/image/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getAccommodationImages(@PathVariable Long imageId) throws IOException {
+        byte[] image=imageService.getImageBytes(imageId);
+        if(image==null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(image,HttpStatus.OK);
     }
-
+    @PostMapping(value = "/{accommodationId}/image")
+    public ResponseEntity<?> handleFileUpload(@RequestParam("image") MultipartFile file,
+                                              @PathVariable Long accommodationId) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Please select a file to upload");
+        }
+        try {
+            byte[] bytes = file.getBytes();
+            imageService.postAccommodationImage(bytes,accommodationId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            System.out.println("NE RADI OVDE");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping(value = "/{accommodationId}/amenities")
     public ResponseEntity<Collection<Amenities>> getAmenities(@PathVariable Long accommodationId) {
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);

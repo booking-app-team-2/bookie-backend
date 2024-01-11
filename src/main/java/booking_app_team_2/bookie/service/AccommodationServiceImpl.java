@@ -10,13 +10,15 @@ import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -138,7 +140,6 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodation.setApproved(accommodationApprovalDTO.isApproved());
         accommodationRepository.save(accommodation);
     }
-
     @Override
     public void remove(Long id) {
         accommodationRepository.deleteById(id);
