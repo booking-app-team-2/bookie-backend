@@ -34,13 +34,11 @@ import java.util.stream.Collectors;
 public class AccommodationController {
     private AccommodationService accommodationService;
     private OwnerService ownerService;
-    private ImageService imageService;
 
     @Autowired
-    public AccommodationController(AccommodationService accommodationService,OwnerService ownerService,ImageService imageService) {
+    public AccommodationController(AccommodationService accommodationService,OwnerService ownerService) {
         this.accommodationService = accommodationService;
         this.ownerService=ownerService;
-        this.imageService=imageService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -150,6 +148,7 @@ public class AccommodationController {
     }
 
     @PutMapping(value="/{accommodationId}/basic-info",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
     public ResponseEntity<AccommodationBasicInfoDTO> updateAccommodationBasicInfo(@PathVariable Long accommodationId,
                                                                                   @RequestBody AccommodationBasicInfoDTO accommodationBasicInfoDTO){
 

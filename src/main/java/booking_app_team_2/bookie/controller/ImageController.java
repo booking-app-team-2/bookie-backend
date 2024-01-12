@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,7 @@ public class ImageController {
     }
 
     @DeleteMapping(value="/{imageId}")
+    @PreAuthorize("hasAuthority('Owner')")
     public ResponseEntity<String> deleteImage(@PathVariable Long imageId){
         String result= imageService.deleteImage(imageId);
         if(result == null){
@@ -41,6 +43,7 @@ public class ImageController {
         return new ResponseEntity<>(image,HttpStatus.OK);
     }
     @PostMapping(value = "/{accommodationId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file,
                                               @PathVariable Long accommodationId) {
         if (file.isEmpty()) {
