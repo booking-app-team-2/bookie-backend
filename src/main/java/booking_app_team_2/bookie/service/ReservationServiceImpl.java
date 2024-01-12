@@ -124,16 +124,16 @@ public class ReservationServiceImpl implements ReservationService {
             if (availabilityPeriod.isPeriodEqualTo(period))
                 accommodation.removeAvailabilityPeriod(availabilityPeriod);
             else if (availabilityPeriod.periodOverlapsBottomOnly(period))
-                availabilityPeriod.getPeriod().setEndDate(period.getStartDate());
+                availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
             else if (availabilityPeriod.periodOverlapsTopOnly(period))
-                availabilityPeriod.getPeriod().setStartDate(period.getEndDate());
+                availabilityPeriod.getPeriod().setStartDate(period.getEndDate().minusDays(1));
             else if (availabilityPeriod.periodExclusivelyOverlaps(period)) {
                 LocalDate availabilityPeriodEndDate = availabilityPeriod.getPeriod().getEndDate();
-                availabilityPeriod.getPeriod().setEndDate(period.getStartDate());
+                availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
                  accommodation.addAvailabilityPeriod(
                          new AvailabilityPeriod(
                                  availabilityPeriod.getPrice(),
-                                 new Period(period.getEndDate(), availabilityPeriodEndDate)
+                                 new Period(period.getEndDate().plusDays(1), availabilityPeriodEndDate)
                          )
                  );
             }

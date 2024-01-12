@@ -55,7 +55,7 @@ public class Period {
 
     @JsonIgnore
     public int getInDays() {
-        return (int) DAYS.between(startDate, endDate);
+        return (int) DAYS.between(startDate, endDate) + 1;
     }
 
     public boolean overlaps(Period period) {
