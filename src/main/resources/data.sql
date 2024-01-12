@@ -169,13 +169,13 @@ INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reserve
 VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, current_date + 5, current_date + 5, 30, false);
 
 INSERT INTO image(id,name,path,type,is_deleted)
-VALUES (nextval('sequence_image'),'slika11','/images/slika11.jpg','jpg',false);
+VALUES (nextval('sequence_image'),'slika11','src/main/resources/images','jpg',false);
 
 INSERT INTO accommodation_images(accommodation_id, image_id)
 VALUES (1,1);
 
 INSERT INTO image(id,name,path,type,is_deleted)
-VALUES (nextval('sequence_image'),'slika12','/images/slika12.jpg','jpg',false);
+VALUES (nextval('sequence_image'),'slika12','src/main/resources/images','jpg',false);
 
 INSERT INTO accommodation_images(accommodation_id, image_id)
 VALUES (1,2);

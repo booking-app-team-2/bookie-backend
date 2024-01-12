@@ -71,9 +71,6 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodation.setName(accommodationBasicInfoDTO.getName());
         accommodation.setDescription(accommodationBasicInfoDTO.getDescription());
         accommodation.setLocation(accommodationBasicInfoDTO.getLocation());
-        accommodation.getImages().clear();
-        Set<Image> images=accommodationBasicInfoDTO.getImages();
-        accommodation.getImages().addAll(images);
         accommodation.setAmenities(accommodationBasicInfoDTO.getAmenities());
         for(Reservation reservation:reservationRepository.findReservationsByAccommodation_Id(accommodation.getId())){
             if(accommodationBasicInfoDTO.getMinimumGuests()>reservation.getNumberOfGuests() || accommodationBasicInfoDTO.getMaximumGuests()<reservation.getNumberOfGuests()){

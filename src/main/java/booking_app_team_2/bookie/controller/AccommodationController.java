@@ -163,29 +163,7 @@ public class AccommodationController {
         }
         return new ResponseEntity<>(accommodationBasicInfoDTO,HttpStatus.OK);
     }
-    @GetMapping(value = "/image/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> getAccommodationImages(@PathVariable Long imageId) throws IOException {
-        byte[] image=imageService.getImageBytes(imageId);
-        if(image==null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(image,HttpStatus.OK);
-    }
-    @PostMapping(value = "/{accommodationId}/image")
-    public ResponseEntity<?> handleFileUpload(@RequestParam("image") MultipartFile file,
-                                              @PathVariable Long accommodationId) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("Please select a file to upload");
-        }
-        try {
-            byte[] bytes = file.getBytes();
-            imageService.postAccommodationImage(bytes,accommodationId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IOException e) {
-            System.out.println("NE RADI OVDE");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+
     @GetMapping(value = "/{accommodationId}/amenities")
     public ResponseEntity<Collection<Amenities>> getAmenities(@PathVariable Long accommodationId) {
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
@@ -244,4 +222,6 @@ public class AccommodationController {
     public ResponseEntity<Void> deleteAccommodation(@PathVariable("id") Long id) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }
