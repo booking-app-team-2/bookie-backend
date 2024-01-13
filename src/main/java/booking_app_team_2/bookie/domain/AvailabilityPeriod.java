@@ -1,5 +1,7 @@
 package booking_app_team_2.bookie.domain;
 
+import booking_app_team_2.bookie.dto.AvailabilityPeriodDTO;
+import booking_app_team_2.bookie.dto.PeriodDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,6 +11,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @NoArgsConstructor
@@ -45,6 +49,11 @@ public class AvailabilityPeriod {
     public AvailabilityPeriod(BigDecimal price, Period period) {
         this.price = price;
         this.period = period;
+    }
+
+    public AvailabilityPeriod(AvailabilityPeriodDTO availabilityPeriodDTO){
+        this.price=availabilityPeriodDTO.getPrice();
+        this.period=new Period(availabilityPeriodDTO.getPeriod());
     }
 
     @JsonIgnore

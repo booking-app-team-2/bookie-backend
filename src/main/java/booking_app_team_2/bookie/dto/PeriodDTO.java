@@ -2,6 +2,7 @@ package booking_app_team_2.bookie.dto;
 
 import booking_app_team_2.bookie.domain.Period;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class PeriodDTO {
     long startTimestamp;

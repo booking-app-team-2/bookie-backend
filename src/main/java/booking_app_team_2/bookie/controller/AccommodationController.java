@@ -115,8 +115,8 @@ public class AccommodationController {
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(value = "location",required = false) String location,
             @RequestParam(value = "numberOfGuests",required = false) Integer numberOfGuests,
-            @RequestParam(value = "startDate",required = false) String startDate,
-            @RequestParam(value = "endDate",required = false) String endDate
+            @RequestParam(value = "startDate",required = false) Long startDate,
+            @RequestParam(value = "endDate",required = false) Long endDate
             ){
         Collection<Accommodation> accommodations;
         if(location==null && numberOfGuests==null && startDate==null && endDate==null){
