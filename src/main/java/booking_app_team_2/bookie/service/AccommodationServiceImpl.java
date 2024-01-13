@@ -1,9 +1,6 @@
 package booking_app_team_2.bookie.service;
 
-import booking_app_team_2.bookie.domain.Accommodation;
-import booking_app_team_2.bookie.domain.AvailabilityPeriod;
-import booking_app_team_2.bookie.domain.Image;
-import booking_app_team_2.bookie.domain.Reservation;
+import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
@@ -16,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
