@@ -106,21 +106,27 @@ public class ReservationServiceImpl implements ReservationService {
         return Optional.empty();
     }
 
-    private void rearrangeAvailabilityPeriod(Accommodation accommodation, Period period,
+    private void rearrangeAvailabilityPeriod(Accommodation accommodation, Period reservationPeriod,
                                              AvailabilityPeriod reservedAvailabilityPeriod) {
-        if (reservedAvailabilityPeriod.isPeriodEqualTo(period))
+        if (reservedAvailabilityPeriod.isPeriodEqualTo(reservationPeriod))
             accommodation.removeAvailabilityPeriod(reservedAvailabilityPeriod);
-        else if (reservedAvailabilityPeriod.periodOverlapsBottomOnly(period))
-            reservedAvailabilityPeriod.getPeriod().setEndDate(period.getStartDate());
-        else if (reservedAvailabilityPeriod.periodOverlapsTopOnly(period))
-            reservedAvailabilityPeriod.getPeriod().setStartDate(period.getEndDate());
-        else if (reservedAvailabilityPeriod.periodExclusivelyOverlaps(period)) {
+        else if (reservedAvailabilityPeriod.periodOverlapsBottomOnly(reservationPeriod))
+            reservedAvailabilityPeriod
+                    .getPeriod()
+                    .setEndDate(reservationPeriod.getStartDate().minusDays(1));
+        else if (reservedAvailabilityPeriod.periodOverlapsTopOnly(reservationPeriod))
+            reservedAvailabilityPeriod
+                    .getPeriod()
+                    .setStartDate(reservationPeriod.getEndDate().plusDays(1));
+        else if (reservedAvailabilityPeriod.periodExclusivelyOverlaps(reservationPeriod)) {
             LocalDate availabilityPeriodEndDate = reservedAvailabilityPeriod.getPeriod().getEndDate();
-            reservedAvailabilityPeriod.getPeriod().setEndDate(period.getStartDate());
+            reservedAvailabilityPeriod
+                    .getPeriod()
+                    .setEndDate(reservationPeriod.getStartDate().minusDays(1));
             accommodation.addAvailabilityPeriod(
                     new AvailabilityPeriod(
                             reservedAvailabilityPeriod.getPrice(),
-                            new Period(period.getEndDate(), availabilityPeriodEndDate)
+                            new Period(reservationPeriod.getEndDate().plusDays(1), availabilityPeriodEndDate)
                     )
             );
         }

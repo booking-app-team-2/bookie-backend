@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 import static java.time.temporal.ChronoUnit.*;
-import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -69,6 +68,6 @@ public class Period {
     }
 
     public boolean hasBegun() {
-        return startDate.isBefore(LocalDate.now());
+        return startDate.isBefore(LocalDate.now()) || startDate.isEqual(LocalDate.now());
     }
 }
