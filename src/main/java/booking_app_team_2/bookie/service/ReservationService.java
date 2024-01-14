@@ -6,6 +6,7 @@ import booking_app_team_2.bookie.domain.Reservation;
 import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.dto.ReservationGuestDTO;
+import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.EnumSet;
@@ -21,4 +22,6 @@ public interface ReservationService extends GenericService<Reservation> {
                                       List<ReservationStatus> statuses, HttpServletRequest httpServletRequest);
 
     void createReservation(ReservationDTO reservationDTO);
+
+    void updateStatus(Long id, ReservationStatusDTO reservationStatusDTO, HttpServletRequest httpServletRequest);
 }

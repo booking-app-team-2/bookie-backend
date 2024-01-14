@@ -168,4 +168,19 @@ INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reserve
                          is_deleted)
 VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, current_date + 5, current_date + 5, 30, false);
 
+INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
+                         is_deleted)
+VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', current_date + 7),
+        date_part('EPOCH', current_date + 8), 60, false);
+
+INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
+                         is_deleted)
+VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', current_date + 6),
+        date_part('EPOCH', current_date + 8), 90, false);
+
+INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
+                         is_deleted)
+VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, date_part('EPOCH', current_date),
+        date_part('EPOCH', current_date + 4), 150, false);
+
 -- TODO: Insert images and connect them to accommodations
