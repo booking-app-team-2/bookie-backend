@@ -51,7 +51,7 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public void remove(Long id) {
-
+         this.imageRepository.deleteById(id);
     }
 
     @Override
@@ -92,14 +92,20 @@ public class ImageServiceImpl implements ImageService{
     }
 
     @Override
-    public String deleteImage(Long imageId){
+    public String deleteImage(Long imageId) throws IOException {
         Optional<Image> optionalImage=this.findOne(imageId);
         if(optionalImage.isEmpty()){
             return null;
         }
         Image image=optionalImage.get();
-        image.setDeleted(true);
-        this.save(image);
-        return "deleted";
+        accommodationService.removeImage(image);
+        this.remove(imageId);
+        Path imagePath=Path.of(image.getPath(),image.getName()+"."+image.getType());
+        if (Files.exists(imagePath)) {
+            Files.delete(imagePath);
+            return "Success";
+        } else {
+            return "Failed";
+        }
     }
 }
