@@ -6,6 +6,7 @@ import booking_app_team_2.bookie.domain.Reservation;
 import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.ReservationDTO;
+import booking_app_team_2.bookie.dto.ReservationGuestDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import booking_app_team_2.bookie.util.TokenUtils;
@@ -71,7 +72,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> findAll(String name, Long startTimestamp, Long endTimestamp,
+    public List<ReservationGuestDTO> findAll(String name, Long startTimestamp, Long endTimestamp,
                                      List<ReservationStatus> statuses, HttpServletRequest httpServletRequest) {
         Guest reservee = (Guest) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
                 .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
@@ -94,7 +95,10 @@ public class ReservationServiceImpl implements ReservationService {
                                 .and(hasPeriodBetween(period))
                                 .and(hasStatusIn(statuses))
                                 .and(hasReserveeEqualTo(reservee))
-                );
+                )
+                .stream()
+                .map(ReservationGuestDTO::new)
+                .toList();
     }
 
     @Override

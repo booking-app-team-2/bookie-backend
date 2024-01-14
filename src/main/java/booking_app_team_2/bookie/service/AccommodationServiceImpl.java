@@ -38,7 +38,7 @@ public class AccommodationServiceImpl implements AccommodationService {
     public List<Accommodation> findSearched(String location, int numberOfGuests, Long startDate, Long endDate) {
         List<Accommodation> accommodations = accommodationRepository.findAll();
         List<Accommodation> newAccommodations = new ArrayList<>(Collections.emptyList());
-        Period period = new Period(new PeriodDTO(startDate, endDate));
+        Period period = new Period(startDate, endDate);
         if (period.getStartDate() == null && period.getEndDate() == null) {
             return accommodations;
         }
@@ -77,7 +77,7 @@ public class AccommodationServiceImpl implements AccommodationService {
                 if (period.getPeriod().overlaps(reservation.getPeriod())) {
                     boolean flag = true;
                     for (AvailabilityPeriodDTO afterPeriod : accommodationBasicInfoDTO.getAvailabilityPeriods()) {
-                        Period newPeriod = new Period(new PeriodDTO(afterPeriod.getPeriod().getStartTimestamp(), afterPeriod.getPeriod().getEndTimestamp()));
+                        Period newPeriod = new Period(afterPeriod.getPeriod().getStartTimestamp(), afterPeriod.getPeriod().getEndTimestamp());
                         if (afterPeriod.getId().equals(period.getId()) && newPeriod.getEndDate().toString() == period.getPeriod().getEndDate().toString() && newPeriod.getStartDate().toString() == period.getPeriod().getStartDate().toString() && afterPeriod.getPrice().setScale(2).equals(period.getPrice())) {
                             flag = false;
                             break;

@@ -1,8 +1,8 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Guest;
-import booking_app_team_2.bookie.domain.Reservation;
 import booking_app_team_2.bookie.domain.ReservationStatus;
+import booking_app_team_2.bookie.dto.ReservationGuestDTO;
 import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.service.ReservationService;
@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -31,20 +30,20 @@ public class ReservationController {
 
     @GetMapping(value = "/reservee")
     @PreAuthorize("hasAuthority('Guest')")
-    public ResponseEntity<Collection<ReservationDTO>> searchAndFilterReservationsGuest (
+    public ResponseEntity<Collection<ReservationGuestDTO>> searchAndFilterReservationsGuest (
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "start_timestamp", required = false) Long startTimestamp,
             @RequestParam(value = "end_timestamp", required = false) Long endTimestamp,
-            @RequestParam
-                    (
-                            value = "status",
-                            required = false,
-                            defaultValue = "Waiting, Accepted, Declined, Cancelled"
-                    ) List<ReservationStatus> statuses,
+            @RequestParam(
+                    value = "status",
+                    required = false,
+                    defaultValue = "Waiting, Accepted, Declined, Cancelled"
+            ) List<ReservationStatus> statuses,
             HttpServletRequest httpServletRequest) {
-        List<Reservation> reservations = reservationService.findAll(name, startTimestamp, endTimestamp, statuses, httpServletRequest);
-
-        return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
+        return new ResponseEntity<>(
+                reservationService.findAll(name, startTimestamp, endTimestamp, statuses, httpServletRequest),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping(value = "/cancelled")
