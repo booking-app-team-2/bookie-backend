@@ -15,11 +15,25 @@ public class ReservationSpecification {
         };
     }
 
-    // TODO: Implement
-
-    public static Specification<Reservation> hasPeriodBetween(Period period) {
+    public static Specification<Reservation> hasPeriodBetween(Period searchPeriod) {
         return (root, query, criteriaBuilder) -> {
-            return null;
+            Join<Reservation, Period> period = root.join("period");
+
+            return criteriaBuilder
+                    .and(
+                            criteriaBuilder
+                                    .between(
+                                            period.get("startDate"),
+                                            searchPeriod.getStartDate(),
+                                            searchPeriod.getEndDate()
+                                    ),
+                            criteriaBuilder
+                                    .between(
+                                            period.get("endDate"),
+                                            searchPeriod.getStartDate(),
+                                            searchPeriod.getEndDate()
+                                    )
+                    );
         };
     }
 

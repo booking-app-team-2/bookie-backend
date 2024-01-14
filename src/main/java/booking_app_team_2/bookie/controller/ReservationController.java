@@ -30,6 +30,7 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/reservee")
+    @PreAuthorize("hasAuthority('Guest')")
     public ResponseEntity<Collection<ReservationDTO>> searchAndFilterReservationsGuest (
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "start_timestamp", required = false) Long startTimestamp,

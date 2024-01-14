@@ -59,7 +59,8 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> findAllByReserveeAndStatusIn(Guest reservee, EnumSet<ReservationStatus> reservationStatuses) {
+    public List<Reservation> findAllByReserveeAndStatusIn(Guest reservee,
+                                                          EnumSet<ReservationStatus> reservationStatuses) {
         return reservationRepository.findAllByReserveeAndStatusIn(reservee, reservationStatuses);
     }
 
@@ -85,10 +86,15 @@ public class ReservationServiceImpl implements ReservationService {
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "A non-verified guest cannot search and filter reservations.");
 
+        Period period = new Period(startTimestamp, endTimestamp);
+
         return reservationRepository
-                .findAll(hasAccommodationNameLike(name)
-                        .and(hasStatusIn(statuses))
-                        .and(hasReserveeEqualTo(reservee)));
+                .findAll(
+                        hasAccommodationNameLike(name)
+                                .and(hasPeriodBetween(period))
+                                .and(hasStatusIn(statuses))
+                                .and(hasReserveeEqualTo(reservee))
+                );
     }
 
     @Override

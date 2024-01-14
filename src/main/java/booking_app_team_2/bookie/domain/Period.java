@@ -12,8 +12,6 @@ import lombok.Setter;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.*;
 
@@ -33,24 +31,14 @@ public class Period {
         return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
+    public Period(long startTimestamp, long endTimestamp) {
+        startDate = convertTimestampToLocalDate(startTimestamp);
+        endDate = convertTimestampToLocalDate(endTimestamp);
+    }
+
     public Period(PeriodDTO periodDTO) {
         startDate = convertTimestampToLocalDate(periodDTO.getStartTimestamp());
         endDate = convertTimestampToLocalDate(periodDTO.getEndTimestamp());
-    }
-
-    // TODO: Remove this once the refactor is complete
-    public Period(String startDate,String endDate){
-        this.startDate=convertToLocalDate(startDate);
-        this.endDate=convertToLocalDate(endDate);
-    }
-
-    // TODO: Remove this once the refactor is complete
-    private LocalDate convertToLocalDate(String dateString) {
-        if(dateString==""){
-            return null;
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(dateString, formatter);
     }
 
     @JsonIgnore
