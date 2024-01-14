@@ -14,7 +14,7 @@ public interface AccommodationService extends GenericService<Accommodation> {
     // TODO: Declare accommodation-specific service methods
     List<AccommodationDTO> getAll();
 
-    List<Accommodation> findSearched(String location, int numberOfGuests, String startDate, String endDate);
+    List<Accommodation> findSearched(String location, int numberOfGuests, Long startDate, Long endDate);
 
     AccommodationBasicInfoDTO updateAccommodationBasicInfo(Accommodation accommodation, AccommodationBasicInfoDTO accommodationBasicInfoDTO);
 
