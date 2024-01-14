@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -59,8 +60,9 @@ public class Reservation {
     }
 
     public boolean isCancellable() {
-        return status == ReservationStatus.Accepted
-                && (new Date().getTime() / 1000) <
-                period.getStartDate() - (long) accommodation.getReservationCancellationDeadline() * 24 * 60 * 60;
+        return status == ReservationStatus.Accepted &&
+                LocalDate
+                        .now()
+                        .isBefore(period.getStartDate().minusDays(accommodation.getReservationCancellationDeadline()));
     }
 }
