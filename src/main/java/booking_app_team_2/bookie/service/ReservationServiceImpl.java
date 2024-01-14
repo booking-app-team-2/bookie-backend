@@ -189,6 +189,41 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public void cancelReservation(Long id, HttpServletRequest httpServletRequest) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
+
+        Guest reservee = (Guest) userService
+                .findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent guest cannot cancel a reservation."));
+
+        if (reservee.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST, "A blocked guest cannot cancel a reservation.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(reservee);
+        if (accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified guest cannot cancel a reservation.");
+
+        if (!reservation.getReservee().equals(reservee))
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Only the reservee that made the reservation can cancel it.");
+
+        if (!reservation.isCancellable())
+            throw new HttpTransferException(
+                    HttpStatus.BAD_REQUEST,
+                    "Only an accepted reservation that has not yet reached the cancellation deadline can be cancelled."
+            );
+
+        // TODO: Implement making the accommodation available again in the period taken by the cancelled reservation
+
+        reservation.setStatus(ReservationStatus.Cancelled);
+        reservationRepository.save(reservation);
+    }
+
+    @Override
     public void remove(Long id) {
 
     }
