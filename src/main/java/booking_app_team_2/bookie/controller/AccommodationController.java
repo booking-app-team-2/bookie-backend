@@ -182,11 +182,6 @@ public class AccommodationController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{accommodationId}/reservation-auto-accept")
-    public ResponseEntity<Boolean> isReservationAutoAccepted(@PathVariable Long accommodationId) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Accommodation> createAccommodation(@RequestBody Accommodation accommodation) {
         Accommodation savedAccommodation = new Accommodation() {};
@@ -208,7 +203,7 @@ public class AccommodationController {
     @PutMapping(value = "/{id}/is-reservation-auto-accepted", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Owner')")
-    public ResponseEntity<AccommodationAutoAcceptDTO> updateAccommodationAutoAccept(
+    public ResponseEntity<AccommodationAutoAcceptDTO> updateIsReservationAutoAccepted(
             @PathVariable Long id,
             @RequestBody AccommodationAutoAcceptDTO accommodationAutoAcceptDTO,
             HttpServletRequest httpServletRequest
