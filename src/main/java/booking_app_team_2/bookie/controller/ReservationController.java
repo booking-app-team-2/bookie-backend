@@ -6,6 +6,7 @@ import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.service.ReservationService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping
+    @GetMapping(value = "/reservee")
     public ResponseEntity<Collection<ReservationDTO>> searchAndFilterReservationsGuest (
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "start_timestamp", required = false) Long startTimestamp,
@@ -38,8 +39,9 @@ public class ReservationController {
                             value = "status",
                             required = false,
                             defaultValue = "Waiting, Accepted, Declined, Cancelled"
-                    ) List<ReservationStatus> statuses) {
-        List<Reservation> reservations = reservationService.findAll(name, startTimestamp, endTimestamp, statuses);
+                    ) List<ReservationStatus> statuses,
+            HttpServletRequest httpServletRequest) {
+        List<Reservation> reservations = reservationService.findAll(name, startTimestamp, endTimestamp, statuses, httpServletRequest);
 
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
     }

@@ -8,6 +8,8 @@ import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.ReservationRepository;
+import booking_app_team_2.bookie.util.TokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,15 +33,19 @@ public class ReservationServiceImpl implements ReservationService {
     private UserService userService;
     private AccountVerificatorService accountVerificatorService;
 
+    private final TokenUtils tokenUtils;
+
     @Autowired
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                   AccommodationService accommodationService,
                                   UserService userService,
-                                  AccountVerificatorService accountVerificatorService) {
+                                  AccountVerificatorService accountVerificatorService,
+                                  TokenUtils tokenUtils) {
         this.reservationRepository = reservationRepository;
         this.accommodationService = accommodationService;
         this.userService = userService;
         this.accountVerificatorService = accountVerificatorService;
+        this.tokenUtils = tokenUtils;
     }
 
     @Override
@@ -64,8 +70,25 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> findAll(String name, Long startTimestamp, Long endTimestamp, List<ReservationStatus> statuses) {
-        return reservationRepository.findAll(hasAccommodationNameLike(name).and(hasStatusIn(statuses)));
+    public List<Reservation> findAll(String name, Long startTimestamp, Long endTimestamp,
+                                     List<ReservationStatus> statuses, HttpServletRequest httpServletRequest) {
+        Guest reservee = (Guest) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent guest cannot search and filter reservations."));
+
+        if (reservee.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A blocked guest cannot search and filter reservations.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(reservee);
+        if(accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified guest cannot search and filter reservations.");
+
+        return reservationRepository
+                .findAll(hasAccommodationNameLike(name)
+                        .and(hasStatusIn(statuses))
+                        .and(hasReserveeEqualTo(reservee)));
     }
 
     @Override
