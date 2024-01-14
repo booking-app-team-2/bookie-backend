@@ -11,10 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -135,17 +132,18 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodation.setApproved(accommodationApprovalDTO.isApproved());
         accommodationRepository.save(accommodation);
     }
+
     @Override
     public void remove(Long id) {
         accommodationRepository.deleteById(id);
     }
 
     @Override
-    public void removeImage(Image image){
-        Collection<Accommodation> accommodations=accommodationRepository.findAll();
-        for(Accommodation accommodation:accommodations){
-            if(accommodation.getImages().remove(image)){
-             accommodationRepository.save(accommodation);
+    public void removeImage(Image image) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAll();
+        for (Accommodation accommodation : accommodations) {
+            if (accommodation.getImages().remove(image)) {
+                accommodationRepository.save(accommodation);
             }
         }
     }

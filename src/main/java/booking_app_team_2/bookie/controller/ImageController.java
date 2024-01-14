@@ -25,6 +25,7 @@ public class ImageController {
     }
 
     @DeleteMapping(value="/{imageId}")
+    @PreAuthorize("hasAuthority('Owner')")
     public ResponseEntity<String> deleteImage(@PathVariable Long imageId) throws IOException {
         String result= imageService.deleteImage(imageId);
         if(result == null){
