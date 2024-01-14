@@ -56,4 +56,8 @@ public class Reservation {
         this.period = period;
         this.price = price;
     }
+
+    public boolean hasBegun() {
+        return period.hasBegun();
+    }
 }

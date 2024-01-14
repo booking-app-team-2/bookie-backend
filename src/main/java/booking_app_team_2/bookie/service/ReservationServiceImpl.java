@@ -207,8 +207,8 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
 
         Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
-                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
-                        "A non-existing owner cannot accept reservations."));
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot accept reservations."));
 
         if (owner.isBlocked())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
@@ -227,7 +227,7 @@ public class ReservationServiceImpl implements ReservationService {
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already been accepted, declined or cancelled");
 
-        if (reservation.getPeriod().getStartDate().isBefore(LocalDate.now()))
+        if (reservation.hasBegun())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already begun and cannot be accepted.");
 
@@ -258,8 +258,8 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
 
         Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
-                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
-                        "A non-existing owner cannot decline reservations."));
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot decline reservations."));
 
         if (owner.isBlocked())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
@@ -278,7 +278,7 @@ public class ReservationServiceImpl implements ReservationService {
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already been accepted, denied or cancelled");
 
-        if (reservation.getPeriod().getStartDate().isBefore(LocalDate.now()))
+        if (reservation.hasBegun())
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "Reservation has already begun and cannot be declined.");
 
