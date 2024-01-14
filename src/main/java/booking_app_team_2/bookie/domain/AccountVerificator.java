@@ -1,5 +1,6 @@
 package booking_app_team_2.bookie.domain;
 
+import booking_app_team_2.bookie.dto.AccountVerificatorDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,9 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @NoArgsConstructor
 @Getter
@@ -21,7 +24,11 @@ import java.time.LocalDateTime;
 @Table(name = "account_verificator")
 public class AccountVerificator {
     @Id
-    @SequenceGenerator(name = "account_verificator_seq", sequenceName = "sequence_account_verificator", allocationSize = 1)
+    @SequenceGenerator(
+            name = "account_verificator_seq",
+            sequenceName = "sequence_account_verificator",
+            allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_verificator_seq")
     @Column(unique = true, nullable = false)
     private Long id = null;
@@ -38,4 +45,12 @@ public class AccountVerificator {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    public AccountVerificator(long timestampOfRegistration, User user) {
+        this.timestampOfRegistration = Instant
+                .ofEpochMilli(timestampOfRegistration)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        this.user = user;
+    }
 }
