@@ -1,12 +1,7 @@
 package booking_app_team_2.bookie.service;
 
-import booking_app_team_2.bookie.domain.Accommodation;
-import booking_app_team_2.bookie.domain.AvailabilityPeriod;
-import booking_app_team_2.bookie.domain.Image;
-import booking_app_team_2.bookie.domain.Reservation;
-import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
-import booking_app_team_2.bookie.dto.AccommodationDTO;
-import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
+import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.ReservationRepository;
@@ -16,11 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,20 +28,20 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public List<Accommodation> findSearched(String location, int numberOfGuests, String startDate, String endDate){
+    public List<Accommodation> findSearched(String location, int numberOfGuests, Long startDate, Long endDate) {
         List<Accommodation> accommodations = accommodationRepository.findAll();
-        List<Accommodation> newAccommodations= new ArrayList<>(Collections.emptyList());
-        Period period=new Period(startDate,endDate);
-        if(period.getStartDate()==null && period.getEndDate()==null){
+        List<Accommodation> newAccommodations = new ArrayList<>(Collections.emptyList());
+        Period period = new Period(new PeriodDTO(startDate, endDate));
+        if (period.getStartDate() == null && period.getEndDate() == null) {
             return accommodations;
         }
-        for(Accommodation accommodation:accommodations){
-            if((numberOfGuests>=accommodation.getMinimumGuests() && numberOfGuests<=accommodation.getMaximumGuests())||(numberOfGuests==0)){
-                for(AvailabilityPeriod availabilityPeriod:accommodation.getAvailabilityPeriods()){
-                    if(availabilityPeriod.getPeriod().overlaps(period)){
+        for (Accommodation accommodation : accommodations) {
+            if ((numberOfGuests >= accommodation.getMinimumGuests() && numberOfGuests <= accommodation.getMaximumGuests()) || (numberOfGuests == 0)) {
+                for (AvailabilityPeriod availabilityPeriod : accommodation.getAvailabilityPeriods()) {
+                    if (availabilityPeriod.getPeriod().overlaps(period)) {
                         newAccommodations.add(accommodation);
                         break;
-                   }
+                    }
                 }
             }
         }
@@ -70,31 +61,32 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodation.setName(accommodationBasicInfoDTO.getName());
         accommodation.setDescription(accommodationBasicInfoDTO.getDescription());
         accommodation.setLocation(accommodationBasicInfoDTO.getLocation());
-        accommodation.getImages().clear();
-        Set<Image> images = accommodationBasicInfoDTO.getImages();
-        accommodation.getImages().addAll(images);
         accommodation.setAmenities(accommodationBasicInfoDTO.getAmenities());
         for (Reservation reservation : reservationRepository.findReservationsByAccommodation_Id(accommodation.getId())) {
             if (accommodationBasicInfoDTO.getMinimumGuests() > reservation.getNumberOfGuests() || accommodationBasicInfoDTO.getMaximumGuests() < reservation.getNumberOfGuests()) {
                 return null;
             }
-            for(AvailabilityPeriod period:accommodation.getAvailabilityPeriods()){
-                if(period.getPeriod().overlaps(reservation.getPeriod())){
-                    boolean flag=true;
-                    for(AvailabilityPeriod afterPeriod:accommodationBasicInfoDTO.getAvailabilityPeriods()){
-                        if(Objects.equals(afterPeriod.getId(), period.getId()) && afterPeriod.getPeriod().getEndDate()==period.getPeriod().getEndDate() && afterPeriod.getPeriod().getStartDate()==period.getPeriod().getStartDate() && afterPeriod.getPrice().setScale(2).equals(period.getPrice()) && afterPeriod.isDeleted()==period.isDeleted()){
-                            flag=false;
+            for (AvailabilityPeriod period : accommodation.getAvailabilityPeriods()) {
+                if (period.getPeriod().overlaps(reservation.getPeriod())) {
+                    boolean flag = true;
+                    for (AvailabilityPeriodDTO afterPeriod : accommodationBasicInfoDTO.getAvailabilityPeriods()) {
+                        Period newPeriod = new Period(new PeriodDTO(afterPeriod.getPeriod().getStartTimestamp(), afterPeriod.getPeriod().getEndTimestamp()));
+                        if (afterPeriod.getId().equals(period.getId()) && newPeriod.getEndDate().toString() == period.getPeriod().getEndDate().toString() && newPeriod.getStartDate().toString() == period.getPeriod().getStartDate().toString() && afterPeriod.getPrice().setScale(2).equals(period.getPrice())) {
+                            flag = false;
                             break;
                         }
                     }
                     if (flag) {
                         return null;
-                   }
+                    }
                 }
             }
         }
         accommodation.getAvailabilityPeriods().clear();
-        Set<AvailabilityPeriod> availabilityPeriods = accommodationBasicInfoDTO.getAvailabilityPeriods();
+        Set<AvailabilityPeriod> availabilityPeriods = new HashSet<>();
+        for (AvailabilityPeriodDTO availabilityPeriod : accommodationBasicInfoDTO.getAvailabilityPeriods()) {
+            availabilityPeriods.add(new AvailabilityPeriod(availabilityPeriod));
+        }
         accommodation.getAvailabilityPeriods().addAll(availabilityPeriods);
         accommodation.setType(accommodationBasicInfoDTO.getType());
         accommodation.setMinimumGuests(accommodationBasicInfoDTO.getMinimumGuests());
