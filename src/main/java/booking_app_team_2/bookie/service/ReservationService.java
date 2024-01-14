@@ -5,6 +5,7 @@ import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.Reservation;
 import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.ReservationDTO;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -15,7 +16,8 @@ public interface ReservationService extends GenericService<Reservation> {
     List<Reservation> findAllByAccommodationAndStatusIn(Accommodation accommodation,
                                                         EnumSet<ReservationStatus> reservationStatuses);
 
-    List<Reservation> findAll(String name, Long startTimestamp, Long endTimestamp, List<ReservationStatus> statuses);
+    List<Reservation> findAll(String name, Long startTimestamp, Long endTimestamp, List<ReservationStatus> statuses,
+                              HttpServletRequest httpServletRequest);
 
     void createReservation(ReservationDTO reservationDTO);
 }
