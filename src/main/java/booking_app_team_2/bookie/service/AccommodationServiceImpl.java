@@ -2,6 +2,9 @@ package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.*;
+import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
+import booking_app_team_2.bookie.dto.AccommodationDTO;
+import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.ReservationRepository;
@@ -12,6 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.*;
 import java.util.stream.Collectors;
 

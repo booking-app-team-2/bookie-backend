@@ -1,6 +1,8 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.domain.Reservation;
+import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.ReservationStatusDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.service.ReservationService;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/reservations")
@@ -26,11 +29,18 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<ReservationDTO>> getReservations(@RequestParam(required = false) String name,
-                                                                      @RequestParam(required = false) Long startDate,
-                                                                      @RequestParam(required = false) Long endDate,
-                                                                      @RequestParam(required = false) String status,
-                                                                      @RequestParam(required = false) Long ownerId) {
+    public ResponseEntity<Collection<ReservationDTO>> searchAndFilterReservationsGuest (
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "start_timestamp", required = false) Long startTimestamp,
+            @RequestParam(value = "end_timestamp", required = false) Long endTimestamp,
+            @RequestParam
+                    (
+                            value = "status",
+                            required = false,
+                            defaultValue = "Waiting, Accepted, Declined, Cancelled"
+                    ) List<ReservationStatus> statuses) {
+        List<Reservation> reservations = reservationService.findAll(name, startTimestamp, endTimestamp, statuses);
+
         return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
     }
 

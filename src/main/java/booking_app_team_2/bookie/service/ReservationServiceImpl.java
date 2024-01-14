@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import static booking_app_team_2.bookie.repository.ReservationSpecification.*;
+
 import java.time.LocalDate;
 import java.util.EnumSet;
 
@@ -59,6 +61,11 @@ public class ReservationServiceImpl implements ReservationService {
     public List<Reservation> findAllByAccommodationAndStatusIn(Accommodation accommodation,
                                                     EnumSet<ReservationStatus> reservationStatuses) {
         return reservationRepository.findAllByAccommodationAndStatusIn(accommodation, reservationStatuses);
+    }
+
+    @Override
+    public List<Reservation> findAll(String name, Long startTimestamp, Long endTimestamp, List<ReservationStatus> statuses) {
+        return reservationRepository.findAll(hasAccommodationNameLike(name).and(hasStatusIn(statuses)));
     }
 
     @Override

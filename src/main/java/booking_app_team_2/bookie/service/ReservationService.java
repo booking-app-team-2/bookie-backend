@@ -15,5 +15,7 @@ public interface ReservationService extends GenericService<Reservation> {
     List<Reservation> findAllByAccommodationAndStatusIn(Accommodation accommodation,
                                                         EnumSet<ReservationStatus> reservationStatuses);
 
+    List<Reservation> findAll(String name, Long startTimestamp, Long endTimestamp, List<ReservationStatus> statuses);
+
     void createReservation(ReservationDTO reservationDTO);
 }
