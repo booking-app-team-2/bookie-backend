@@ -104,7 +104,6 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodation.setType(accommodationBasicInfoDTO.getType());
         accommodation.setMinimumGuests(accommodationBasicInfoDTO.getMinimumGuests());
         accommodation.setMaximumGuests(accommodationBasicInfoDTO.getMaximumGuests());
-        accommodation.setReservationAutoAccepted(accommodationBasicInfoDTO.isReservationAutoAccepted());
         this.save(accommodation);
         return accommodationBasicInfoDTO;
     }
