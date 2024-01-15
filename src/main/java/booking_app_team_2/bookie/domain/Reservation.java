@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -64,5 +65,12 @@ public class Reservation {
                 LocalDate
                         .now()
                         .isBefore(period.getStartDate().minusDays(accommodation.getReservationCancellationDeadline()));
+    }
+
+    public BigDecimal getPricePerDayPerGuest() {
+        int priceDivisor = accommodation.isPricedPerGuest() ? numberOfGuests : 1;
+        return price
+                .divide(BigDecimal.valueOf(period.getInDays()), 2, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(priceDivisor), 2, RoundingMode.HALF_UP);
     }
 }

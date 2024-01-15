@@ -20,11 +20,9 @@ import org.springframework.stereotype.Service;
 import static booking_app_team_2.bookie.repository.ReservationSpecification.*;
 
 import java.time.LocalDate;
-import java.util.EnumSet;
+import java.util.*;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -166,7 +164,7 @@ public class ReservationServiceImpl implements ReservationService {
             else if (availabilityPeriod.periodOverlapsBottomOnly(period))
                 availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
             else if (availabilityPeriod.periodOverlapsTopOnly(period))
-                availabilityPeriod.getPeriod().setStartDate(period.getEndDate().minusDays(1));
+                availabilityPeriod.getPeriod().setStartDate(period.getEndDate().plusDays(1));
             else if (availabilityPeriod.periodExclusivelyOverlaps(period)) {
                 LocalDate availabilityPeriodEndDate = availabilityPeriod.getPeriod().getEndDate();
                 availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
@@ -186,6 +184,15 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation save(Reservation reservation) {
         return null;
+    }
+
+    private void freeReservationPeriod(Reservation reservation) {
+        Accommodation accommodation = reservation.getAccommodation();
+        accommodation.addAvailabilityPeriod(
+                new AvailabilityPeriod(reservation.getPricePerDayPerGuest(), reservation.getPeriod())
+        );
+
+        accommodationService.save(accommodation);
     }
 
     @Override
@@ -217,7 +224,7 @@ public class ReservationServiceImpl implements ReservationService {
                     "Only an accepted reservation that has not yet reached the cancellation deadline can be cancelled."
             );
 
-        // TODO: Implement making the accommodation available again in the period taken by the cancelled reservation
+        freeReservationPeriod(reservation);
 
         reservation.setStatus(ReservationStatus.Cancelled);
         reservationRepository.save(reservation);

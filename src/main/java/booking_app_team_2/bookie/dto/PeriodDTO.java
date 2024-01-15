@@ -3,14 +3,16 @@ package booking_app_team_2.bookie.dto;
 import booking_app_team_2.bookie.domain.Period;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+@NoArgsConstructor
 @Getter
 public class PeriodDTO {
-    private final long startTimestamp;
-    private final long endTimestamp;
+    private long startTimestamp;
+    private long endTimestamp;
 
     @JsonIgnore
     private long convertLocalDateToTimestamp(LocalDate localDate) {
