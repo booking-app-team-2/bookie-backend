@@ -78,6 +78,7 @@ public class WebSecurityConfig {
                     .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/accommodations").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/accommodations/{id}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/images/{imageId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/accommodations/filter").permitAll()
                     .anyRequest().authenticated();
         });

@@ -21,4 +21,6 @@ public interface ReservationService extends GenericService<Reservation> {
                                       List<ReservationStatus> statuses, HttpServletRequest httpServletRequest);
 
     void createReservation(ReservationDTO reservationDTO);
+
+    void remove(Long id, HttpServletRequest httpServletRequest);
 }

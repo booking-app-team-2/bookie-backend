@@ -7,20 +7,25 @@ import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.OwnerDTO;
 import booking_app_team_2.bookie.service.AccommodationService;
+import booking_app_team_2.bookie.service.ImageService;
 import booking_app_team_2.bookie.service.OwnerService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Setter
@@ -144,6 +149,7 @@ public class AccommodationController {
     }
 
     @PutMapping(value="/{accommodationId}/basic-info",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
     public ResponseEntity<AccommodationBasicInfoDTO> updateAccommodationBasicInfo(@PathVariable Long accommodationId,
                                                                                   @RequestBody AccommodationBasicInfoDTO accommodationBasicInfoDTO){
 
@@ -156,10 +162,6 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(accommodationBasicInfoDTO,HttpStatus.OK);
-    }
-    @GetMapping(value = "/{accommodationId}/images")
-    public ResponseEntity<Collection<Image>> getImages(@PathVariable Long accommodationId) {
-        return new ResponseEntity<>(new HashSet<>(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{accommodationId}/amenities")
@@ -217,4 +219,6 @@ public class AccommodationController {
     public ResponseEntity<Void> deleteAccommodation(@PathVariable("id") Long id) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }

@@ -84,10 +84,9 @@ public class ReservationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        ReservationDTO reservationDTO = new ReservationDTO();
-        if (reservationDTO.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PreAuthorize("hasAuthority('Guest')")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, HttpServletRequest httpServletRequest) {
+        reservationService.remove(id, httpServletRequest);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
