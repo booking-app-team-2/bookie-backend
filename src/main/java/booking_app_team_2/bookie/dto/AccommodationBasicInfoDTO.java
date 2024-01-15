@@ -23,5 +23,5 @@ public class AccommodationBasicInfoDTO {
     private Set<Image> images;
     private AccommodationType type;
     private boolean isReservationAutoAccepted;
-    private Set<AvailabilityPeriod> availabilityPeriods;
+    private Set<AvailabilityPeriodDTO> availabilityPeriods;
 }

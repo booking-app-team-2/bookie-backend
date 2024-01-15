@@ -1,6 +1,5 @@
 package booking_app_team_2.bookie.service;
 
-import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.repository.OwnerRepository;
 import lombok.Setter;

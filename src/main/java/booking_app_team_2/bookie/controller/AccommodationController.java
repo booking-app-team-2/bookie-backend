@@ -123,7 +123,7 @@ public class AccommodationController {
             accommodations=accommodationService.findAll();
         }
         else{
-            accommodations = accommodationService.findSearched(location,numberOfGuests != null ? numberOfGuests.intValue() : 0,startDate != null ? startDate.intValue() : 0,endDate != null ? endDate.intValue() : 0);
+            accommodations = accommodationService.findSearched(location,numberOfGuests != null ? numberOfGuests.intValue() : 0,startDate,endDate);
         }
         Collection<AccommodationDTO> accommodationDTO=accommodations.stream()
                 .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getImages(),accommodation.getReservationCancellationDeadline(),accommodation.getType(),accommodation.isReservationAutoAccepted()))
