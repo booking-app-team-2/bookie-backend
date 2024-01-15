@@ -6,15 +6,20 @@ import booking_app_team_2.bookie.domain.Reservation;
 import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.ReservationDTO;
+import booking_app_team_2.bookie.dto.ReservationGuestDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.ReservationRepository;
+import booking_app_team_2.bookie.util.TokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import static booking_app_team_2.bookie.repository.ReservationSpecification.*;
+
+import java.time.LocalDate;
 import java.util.EnumSet;
 
 import java.math.BigDecimal;
@@ -29,15 +34,19 @@ public class ReservationServiceImpl implements ReservationService {
     private UserService userService;
     private AccountVerificatorService accountVerificatorService;
 
+    private final TokenUtils tokenUtils;
+
     @Autowired
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                   AccommodationService accommodationService,
                                   UserService userService,
-                                  AccountVerificatorService accountVerificatorService) {
+                                  AccountVerificatorService accountVerificatorService,
+                                  TokenUtils tokenUtils) {
         this.reservationRepository = reservationRepository;
         this.accommodationService = accommodationService;
         this.userService = userService;
         this.accountVerificatorService = accountVerificatorService;
+        this.tokenUtils = tokenUtils;
     }
 
     @Override
@@ -51,7 +60,8 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> findAllByReserveeAndStatusIn(Guest reservee, EnumSet<ReservationStatus> reservationStatuses) {
+    public List<Reservation> findAllByReserveeAndStatusIn(Guest reservee,
+                                                          EnumSet<ReservationStatus> reservationStatuses) {
         return reservationRepository.findAllByReserveeAndStatusIn(reservee, reservationStatuses);
     }
 
@@ -59,6 +69,36 @@ public class ReservationServiceImpl implements ReservationService {
     public List<Reservation> findAllByAccommodationAndStatusIn(Accommodation accommodation,
                                                     EnumSet<ReservationStatus> reservationStatuses) {
         return reservationRepository.findAllByAccommodationAndStatusIn(accommodation, reservationStatuses);
+    }
+
+    @Override
+    public List<ReservationGuestDTO> findAll(String name, Long startTimestamp, Long endTimestamp,
+                                     List<ReservationStatus> statuses, HttpServletRequest httpServletRequest) {
+        Guest reservee = (Guest) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent guest cannot search and filter reservations."));
+
+        if (reservee.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A blocked guest cannot search and filter reservations.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(reservee);
+        if(accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified guest cannot search and filter reservations.");
+
+        Period period = new Period(startTimestamp, endTimestamp);
+
+        return reservationRepository
+                .findAll(
+                        hasAccommodationNameLike(name)
+                                .and(hasPeriodBetween(period))
+                                .and(hasStatusIn(statuses))
+                                .and(hasReserveeEqualTo(reservee))
+                )
+                .stream()
+                .map(ReservationGuestDTO::new)
+                .toList();
     }
 
     @Override
@@ -99,7 +139,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (!user.getRole().equals(UserRole.Guest))
             throw new HttpTransferException(HttpStatus.BAD_REQUEST, "Only guests can create reservations.");
 
-        Period period = reservationDTO.getPeriod();
+        Period period = new Period(reservationDTO.getPeriodDTO());
         Optional<AvailabilityPeriod> availabilityPeriodOptional = accommodation
                 .getAvailabilityPeriods()
                 .stream()
@@ -124,16 +164,16 @@ public class ReservationServiceImpl implements ReservationService {
             if (availabilityPeriod.isPeriodEqualTo(period))
                 accommodation.removeAvailabilityPeriod(availabilityPeriod);
             else if (availabilityPeriod.periodOverlapsBottomOnly(period))
-                availabilityPeriod.getPeriod().setEndDate(period.getStartDate());
+                availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
             else if (availabilityPeriod.periodOverlapsTopOnly(period))
-                availabilityPeriod.getPeriod().setStartDate(period.getEndDate());
+                availabilityPeriod.getPeriod().setStartDate(period.getEndDate().minusDays(1));
             else if (availabilityPeriod.periodExclusivelyOverlaps(period)) {
-                long availabilityPeriodEndDate = availabilityPeriod.getPeriod().getEndDate();
-                availabilityPeriod.getPeriod().setEndDate(period.getStartDate());
+                LocalDate availabilityPeriodEndDate = availabilityPeriod.getPeriod().getEndDate();
+                availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
                  accommodation.addAvailabilityPeriod(
                          new AvailabilityPeriod(
                                  availabilityPeriod.getPrice(),
-                                 new Period(period.getEndDate(), availabilityPeriodEndDate)
+                                 new Period(period.getEndDate().plusDays(1), availabilityPeriodEndDate)
                          )
                  );
             }

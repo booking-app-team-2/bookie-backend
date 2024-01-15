@@ -1,11 +1,16 @@
 package booking_app_team_2.bookie.domain;
 
+import booking_app_team_2.bookie.dto.ReviewDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @NoArgsConstructor
 @Getter
@@ -29,8 +34,8 @@ public abstract class Review {
 
     private String comment;
 
-    @Column(name = "date_of_creation", nullable = false)
-    private long dateOfCreation;
+    @Column(name = "timestamp_of_creation", nullable = false)
+    private LocalDateTime timestampOfCreation;
 
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved = false;
@@ -44,4 +49,13 @@ public abstract class Review {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    public Review(float grade, String comment, long timestampOfCreation) {
+        this.grade = grade;
+        this.comment = comment;
+        this.timestampOfCreation = Instant
+                .ofEpochMilli(timestampOfCreation)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
 }

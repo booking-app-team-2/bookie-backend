@@ -22,5 +22,5 @@ public class AccommodationBasicInfoDTO {
     private Set<Amenities> amenities;
     private Set<Image> images;
     private AccommodationType type;
-    private Set<AvailabilityPeriod> availabilityPeriods;
+    private Set<AvailabilityPeriodDTO> availabilityPeriods;
 }

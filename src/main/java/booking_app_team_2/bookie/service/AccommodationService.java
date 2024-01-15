@@ -6,7 +6,6 @@ import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -15,7 +14,7 @@ public interface AccommodationService extends GenericService<Accommodation> {
     // TODO: Declare accommodation-specific service methods
     List<AccommodationDTO> getAll();
 
-    List<Accommodation> findSearched(String location, int numberOfGuests, long startDate, long endDate);
+    List<Accommodation> findSearched(String location, int numberOfGuests, Long startDate, Long endDate);
 
     AccommodationBasicInfoDTO updateAccommodationBasicInfo(Accommodation accommodation, AccommodationBasicInfoDTO accommodationBasicInfoDTO);
 
