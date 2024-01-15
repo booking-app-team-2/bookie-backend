@@ -7,6 +7,7 @@ import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.dto.ReservationGuestDTO;
+import booking_app_team_2.bookie.dto.ReservationOwnerDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import booking_app_team_2.bookie.util.TokenUtils;
@@ -72,8 +73,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationGuestDTO> findAll(String name, Long startTimestamp, Long endTimestamp,
-                                     List<ReservationStatus> statuses, HttpServletRequest httpServletRequest) {
+    public List<ReservationGuestDTO> findAllForGuest(String name, Long startTimestamp, Long endTimestamp,
+                                                     List<ReservationStatus> statuses,
+                                                     HttpServletRequest httpServletRequest) {
         Guest reservee = (Guest) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
                 .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
                         "A non-existent guest cannot search and filter reservations."));
@@ -98,6 +100,40 @@ public class ReservationServiceImpl implements ReservationService {
                 )
                 .stream()
                 .map(ReservationGuestDTO::new)
+                .toList();
+    }
+
+    @Override
+    public List<ReservationOwnerDTO> findAllForOwner(String name, Long startTimestamp, Long endTimestamp,
+                                                     List<ReservationStatus> statuses,
+                                                     HttpServletRequest httpServletRequest) {
+        Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot search and filter reservations."));
+
+        if (owner.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A blocked owner cannot search and filter reservations.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(owner);
+        if(accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified owner cannot search and filter reservations.");
+
+        Period period = null;
+
+        if (startTimestamp != null && endTimestamp != null)
+            period = new Period(startTimestamp, endTimestamp);
+
+        return reservationRepository
+                .findAll(
+                        hasAccommodationNameLike(name)
+                                .and(hasPeriodBetween(period))
+                                .and(hasStatusIn(statuses))
+                                .and(hasAccommodationOwnerEqualTo(owner))
+                )
+                .stream()
+                .map(ReservationOwnerDTO::new)
                 .toList();
     }
 
