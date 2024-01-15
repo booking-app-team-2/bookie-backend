@@ -30,6 +30,12 @@ VALUES (nextval('sequence_user'), 'owneraccsnores@gmail.com',
         '$2a$10$pe4FvwSCNyOGUAHdokhwrOr9lCRrba/TYzVHGGhyEIeMGyGNGtEZ.', 'Owner', 'Owner', 'Placeholder', 'Placeholder',
         timestamp '2023-12-09 22:16:48', 'Owner', false, false);
 
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'guestnoreservations@gmail.com',
+        '$2a$10$xP789d3bmJNDtvBx/8mSXuEdV/ckuGPBDspgrEdqg3kKnV8t3XIBS', 'Guest', 'Guest', 'Placeholder', 'Placeholder',
+        '2023-01-04', 'Guest', false, false);
+
 INSERT INTO guest (id, receives_reservation_request_notifications)
 VALUES (2, true);
 
@@ -48,6 +54,9 @@ INSERT INTO owner (id, receives_reservation_request_notifications, receives_rese
                    receives_review_notifications, receives_accommodation_review_notifications)
 VALUES (6, true, true, true, true);
 
+INSERT INTO guest (id, receives_reservation_request_notifications)
+VALUES (7, true);
+
 INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:14:30', true, 1, false);
 
@@ -65,6 +74,9 @@ VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:48'
 
 INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:48', true, 6, false);
+
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2024-01-04 16:29:00', true, 7, false);
 
 INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
                            reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
@@ -173,5 +185,19 @@ VALUES (nextval('sequence_reservation'), 2, 'Accepted', 1, 3, current_date + 13,
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
 VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, current_date + 5, current_date + 5, 30, false);
+
+INSERT INTO image(id,name,path,type,is_deleted)
+VALUES (nextval('sequence_image'),'slika11','src/main/resources/images','jpg',false);
+
+INSERT INTO accommodation_images(accommodation_id, image_id)
+VALUES (1,1);
+
+INSERT INTO image(id,name,path,type,is_deleted)
+VALUES (nextval('sequence_image'),'slika12','src/main/resources/images','jpg',false);
+
+INSERT INTO accommodation_images(accommodation_id, image_id)
+VALUES (1,2);
+
+
 
 -- TODO: Insert images and connect them to accommodations
