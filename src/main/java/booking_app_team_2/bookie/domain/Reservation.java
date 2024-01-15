@@ -8,7 +8,6 @@ import org.hibernate.annotations.Where;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Date;
 
 @NoArgsConstructor
 @Getter
