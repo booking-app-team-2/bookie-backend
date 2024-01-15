@@ -25,4 +25,6 @@ public interface ReservationService extends GenericService<Reservation> {
     void acceptReservation(Long id, HttpServletRequest httpServletRequest);
 
     void declineReservation(Long id, HttpServletRequest httpServletRequest);
+
+    void remove(Long id, HttpServletRequest httpServletRequest);
 }

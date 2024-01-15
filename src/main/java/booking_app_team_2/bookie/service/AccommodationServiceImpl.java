@@ -145,4 +145,13 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodationRepository.deleteById(id);
     }
 
+    @Override
+    public void removeImage(Image image) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAll();
+        for (Accommodation accommodation : accommodations) {
+            if (accommodation.getImages().remove(image)) {
+                accommodationRepository.save(accommodation);
+            }
+        }
+    }
 }
