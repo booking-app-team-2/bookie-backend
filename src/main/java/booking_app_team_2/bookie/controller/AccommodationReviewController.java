@@ -59,8 +59,16 @@ public class AccommodationReviewController {
 
     @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationReviewDTO>> getUnapprovedReviews() {
-        Collection<AccommodationReviewDTO> accommodationReviews = Collections.emptyList();
-        return new ResponseEntity<>(accommodationReviews, HttpStatus.OK);
+        Collection<AccommodationReview> accommodationReviews = accommodationReviewService.findUnapprovedReviews();
+        Collection<AccommodationReviewDTO> accommodationReviewDTOS= new ArrayList<>(Collections.emptyList());
+        for (AccommodationReview accommodationReview : accommodationReviews) {
+            AccommodationReviewDTO reviewDTO = new AccommodationReviewDTO(accommodationReview);
+            accommodationReviewDTOS.add(reviewDTO);
+        }
+        if(accommodationReviewDTOS.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(accommodationReviewDTOS, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

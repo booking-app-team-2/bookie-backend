@@ -103,4 +103,8 @@ public class AccommodationReviewServiceImpl implements AccommodationReviewServic
         accommodationReview.setApproved(true);
         accommodationReviewRepository.save(accommodationReview);
     }
+    @Override
+    public List<AccommodationReview> findUnapprovedReviews() {
+        return accommodationReviewRepository.findAllByIsApproved(false);
+    }
 }

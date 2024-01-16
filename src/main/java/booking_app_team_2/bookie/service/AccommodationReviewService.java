@@ -13,4 +13,6 @@ public interface AccommodationReviewService extends GenericService<Accommodation
     Float calculateAverageGrade(Collection<AccommodationReview> accommodationReviews);
 
     void approveReview(Long reviewId);
+
+    List<AccommodationReview> findUnapprovedReviews();
 }

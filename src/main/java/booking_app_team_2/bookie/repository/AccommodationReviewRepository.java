@@ -10,4 +10,6 @@ public interface AccommodationReviewRepository extends GenericRepository<Accommo
     List<AccommodationReview> findAllByAccommodation_Id(Long accommodationId);
 
     List<AccommodationReview> findAllByAccommodation_IdAndIsApproved(Long accommodationId, boolean approved);
+
+    List<AccommodationReview> findAllByIsApproved(boolean approved);
 }
