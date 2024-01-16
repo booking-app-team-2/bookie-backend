@@ -11,7 +11,10 @@ public class ReservationSpecification {
         return (root, query, criteriaBuilder) -> {
             Join<Reservation, Accommodation> accommodation = root.join("accommodation");
 
-            return criteriaBuilder.like(accommodation.get("name"), "%" + accommodationNameSubstring + "%");
+            return criteriaBuilder.like(
+                    criteriaBuilder.upper(accommodation.get("name")),
+                    "%" + accommodationNameSubstring.toUpperCase() + "%"
+            );
         };
     }
 
