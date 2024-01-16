@@ -13,7 +13,7 @@ public class ReservationOwnerDTO {
     private final int numberOfGuests;
     private final ReservationStatus status;
     private final AccommodationNameDTO accommodationNameDTO;
-    private final UserBasicInfoDTO userBasicInfoDTO;
+    private final ReserveeBasicInfoDTO reserveeBasicInfoDTO;
     private final PeriodDTO periodDTO;
     private final BigDecimal price;
 
@@ -23,7 +23,7 @@ public class ReservationOwnerDTO {
         numberOfGuests = reservation.getNumberOfGuests();
         status = reservation.getStatus();
         accommodationNameDTO = new AccommodationNameDTO(reservation.getAccommodation());
-        userBasicInfoDTO = new UserBasicInfoDTO(reservation.getReservee());
+        reserveeBasicInfoDTO = new ReserveeBasicInfoDTO(reservation.getReservee());
         periodDTO = new PeriodDTO(reservation.getPeriod());
         price = reservation.getPrice();
     }
