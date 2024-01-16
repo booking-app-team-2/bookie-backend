@@ -58,4 +58,14 @@ public abstract class Review {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
     }
+
+    public Review(ReviewDTO reviewDTO) {
+        this.grade = reviewDTO.getGrade();
+        this.comment = reviewDTO.getComment();
+        this.timestampOfCreation = Instant
+                .ofEpochMilli(reviewDTO.getTimestampOfCreation())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        this.isDeleted = false;
+    }
 }
