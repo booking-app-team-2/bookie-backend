@@ -114,4 +114,23 @@ public class AccommodationReviewController {
         accommodationReviewService.remove(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<Void> reportReview(@PathVariable Long id){
+        accommodationReviewService.reportReview(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @DeleteMapping(value = "reported/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<String> deleteReportedReview(@PathVariable Long id) {
+        Optional<AccommodationReview> accommodationReview=accommodationReviewService.findOne(id);
+        if(accommodationReview.isPresent()){
+            if(accommodationReview.get().isReported()){
+                accommodationReviewService.remove(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("Review is not reported",HttpStatus.FORBIDDEN);
+    }
 }

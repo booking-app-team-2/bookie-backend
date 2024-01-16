@@ -23,8 +23,8 @@ import java.util.Optional;
 @Service
 public class AccommodationReviewServiceImpl implements AccommodationReviewService {
 
-    private final AccommodationReviewRepository accommodationReviewRepository;
-    private final ReservationRepository reservationRepository;
+    private AccommodationReviewRepository accommodationReviewRepository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
     public AccommodationReviewServiceImpl(AccommodationReviewRepository accommodationReviewRepository, ReservationRepository reservationRepository) {
@@ -106,5 +106,15 @@ public class AccommodationReviewServiceImpl implements AccommodationReviewServic
     @Override
     public List<AccommodationReview> findUnapprovedReviews() {
         return accommodationReviewRepository.findAllByIsApproved(false);
+    }
+    @Override
+    public void reportReview(Long reviewId) {
+        Optional<AccommodationReview> optionalAccommodationReview = accommodationReviewRepository.findById(reviewId);
+        if (optionalAccommodationReview.isEmpty()) {
+            throw new HttpTransferException(HttpStatus.NOT_FOUND, "No such review exists.");
+        }
+        AccommodationReview accommodationReview = optionalAccommodationReview.get();
+        accommodationReview.setReported(true);
+        accommodationReviewRepository.save(accommodationReview);
     }
 }
