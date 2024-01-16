@@ -16,4 +16,6 @@ public interface ReservationRepository extends GenericRepository<Reservation>, J
     List<Reservation> findAllByAccommodationAndStatusIn(Accommodation accommodation,
                                                         EnumSet<ReservationStatus> reservationStatuses);
     List<Reservation> findReservationsByAccommodation_Id(Long id);
+
+    int countByStatusAndReservee(ReservationStatus status, Guest reservee);
 }

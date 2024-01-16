@@ -5,6 +5,7 @@ import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.Reservation;
 import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.dto.NumberOfCancelledReservationsDTO;
 import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.dto.ReservationGuestDTO;
 import booking_app_team_2.bookie.dto.ReservationOwnerDTO;
@@ -140,6 +141,34 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Optional<Reservation> findOne(Long id) {
         return Optional.empty();
+    }
+
+    @Override
+    public NumberOfCancelledReservationsDTO getNumberOfCancelledReservations(Long reserveeId,
+                                                                             HttpServletRequest httpServletRequest) {
+        Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot get the number of cancelled reservations for a reservee."));
+
+        if (owner.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A blocked owner cannot get the number of cancelled reservations for a reservee.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(owner);
+        if(accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified owner cannot get the number of cancelled reservations for a reservee.");
+
+        User user = userService
+                .findOne(reserveeId)
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservee not found."));
+
+        if (!user.getRole().equals(UserRole.Guest))
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST, "User is not a reservee.");
+
+        return new NumberOfCancelledReservationsDTO(
+                reservationRepository.countByStatusAndReservee(ReservationStatus.Cancelled, (Guest) user)
+        );
     }
 
     @Override
