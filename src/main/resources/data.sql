@@ -158,7 +158,7 @@ VALUES (3, 4);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date + 5, current_date + 9, 300, false);
+VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date - 10, current_date - 5, 300, false);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
@@ -178,6 +178,18 @@ INSERT INTO image(id,name,path,type,is_deleted)
 VALUES (nextval('sequence_image'),'slika12','src/main/resources/images','jpg',false);
 
 INSERT INTO accommodation_images(accommodation_id, image_id)
+VALUES (1,2);
+
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),4,'not bad dude','2024-01-11 12:30:45.123456',true,false,false,2);
+
+INSERT INTO accommodation_review(accommodation_id, id)
+VALUES (1,1);
+
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),3,'meh dude','2024-01-12 12:30:45.123456',false,false,false,2);
+
+INSERT INTO accommodation_review(accommodation_id, id)
 VALUES (1,2);
 
 
