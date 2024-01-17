@@ -2,9 +2,7 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.ReservationStatus;
-import booking_app_team_2.bookie.dto.ReservationGuestDTO;
-import booking_app_team_2.bookie.dto.ReservationStatusDTO;
-import booking_app_team_2.bookie.dto.ReservationDTO;
+import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.service.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,18 +39,37 @@ public class ReservationController {
             ) List<ReservationStatus> statuses,
             HttpServletRequest httpServletRequest) {
         return new ResponseEntity<>(
-                reservationService.findAll(name, startTimestamp, endTimestamp, statuses, httpServletRequest),
+                reservationService.findAllForGuest(name, startTimestamp, endTimestamp, statuses, httpServletRequest),
                 HttpStatus.OK
         );
     }
 
-    @GetMapping(value = "/cancelled")
-    public ResponseEntity<Integer> getNumberOfCancelledReservationsForReservee(@RequestParam Long reserveeId) {
-        Guest reservee = new Guest();
-        if (reservee.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping(value = "/accommodation/owner")
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<Collection<ReservationOwnerDTO>> searchAndFilterReservationsOwner (
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "start_timestamp", required = false) Long startTimestamp,
+            @RequestParam(value = "end_timestamp", required = false) Long endTimestamp,
+            @RequestParam(
+                    value = "status",
+                    required = false,
+                    defaultValue = "Waiting, Accepted, Declined, Cancelled"
+            ) List<ReservationStatus> statuses,
+            HttpServletRequest httpServletRequest) {
+        return new ResponseEntity<>(
+                reservationService.findAllForOwner(name, startTimestamp, endTimestamp, statuses, httpServletRequest),
+                HttpStatus.OK
+        );
+    }
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    @GetMapping(value = "/status/cancelled")
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<NumberOfCancelledReservationsDTO> getNumberOfCancelledReservationsForReservee(
+            @RequestParam(value = "reservee_id") Long reserveeId, HttpServletRequest httpServletRequest
+    ) {
+        return new ResponseEntity<>(
+                reservationService.getNumberOfCancelledReservations(reserveeId, httpServletRequest), HttpStatus.OK
+        );
     }
 
     @GetMapping(value = "/accepted")

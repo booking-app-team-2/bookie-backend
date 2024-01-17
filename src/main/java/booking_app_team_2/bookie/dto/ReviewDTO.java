@@ -11,9 +11,9 @@ import java.time.ZoneId;
 @Getter
 public class ReviewDTO {
     private Long id = null;
-    private float grade;
+    private Float grade;
     private String comment;
-    private long timestampOfCreation;
+    private Long timestampOfCreation;
     private Long reviewerId;
 
     @JsonIgnore

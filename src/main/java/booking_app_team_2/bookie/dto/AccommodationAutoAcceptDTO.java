@@ -1,6 +1,8 @@
 package booking_app_team_2.bookie.dto;
 
+import lombok.Getter;
+
+@Getter
 public class AccommodationAutoAcceptDTO {
-    private Long id;
-    private boolean isReservationAutoAccepted;
+    private boolean reservationAutoAccepted;
 }

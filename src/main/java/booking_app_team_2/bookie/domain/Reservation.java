@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @NoArgsConstructor
 @Getter
@@ -71,5 +72,9 @@ public class Reservation {
         return price
                 .divide(BigDecimal.valueOf(period.getInDays()), 2, RoundingMode.HALF_UP)
                 .divide(BigDecimal.valueOf(priceDivisor), 2, RoundingMode.HALF_UP);
+    }
+
+    public boolean isRecent(){
+        return period.getEndDate().isBefore(LocalDate.now()) && ChronoUnit.DAYS.between(period.getEndDate(), LocalDate.now()) <= 7;
     }
 }
