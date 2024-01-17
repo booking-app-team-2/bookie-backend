@@ -57,6 +57,7 @@ public class OwnerReviewController {
     }
 
     @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<Collection<OwnerReviewDTO>> getUnapprovedReviews() {
         Collection<OwnerReview> ownerReviews = ownerReviewService.findUnapprovedReviews();
         Collection<OwnerReviewDTO> ownerReviewDTOS = new ArrayList<>(Collections.emptyList());
