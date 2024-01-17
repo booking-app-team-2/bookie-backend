@@ -208,6 +208,17 @@ VALUES (nextval('sequence_review'),3,'meh dude','2024-01-12 12:30:45.123456',fal
 INSERT INTO accommodation_review(accommodation_id, id)
 VALUES (1,2);
 
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),3,'meh dude','2024-01-12 12:30:45.123456',true,false,false,2);
+
+INSERT INTO owner_review(reviewee_id, id)
+VALUES (4,3);
+
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),4,'not bad dude','2024-01-11 12:30:45.123456',false,false,false,2);
+
+INSERT INTO owner_review(reviewee_id, id)
+VALUES (4,4);
 
 
 -- TODO: Insert images and connect them to accommodations
