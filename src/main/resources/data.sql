@@ -156,6 +156,9 @@ VALUES (nextval('sequence_availability_period'), 30, current_date + 1, current_d
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 10, current_date - 5, current_date - 1, false);
 
+INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
+VALUES (nextval('sequence_availability_period'), 16.782193, current_date + 13, current_date + 20, false);
+
 INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
 VALUES (1, 1);
 
@@ -167,6 +170,9 @@ VALUES (2, 3);
 
 INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
 VALUES (3, 4);
+
+INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
+VALUES (1, 5);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)

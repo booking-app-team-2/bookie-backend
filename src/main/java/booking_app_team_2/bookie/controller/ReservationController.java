@@ -89,15 +89,12 @@ public class ReservationController {
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationStatusDTO> updateReservation(@RequestBody ReservationStatusDTO reservationDTO,
-                                                            @PathVariable Long id) {
-        ReservationStatusDTO reservationDTO1 = new ReservationStatusDTO();
-        if (reservationDTO1.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PutMapping(value = "/{id}/status/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReservationStatusDTO> updateReservation(@PathVariable Long id,
+                                                                  HttpServletRequest httpServletRequest) {
+        reservationService.cancelReservation(id, httpServletRequest);
 
-        return new ResponseEntity<>(reservationDTO1, HttpStatus.OK);
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Cancelled), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
