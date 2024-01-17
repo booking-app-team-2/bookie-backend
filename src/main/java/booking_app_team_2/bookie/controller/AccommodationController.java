@@ -9,6 +9,7 @@ import booking_app_team_2.bookie.dto.OwnerDTO;
 import booking_app_team_2.bookie.service.AccommodationService;
 import booking_app_team_2.bookie.service.ImageService;
 import booking_app_team_2.bookie.service.OwnerService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,11 +184,6 @@ public class AccommodationController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{accommodationId}/reservation-auto-accept")
-    public ResponseEntity<Boolean> isReservationAutoAccepted(@PathVariable Long accommodationId) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Accommodation> createAccommodation(@RequestBody Accommodation accommodation) {
         Accommodation savedAccommodation = new Accommodation() {};
@@ -206,15 +202,17 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodationApprovalDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}/reservation-auto-accept", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/{id}/is-reservation-auto-accepted", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationAutoAcceptDTO> updateAccommodation(@RequestBody AccommodationAutoAcceptDTO accommodationDTO,
-                                                                              @PathVariable Long id) {
-        AccommodationAutoAcceptDTO accommodationDTO1 = new AccommodationAutoAcceptDTO();
-        if (accommodationDTO1.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<AccommodationAutoAcceptDTO> updateIsReservationAutoAccepted(
+            @PathVariable Long id,
+            @RequestBody AccommodationAutoAcceptDTO accommodationAutoAcceptDTO,
+            HttpServletRequest httpServletRequest
+    ) {
+        accommodationService.updateAutoAccept(id, accommodationAutoAcceptDTO, httpServletRequest);
 
-        return new ResponseEntity<>(accommodationDTO1, HttpStatus.OK);
+        return new ResponseEntity<>(accommodationAutoAcceptDTO, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
