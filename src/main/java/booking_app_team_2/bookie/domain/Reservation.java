@@ -60,6 +60,10 @@ public class Reservation {
         this.price = price;
     }
 
+    public boolean hasBegun() {
+        return period.hasBegun();
+    }
+
     public boolean isCancellable() {
         return status == ReservationStatus.Accepted &&
                 LocalDate

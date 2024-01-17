@@ -141,6 +141,41 @@ public class ReservationServiceImpl implements ReservationService {
         return Optional.empty();
     }
 
+    private void rearrangeAvailabilityPeriod(Accommodation accommodation, Period reservationPeriod,
+                                             AvailabilityPeriod reservedAvailabilityPeriod) {
+        if (reservedAvailabilityPeriod.isPeriodEqualTo(reservationPeriod))
+            accommodation.removeAvailabilityPeriod(reservedAvailabilityPeriod);
+        else if (reservedAvailabilityPeriod.periodOverlapsBottomOnly(reservationPeriod))
+            reservedAvailabilityPeriod
+                    .getPeriod()
+                    .setEndDate(reservationPeriod.getStartDate().minusDays(1));
+        else if (reservedAvailabilityPeriod.periodOverlapsTopOnly(reservationPeriod))
+            reservedAvailabilityPeriod
+                    .getPeriod()
+                    .setStartDate(reservationPeriod.getEndDate().plusDays(1));
+        else if (reservedAvailabilityPeriod.periodExclusivelyOverlaps(reservationPeriod)) {
+            LocalDate availabilityPeriodEndDate = reservedAvailabilityPeriod.getPeriod().getEndDate();
+            reservedAvailabilityPeriod
+                    .getPeriod()
+                    .setEndDate(reservationPeriod.getStartDate().minusDays(1));
+            accommodation.addAvailabilityPeriod(
+                    new AvailabilityPeriod(
+                            reservedAvailabilityPeriod.getPrice(),
+                            new Period(reservationPeriod.getEndDate().plusDays(1), availabilityPeriodEndDate)
+                    )
+            );
+        }
+
+        accommodationService.save(accommodation);
+    }
+
+    private void declineIntersectingReservations(Reservation reservation) {
+        reservationRepository.findAllByIntersectingPeriod(reservation).forEach(intersectingReservation -> {
+            intersectingReservation.setStatus(ReservationStatus.Declined);
+            reservationRepository.save(intersectingReservation);
+        });
+    }
+
     @Override
     public NumberOfCancelledReservationsDTO getNumberOfCancelledReservations(Long reserveeId,
                                                                              HttpServletRequest httpServletRequest) {
@@ -174,18 +209,18 @@ public class ReservationServiceImpl implements ReservationService {
         Optional<Accommodation> accommodationOptional =
                 accommodationService.findOne(reservationDTO.getAccommodationId());
         if (accommodationOptional.isEmpty())
-            throw new HttpTransferException(HttpStatus.NOT_FOUND, "A reservation cannot be created for a non-existing" +
-                    " accommodation.");
+            throw new HttpTransferException(HttpStatus.NOT_FOUND,
+                    "A reservation cannot be created for a non-existing accommodation.");
 
         Accommodation accommodation = accommodationOptional.get();
         if (!accommodation.isApproved())
-            throw new HttpTransferException(HttpStatus.BAD_REQUEST, "A reservation cannot be created for an " +
-                    "unapproved accommodation.");
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A reservation cannot be created for an unapproved accommodation.");
 
         int numberOfGuests = reservationDTO.getNumberOfGuests();
         if (!accommodation.canAccommodate(numberOfGuests))
-            throw new HttpTransferException(HttpStatus.BAD_REQUEST, "This accommodation cannot accommodate such a " +
-                    "number of guests.");
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "This accommodation cannot accommodate such a number of guests.");
 
         Optional<User> userOptional = userService.findOne(reservationDTO.getReserveeId());
         if (userOptional.isEmpty())
@@ -203,20 +238,17 @@ public class ReservationServiceImpl implements ReservationService {
             throw new HttpTransferException(HttpStatus.BAD_REQUEST, "Only guests can create reservations.");
 
         Period period = new Period(reservationDTO.getPeriodDTO());
-        Optional<AvailabilityPeriod> availabilityPeriodOptional = accommodation
+        AvailabilityPeriod reservedAvailabilityPeriod = accommodation
                 .getAvailabilityPeriods()
                 .stream()
                 .filter(availabilityPeriod -> availabilityPeriod.canFitPeriod(period))
-                .findFirst();
-        if (availabilityPeriodOptional.isEmpty())
-            throw new HttpTransferException(HttpStatus.BAD_REQUEST, "This accommodation is not available in the " +
-                    "requested period.");
-
-        AvailabilityPeriod availabilityPeriod = availabilityPeriodOptional.get();
+                .findFirst()
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
+                        "This accommodation is not available in the requested period."));
 
         int priceMultiplier = accommodation.isPricedPerGuest() ? numberOfGuests : 1;
         Reservation reservation = new Reservation(numberOfGuests, accommodation, (Guest) userOptional.get(), period,
-                availabilityPeriod
+                reservedAvailabilityPeriod
                          .getPrice()
                          .multiply(BigDecimal.valueOf(period.getInDays()))
                          .multiply(BigDecimal.valueOf(priceMultiplier)));
@@ -224,23 +256,9 @@ public class ReservationServiceImpl implements ReservationService {
         if (accommodation.isReservationAutoAccepted()) {
             reservation.setStatus(ReservationStatus.Accepted);
 
-            if (availabilityPeriod.isPeriodEqualTo(period))
-                accommodation.removeAvailabilityPeriod(availabilityPeriod);
-            else if (availabilityPeriod.periodOverlapsBottomOnly(period))
-                availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
-            else if (availabilityPeriod.periodOverlapsTopOnly(period))
-                availabilityPeriod.getPeriod().setStartDate(period.getEndDate().plusDays(1));
-            else if (availabilityPeriod.periodExclusivelyOverlaps(period)) {
-                LocalDate availabilityPeriodEndDate = availabilityPeriod.getPeriod().getEndDate();
-                availabilityPeriod.getPeriod().setEndDate(period.getStartDate().minusDays(1));
-                 accommodation.addAvailabilityPeriod(
-                         new AvailabilityPeriod(
-                                 availabilityPeriod.getPrice(),
-                                 new Period(period.getEndDate().plusDays(1), availabilityPeriodEndDate)
-                         )
-                 );
-            }
-            accommodationService.save(accommodation);
+            rearrangeAvailabilityPeriod(accommodation, period, reservedAvailabilityPeriod);
+
+            declineIntersectingReservations(reservation);
         }
 
         reservationRepository.save(reservation);
@@ -258,6 +276,93 @@ public class ReservationServiceImpl implements ReservationService {
         );
 
         accommodationService.save(accommodation);
+    }
+
+    @Override
+    public void acceptReservation(Long id, HttpServletRequest httpServletRequest) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
+
+        Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot accept reservations."));
+
+        if (owner.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A blocked owner cannot accept reservations.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(owner);
+        if (accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified owner cannot accept reservations.");
+
+        if (!owner.owns(reservation.getAccommodation()))
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Only the owner of the reserved accommodation can accept it's reservations.");
+
+        if (reservation.getStatus() != ReservationStatus.Waiting)
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Reservation has already been accepted, declined or cancelled");
+
+        if (reservation.hasBegun())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Reservation has already begun and cannot be accepted.");
+
+        reservation.setStatus(ReservationStatus.Accepted);
+
+        Accommodation accommodation = reservation.getAccommodation();
+
+        Period period = reservation.getPeriod();
+        AvailabilityPeriod reservedAvailabilityPeriod = accommodation
+                .getAvailabilityPeriods()
+                .stream()
+                .filter(availabilityPeriod -> availabilityPeriod.canFitPeriod(period))
+                .findFirst()
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.BAD_REQUEST,
+                        "This accommodation is not available in the requested period."));
+
+        rearrangeAvailabilityPeriod(accommodation, period, reservedAvailabilityPeriod);
+
+        declineIntersectingReservations(reservation);
+
+        reservationRepository.save(reservation);
+    }
+
+    @Override
+    public void declineReservation(Long id, HttpServletRequest httpServletRequest) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND, "Reservation not found."));
+
+        Owner owner = (Owner) userService.findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(httpServletRequest)))
+                .orElseThrow(() -> new HttpTransferException(HttpStatus.NOT_FOUND,
+                        "A non-existent owner cannot decline reservations."));
+
+        if (owner.isBlocked())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A blocked owner cannot decline reservations.");
+
+        Optional<AccountVerificator> accountVerificatorOptional = accountVerificatorService.findOneByUser(owner);
+        if (accountVerificatorOptional.isEmpty() || !accountVerificatorOptional.get().isVerified())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "A non-verified owner cannot decline reservations.");
+
+        if (!owner.owns(reservation.getAccommodation()))
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Only the owner of the reserved accommodation can decline it's reservations.");
+
+        if (reservation.getStatus() != ReservationStatus.Waiting)
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Reservation has already been accepted, denied or cancelled");
+
+        if (reservation.hasBegun())
+            throw new HttpTransferException(HttpStatus.BAD_REQUEST,
+                    "Reservation has already begun and cannot be declined.");
+
+        reservation.setStatus(ReservationStatus.Declined);
+
+        reservationRepository.save(reservation);
     }
 
     @Override

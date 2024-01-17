@@ -89,6 +89,28 @@ public class ReservationController {
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
+    @PutMapping(value = "/{id}/status/accepted", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<ReservationStatusDTO> acceptReservation(
+            @PathVariable Long id,
+            HttpServletRequest httpServletRequest
+    ) {
+        reservationService.acceptReservation(id, httpServletRequest);
+
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Accepted), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/status/declined", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<ReservationStatusDTO> declineReservation(
+            @PathVariable Long id,
+            HttpServletRequest httpServletRequest
+    ) {
+        reservationService.declineReservation(id, httpServletRequest);
+
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Declined), HttpStatus.OK);
+    }
+
     @PutMapping(value = "/{id}/status/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationStatusDTO> updateReservation(@PathVariable Long id,
                                                                   HttpServletRequest httpServletRequest) {
