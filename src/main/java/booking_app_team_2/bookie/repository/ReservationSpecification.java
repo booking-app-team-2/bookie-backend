@@ -11,12 +11,18 @@ public class ReservationSpecification {
         return (root, query, criteriaBuilder) -> {
             Join<Reservation, Accommodation> accommodation = root.join("accommodation");
 
-            return criteriaBuilder.like(accommodation.get("name"), "%" + accommodationNameSubstring + "%");
+            return criteriaBuilder.like(
+                    criteriaBuilder.upper(accommodation.get("name")),
+                    "%" + accommodationNameSubstring.toUpperCase() + "%"
+            );
         };
     }
 
     public static Specification<Reservation> hasPeriodBetween(Period searchPeriod) {
         return (root, query, criteriaBuilder) -> {
+            if (searchPeriod == null)
+                return criteriaBuilder.and();
+
             Join<Reservation, Period> period = root.join("period");
 
             return criteriaBuilder
@@ -43,5 +49,9 @@ public class ReservationSpecification {
 
     public static Specification<Reservation> hasReserveeEqualTo(Guest reservee) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("reservee"), reservee);
+    }
+
+    public static Specification<Reservation> hasAccommodationOwnerEqualTo(Owner owner) {
+        return (root, query, criteriaBuilder) -> root.get("accommodation").in(owner.getAccommodations());
     }
 }

@@ -20,4 +20,6 @@ public interface ReservationRepository extends GenericRepository<Reservation>, J
     List<Reservation> findReservationsByAccommodation_Id(Long id);
 
     List<Reservation> findAllByReserveeAndStatusAndAccommodation_Id(Guest reservee, ReservationStatus status, Long accommodationId);
+    
+    int countByStatusAndReservee(ReservationStatus status, Guest reservee);
 }
