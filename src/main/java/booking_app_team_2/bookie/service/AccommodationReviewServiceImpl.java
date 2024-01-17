@@ -75,12 +75,12 @@ public class AccommodationReviewServiceImpl implements AccommodationReviewServic
         List<Reservation> reservations = reservationRepository.findAllByReserveeAndStatusAndAccommodation_Id(accommodationReview.getReviewer(), ReservationStatus.Accepted, accommodationReview.getAccommodation().getId());
         if (!reservations.isEmpty()) {
             for (Reservation reservation : reservations) {
-                if (reservation.getPeriod().getEndDate().isBefore(LocalDate.now()) && ChronoUnit.DAYS.between(reservation.getPeriod().getEndDate(), LocalDate.now()) <= 7) {
-                    this.save(accommodationReview);
-                    return;
+                    if(reservation.isRecent()) {
+                        this.save(accommodationReview);
+                        return;
+                    }
                 }
             }
-        }
         throw new HttpTransferException(HttpStatus.FORBIDDEN, "This user does not meet the criteria to comment");
     }
 

@@ -158,7 +158,7 @@ VALUES (3, 4);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date - 10, current_date - 5, 300, false);
+VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date + 5, current_date + 9, 300, false);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
@@ -167,6 +167,10 @@ VALUES (nextval('sequence_reservation'), 2, 'Accepted', 1, 3, current_date + 13,
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
 VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, current_date + 5, current_date + 5, 30, false);
+
+INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
+                         is_deleted)
+VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date - 10, current_date -5, 300, false);
 
 INSERT INTO image(id,name,path,type,is_deleted)
 VALUES (nextval('sequence_image'),'slika11','src/main/resources/images','jpg',false);
