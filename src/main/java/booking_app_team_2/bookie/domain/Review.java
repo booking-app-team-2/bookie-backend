@@ -59,13 +59,13 @@ public abstract class Review {
                 .toLocalDateTime();
     }
 
-    public Review(ReviewDTO reviewDTO) {
-        this.grade = reviewDTO.getGrade();
-        this.comment = reviewDTO.getComment();
-        this.timestampOfCreation = Instant
+    public Review(ReviewDTO reviewDTO){
+        this.grade=reviewDTO.getGrade();
+        this.comment=reviewDTO.getComment();
+        this.timestampOfCreation=Instant
                 .ofEpochMilli(reviewDTO.getTimestampOfCreation())
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
-        this.isDeleted = false;
+        this.isDeleted=false;
     }
 }

@@ -81,6 +81,8 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/images/{imageId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/owner-reviews/{ownerId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/owner-reviews/{ownerId}/grade").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/accommodation-reviews/{accommodationId}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/accommodation-reviews/{accommodationId}/grade").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/accommodations/filter").permitAll()
                     .anyRequest().authenticated();
         });

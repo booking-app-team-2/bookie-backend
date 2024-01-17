@@ -221,5 +221,4 @@ INSERT INTO owner_review(reviewee_id, id)
 VALUES (4,4);
 
 
-
 -- TODO: Insert images and connect them to accommodations
