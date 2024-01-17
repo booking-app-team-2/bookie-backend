@@ -1,5 +1,6 @@
 package booking_app_team_2.bookie.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,9 @@ public class Owner extends User {
 
     @Column(name = "receives_accommodation_review_notifications", nullable = false)
     private boolean receivesAccommodationReviewNotifications = true;
+
+    @JsonIgnore
+    public boolean owns(Accommodation accommodation) {
+        return accommodations.contains(accommodation);
+    }
 }

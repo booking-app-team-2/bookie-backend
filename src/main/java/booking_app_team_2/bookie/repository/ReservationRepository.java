@@ -1,4 +1,5 @@
 package booking_app_team_2.bookie.repository;
+
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.Reservation;
@@ -15,7 +16,10 @@ public interface ReservationRepository extends GenericRepository<Reservation>, J
 
     List<Reservation> findAllByAccommodationAndStatusIn(Accommodation accommodation,
                                                         EnumSet<ReservationStatus> reservationStatuses);
+
     List<Reservation> findReservationsByAccommodation_Id(Long id);
 
+    List<Reservation> findAllByReserveeAndStatusAndAccommodation_Id(Guest reservee, ReservationStatus status, Long accommodationId);
+    
     int countByStatusAndReservee(ReservationStatus status, Guest reservee);
 }
