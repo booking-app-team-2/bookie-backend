@@ -18,9 +18,10 @@ public class GuestServiceImpl implements GuestService {
     private GuestRepository guestRepository;
 
     @Autowired
-    public GuestServiceImpl(GuestRepository guestRepository){
-        this.guestRepository=guestRepository;
+    public GuestServiceImpl(GuestRepository guestRepository) {
+        this.guestRepository = guestRepository;
     }
+
     @Override
     public List<Guest> findAll() {
         return guestRepository.findAll();
@@ -33,7 +34,7 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public Optional<Guest> findOne(Long id) {
-        return Optional.empty();
+        return guestRepository.findById(id);
     }
 
     @Override

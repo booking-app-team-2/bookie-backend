@@ -156,6 +156,9 @@ VALUES (nextval('sequence_availability_period'), 30, current_date + 1, current_d
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 10, current_date - 5, current_date - 1, false);
 
+INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
+VALUES (nextval('sequence_availability_period'), 16.782193, current_date + 13, current_date + 20, false);
+
 INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
 VALUES (1, 1);
 
@@ -167,6 +170,9 @@ VALUES (2, 3);
 
 INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
 VALUES (3, 4);
+
+INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
+VALUES (1, 5);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
@@ -192,6 +198,10 @@ INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reserve
                          is_deleted)
 VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, current_date + 1, current_date + 4, 120, false);
 
+INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
+                         is_deleted)
+VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date - 10, current_date -5, 300, false);
+
 INSERT INTO image(id,name,path,type,is_deleted)
 VALUES (nextval('sequence_image'),'slika11','src/main/resources/images','jpg',false);
 
@@ -203,3 +213,27 @@ VALUES (1,1);
 
 INSERT INTO accommodation_images(accommodation_id, image_id)
 VALUES (1,2);
+
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),4,'not bad dude','2024-01-11 12:30:45.123456',true,false,false,2);
+
+INSERT INTO accommodation_review(accommodation_id, id)
+VALUES (1,1);
+
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),3,'meh dude','2024-01-12 12:30:45.123456',false,false,false,2);
+
+INSERT INTO accommodation_review(accommodation_id, id)
+VALUES (1,2);
+
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),3,'meh dude','2024-01-12 12:30:45.123456',true,false,false,2);
+
+INSERT INTO owner_review(reviewee_id, id)
+VALUES (4,3);
+
+INSERT INTO review(id,grade,comment,timestamp_of_creation,is_approved,is_deleted,is_reported,reviewer_id)
+VALUES (nextval('sequence_review'),4,'not bad dude','2024-01-11 12:30:45.123456',false,false,false,2);
+
+INSERT INTO owner_review(reviewee_id, id)
+VALUES (4,4);
