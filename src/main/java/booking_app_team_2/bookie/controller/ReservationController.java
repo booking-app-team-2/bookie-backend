@@ -66,10 +66,12 @@ public class ReservationController {
     @GetMapping(value = "/status/cancelled")
     @PreAuthorize("hasAuthority('Owner')")
     public ResponseEntity<NumberOfCancelledReservationsDTO> getNumberOfCancelledReservationsForReservee(
-            @RequestParam(value = "reservee_id") Long reserveeId, HttpServletRequest httpServletRequest
+            @RequestParam(value = "reservee_id") Long reserveeId,
+            HttpServletRequest httpServletRequest
     ) {
         return new ResponseEntity<>(
-                reservationService.getNumberOfCancelledReservations(reserveeId, httpServletRequest), HttpStatus.OK
+                reservationService.getNumberOfCancelledReservations(reserveeId, httpServletRequest),
+                HttpStatus.OK
         );
     }
 
@@ -113,7 +115,7 @@ public class ReservationController {
     }
 
     @PutMapping(value = "/{id}/status/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationStatusDTO> updateReservation(@PathVariable Long id,
+    public ResponseEntity<ReservationStatusDTO> cancelReservation(@PathVariable Long id,
                                                                   HttpServletRequest httpServletRequest) {
         reservationService.cancelReservation(id, httpServletRequest);
 
