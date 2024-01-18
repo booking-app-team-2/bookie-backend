@@ -88,7 +88,17 @@ public class ReservationServiceImpl implements ReservationService {
             throw new HttpTransferException(HttpStatus.BAD_REQUEST,
                     "A non-verified guest cannot search and filter reservations.");
 
-        Period period = new Period(startTimestamp, endTimestamp);
+        Period period = null;
+
+        if (startTimestamp != null && endTimestamp != null) {
+            if (startTimestamp > endTimestamp)
+                throw new HttpTransferException(
+                        HttpStatus.BAD_REQUEST,
+                        "The reservation period start date must be earlier or equal to the reservation period end date."
+                );
+
+            period = new Period(startTimestamp, endTimestamp);
+        }
 
         return reservationRepository
                 .findAll(
@@ -121,8 +131,15 @@ public class ReservationServiceImpl implements ReservationService {
 
         Period period = null;
 
-        if (startTimestamp != null && endTimestamp != null)
+        if (startTimestamp != null && endTimestamp != null) {
+            if (startTimestamp > endTimestamp)
+                throw new HttpTransferException(
+                        HttpStatus.BAD_REQUEST,
+                        "The reservation period start date must be earlier or equal to the reservation period end date."
+                );
+
             period = new Period(startTimestamp, endTimestamp);
+        }
 
         return reservationRepository
                 .findAll(
