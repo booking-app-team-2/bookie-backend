@@ -19,7 +19,12 @@ public class ValidationErrorHandlerController {
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         StringBuilder stringBuilder = new StringBuilder();
 
-        errors.forEach(error -> stringBuilder.append(error.getDefaultMessage()).append("\n"));
+        for (int i = 0; i < errors.size(); i++) {
+            stringBuilder.append(errors.get(i).getDefaultMessage());
+
+            if (i != errors.size() - 1)
+                stringBuilder.append("\n");
+        }
 
         return new ResponseEntity<>(new ErrorMessage(stringBuilder.toString()), HttpStatus.BAD_REQUEST);
     }

@@ -5,6 +5,7 @@ import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.service.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -83,7 +84,7 @@ public class ReservationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Guest')")
-    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<ReservationDTO> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
         reservationService.createReservation(reservationDTO);
 
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
