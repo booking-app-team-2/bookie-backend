@@ -5,6 +5,7 @@ import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.service.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -65,10 +66,12 @@ public class ReservationController {
     @GetMapping(value = "/status/cancelled")
     @PreAuthorize("hasAuthority('Owner')")
     public ResponseEntity<NumberOfCancelledReservationsDTO> getNumberOfCancelledReservationsForReservee(
-            @RequestParam(value = "reservee_id") Long reserveeId, HttpServletRequest httpServletRequest
+            @RequestParam(value = "reservee_id") Long reserveeId,
+            HttpServletRequest httpServletRequest
     ) {
         return new ResponseEntity<>(
-                reservationService.getNumberOfCancelledReservations(reserveeId, httpServletRequest), HttpStatus.OK
+                reservationService.getNumberOfCancelledReservations(reserveeId, httpServletRequest),
+                HttpStatus.OK
         );
     }
 
@@ -83,7 +86,7 @@ public class ReservationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Guest')")
-    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<ReservationDTO> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
         reservationService.createReservation(reservationDTO);
 
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
@@ -112,7 +115,7 @@ public class ReservationController {
     }
 
     @PutMapping(value = "/{id}/status/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationStatusDTO> updateReservation(@PathVariable Long id,
+    public ResponseEntity<ReservationStatusDTO> cancelReservation(@PathVariable Long id,
                                                                   HttpServletRequest httpServletRequest) {
         reservationService.cancelReservation(id, httpServletRequest);
 
