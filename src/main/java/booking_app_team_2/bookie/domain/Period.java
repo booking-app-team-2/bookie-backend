@@ -66,4 +66,8 @@ public class Period {
     public boolean isEqualTo(Period period) {
         return startDate.isEqual(period.getStartDate()) && endDate.isEqual(period.getEndDate());
     }
+
+    public boolean hasBegun() {
+        return startDate.isBefore(LocalDate.now()) || startDate.isEqual(LocalDate.now());
+    }
 }
