@@ -2,11 +2,10 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.ReservationStatus;
-import booking_app_team_2.bookie.dto.ReservationGuestDTO;
-import booking_app_team_2.bookie.dto.ReservationStatusDTO;
-import booking_app_team_2.bookie.dto.ReservationDTO;
+import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.service.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,18 +40,39 @@ public class ReservationController {
             ) List<ReservationStatus> statuses,
             HttpServletRequest httpServletRequest) {
         return new ResponseEntity<>(
-                reservationService.findAll(name, startTimestamp, endTimestamp, statuses, httpServletRequest),
+                reservationService.findAllForGuest(name, startTimestamp, endTimestamp, statuses, httpServletRequest),
                 HttpStatus.OK
         );
     }
 
-    @GetMapping(value = "/cancelled")
-    public ResponseEntity<Integer> getNumberOfCancelledReservationsForReservee(@RequestParam Long reserveeId) {
-        Guest reservee = new Guest();
-        if (reservee.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping(value = "/accommodation/owner")
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<Collection<ReservationOwnerDTO>> searchAndFilterReservationsOwner (
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "start_timestamp", required = false) Long startTimestamp,
+            @RequestParam(value = "end_timestamp", required = false) Long endTimestamp,
+            @RequestParam(
+                    value = "status",
+                    required = false,
+                    defaultValue = "Waiting, Accepted, Declined, Cancelled"
+            ) List<ReservationStatus> statuses,
+            HttpServletRequest httpServletRequest) {
+        return new ResponseEntity<>(
+                reservationService.findAllForOwner(name, startTimestamp, endTimestamp, statuses, httpServletRequest),
+                HttpStatus.OK
+        );
+    }
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    @GetMapping(value = "/status/cancelled")
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<NumberOfCancelledReservationsDTO> getNumberOfCancelledReservationsForReservee(
+            @RequestParam(value = "reservee_id") Long reserveeId,
+            HttpServletRequest httpServletRequest
+    ) {
+        return new ResponseEntity<>(
+                reservationService.getNumberOfCancelledReservations(reserveeId, httpServletRequest),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping(value = "/accepted")
@@ -66,21 +86,40 @@ public class ReservationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Guest')")
-    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<ReservationDTO> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
         reservationService.createReservation(reservationDTO);
 
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationStatusDTO> updateReservation(@RequestBody ReservationStatusDTO reservationDTO,
-                                                            @PathVariable Long id) {
-        ReservationStatusDTO reservationDTO1 = new ReservationStatusDTO();
-        if (reservationDTO1.equals(null))
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PutMapping(value = "/{id}/status/accepted", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<ReservationStatusDTO> acceptReservation(
+            @PathVariable Long id,
+            HttpServletRequest httpServletRequest
+    ) {
+        reservationService.acceptReservation(id, httpServletRequest);
 
-        return new ResponseEntity<>(reservationDTO1, HttpStatus.OK);
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Accepted), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/status/declined", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<ReservationStatusDTO> declineReservation(
+            @PathVariable Long id,
+            HttpServletRequest httpServletRequest
+    ) {
+        reservationService.declineReservation(id, httpServletRequest);
+
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Declined), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/status/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReservationStatusDTO> cancelReservation(@PathVariable Long id,
+                                                                  HttpServletRequest httpServletRequest) {
+        reservationService.cancelReservation(id, httpServletRequest);
+
+        return new ResponseEntity<>(new ReservationStatusDTO(ReservationStatus.Cancelled), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
