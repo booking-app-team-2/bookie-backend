@@ -13,6 +13,7 @@ public interface OwnerReviewService extends GenericService<OwnerReview> {
     void addOwnerReview(OwnerReview ownerReview);
 
     List<OwnerReview> findUnapprovedReviews();
+    List<OwnerReview> findReportedReviews();
 
     void approveReview(Long reviewId);
     void reportReview(Long reviewId);
