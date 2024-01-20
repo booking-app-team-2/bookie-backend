@@ -11,7 +11,6 @@ import java.time.ZoneId;
 
 @NoArgsConstructor
 @Getter
-@NoArgsConstructor
 public class PeriodDTO {
 
     @TimestampNotBeforeToday(message = "The period start date must not be earlier than today.")
