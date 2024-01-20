@@ -15,6 +15,7 @@ public class ReviewDTO {
     private String comment;
     private Long timestampOfCreation;
     private Long reviewerId;
+    private String reviewerName="";
 
     @JsonIgnore
     public ReviewDTO(Review review) {
@@ -23,5 +24,6 @@ public class ReviewDTO {
         comment = review.getComment();
         timestampOfCreation = review.getTimestampOfCreation().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         reviewerId = review.getReviewer().getId();
+        reviewerName = review.getReviewer().getName();
     }
 }

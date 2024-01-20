@@ -6,6 +6,7 @@ import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.dto.AccommodationReviewDTO;
 import booking_app_team_2.bookie.dto.PeriodDTO;
 import booking_app_team_2.bookie.dto.UserDTO;
+import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.GuestRepository;
 import booking_app_team_2.bookie.service.AccommodationReviewService;
 import booking_app_team_2.bookie.service.AccommodationService;
@@ -72,6 +73,21 @@ public class AccommodationReviewController {
         return new ResponseEntity<>(accommodationReviewDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/reported", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<Collection<AccommodationReviewDTO>> getReportedReviews() {
+        Collection<AccommodationReview> accommodationReviews = accommodationReviewService.findReportedReviews();
+        Collection<AccommodationReviewDTO> accommodationReviewDTOS= new ArrayList<>(Collections.emptyList());
+        for (AccommodationReview accommodationReview : accommodationReviews) {
+            AccommodationReviewDTO reviewDTO = new AccommodationReviewDTO(accommodationReview);
+            accommodationReviewDTOS.add(reviewDTO);
+        }
+        if(accommodationReviewDTOS.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(accommodationReviewDTOS, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Guest')")
     public ResponseEntity<AccommodationReviewDTO> createReview(@RequestBody AccommodationReviewDTO accommodationReviewDTO) {
@@ -91,14 +107,6 @@ public class AccommodationReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationReview> reportReview(@RequestBody AccommodationReview review, @PathVariable Long id) {
-        AccommodationReview accommodationReview = new AccommodationReview();
-        if (accommodationReview.equals(null)) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(accommodationReview, HttpStatus.OK);
-    }
 
     @DeleteMapping(value = "/unapproved/{id}")
     public ResponseEntity<Void> denyReview(@PathVariable Long id) {
@@ -124,7 +132,7 @@ public class AccommodationReviewController {
     }
     @DeleteMapping(value = "reported/{id}")
     @PreAuthorize("hasAuthority('Admin')")
-    public ResponseEntity<String> deleteReportedReview(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReportedReview(@PathVariable Long id) {
         Optional<AccommodationReview> accommodationReview=accommodationReviewService.findOne(id);
         if(accommodationReview.isPresent()){
             if(accommodationReview.get().isReported()){
@@ -132,6 +140,6 @@ public class AccommodationReviewController {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>("Review is not reported",HttpStatus.FORBIDDEN);
+        throw new HttpTransferException(HttpStatus.FORBIDDEN, "Review is not reported");
     }
 }

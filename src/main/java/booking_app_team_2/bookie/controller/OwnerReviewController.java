@@ -5,6 +5,7 @@ import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.domain.OwnerReview;
 import booking_app_team_2.bookie.domain.Review;
 import booking_app_team_2.bookie.dto.OwnerReviewDTO;
+import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.service.GuestService;
 import booking_app_team_2.bookie.service.OwnerReviewService;
 import booking_app_team_2.bookie.service.OwnerService;
@@ -71,6 +72,21 @@ public class OwnerReviewController {
         return new ResponseEntity<>(ownerReviewDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/reported", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<Collection<OwnerReviewDTO>> getReportedReviews() {
+        Collection<OwnerReview> ownerReviews = ownerReviewService.findReportedReviews();
+        Collection<OwnerReviewDTO> ownerReviewDTOS = new ArrayList<>(Collections.emptyList());
+        for (OwnerReview ownerReview : ownerReviews) {
+            OwnerReviewDTO ownerReviewDTO = new OwnerReviewDTO(ownerReview);
+            ownerReviewDTOS.add(ownerReviewDTO);
+        }
+        if (ownerReviewDTOS.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(ownerReviewDTOS, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/reported/{ownerId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OwnerReviewDTO>> getOwnersReportedReviews(@PathVariable Long ownerId) {
         Collection<OwnerReviewDTO> ownerReviews = Collections.emptyList();
@@ -114,7 +130,7 @@ public class OwnerReviewController {
 
     @DeleteMapping(value = "reported/{id}")
     @PreAuthorize("hasAuthority('Admin')")
-    public ResponseEntity<String> deleteReportedReview(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReportedReview(@PathVariable Long id) {
         Optional<OwnerReview> optionalOwnerReview=ownerReviewService.findOne(id);
         if(optionalOwnerReview.isPresent()){
             if(optionalOwnerReview.get().isReported()){
@@ -122,7 +138,7 @@ public class OwnerReviewController {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>("Review is not reported",HttpStatus.FORBIDDEN);
+        throw new HttpTransferException(HttpStatus.FORBIDDEN, "Review is not reported");
     }
 
     @PutMapping(value = "/{id}")

@@ -11,7 +11,9 @@ import java.time.ZoneId;
 
 @NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class PeriodDTO {
+
     @TimestampNotBeforeToday(message = "The period start date must not be earlier than today.")
     private long startTimestamp;
     @TimestampNotBeforeToday(message = "The period end date must not be earlier than today.")
@@ -21,7 +23,7 @@ public class PeriodDTO {
     private long convertLocalDateToTimestamp(LocalDate localDate) {
         return localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
-
+    
     public PeriodDTO(Period period) {
         startTimestamp = convertLocalDateToTimestamp(period.getStartDate());
         endTimestamp = convertLocalDateToTimestamp(period.getEndDate());
