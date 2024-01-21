@@ -2,6 +2,11 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.Owner;
+import booking_app_team_2.bookie.domain.User;
+import booking_app_team_2.bookie.dto.UserDTO;
+import booking_app_team_2.bookie.exception.HttpTransferException;
+import booking_app_team_2.bookie.service.OwnerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +14,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/owners")
 public class OwnerController {
+
+    private OwnerService ownerService;
+
+    @Autowired
+    public OwnerController(OwnerService ownerService){
+        this.ownerService=ownerService;
+    }
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Owner>> getOwners() {
         Collection<Owner> owners = Collections.emptyList();
@@ -27,6 +40,12 @@ public class OwnerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(owner, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "accommodation/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> getOwnerByAccommodation(@PathVariable Long accommodationId) {
+        Long ownerId=ownerService.findIdByAccommodationId(accommodationId);
+        return new ResponseEntity<>(ownerId, HttpStatus.OK);
     }
 
     @GetMapping(value = "/report",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)

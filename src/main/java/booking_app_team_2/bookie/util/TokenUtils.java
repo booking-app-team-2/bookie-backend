@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -22,11 +23,18 @@ public class TokenUtils {
     public String secret;
 
     @Getter
+    @Value("86400000")
+    private int validityPeriodMobile;
+
+    @Getter
     @Value("1800000")
-    private int validityPeriod;
+    private int validityPeriodWeb;
 
     @Value("Authorization")
     private String authorizationHeader;
+
+    @Setter
+    private String userAgent = "";
 
     private static final String AUDIENCE_UNKNOWN = "unknown";
     private static final String AUDIENCE_MOBILE = "mobile";
@@ -49,13 +57,22 @@ public class TokenUtils {
                 .compact();
     }
 
-    // TODO: Return correct audience based on device from which the request was issued
+    public int getValidityPeriod() {
+        if (userAgent.equals("Mobile-Android"))
+            return validityPeriodMobile;
+        return validityPeriodWeb;
+    }
+
     private String generateAudience() {
+        if (userAgent.equals("Mobile-Android"))
+            return AUDIENCE_MOBILE;
         return AUDIENCE_WEB;
     }
 
     private Date generateExpirationDate() {
-        return new Date(new Date().getTime() + validityPeriod);
+        if (userAgent.equals("Mobile-Android"))
+            return new Date(new Date().getTime() + validityPeriodMobile);
+        return new Date(new Date().getTime() + validityPeriodWeb);
     }
 
     public String getAuthorizationHeaderFromHeader(HttpServletRequest request) {
@@ -84,6 +101,7 @@ public class TokenUtils {
     public String getUsernameFromToken(String token) {
         try {
             final Claims claims = this.getAllClaimsFromToken(token);
+            assert claims != null;
             return claims.getSubject();
         } catch (ExpiredJwtException ex) {
             throw ex;
@@ -95,6 +113,7 @@ public class TokenUtils {
     public Date getIssuedAtDateFromToken(String token) {
         try {
             final Claims claims = this.getAllClaimsFromToken(token);
+            assert claims != null;
             return claims.getIssuedAt();
         } catch (ExpiredJwtException ex) {
             throw ex;
@@ -106,6 +125,7 @@ public class TokenUtils {
     public String getAudienceFromToken(String token) {
         try {
             final Claims claims = this.getAllClaimsFromToken(token);
+            assert claims != null;
             return claims.getAudience();
         } catch (ExpiredJwtException ex) {
             throw ex;
@@ -117,7 +137,20 @@ public class TokenUtils {
     public Date getExpirationDateFromToken(String token) {
         try {
             final Claims claims = this.getAllClaimsFromToken(token);
+            assert claims != null;
             return claims.getExpiration();
+        } catch (ExpiredJwtException ex) {
+            throw ex;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Long getIdFromToken(String token) {
+        try {
+            final Claims claims = getAllClaimsFromToken(token);
+            assert claims != null;
+            return claims.get("id", Long.class);
         } catch (ExpiredJwtException ex) {
             throw ex;
         } catch (Exception e) {

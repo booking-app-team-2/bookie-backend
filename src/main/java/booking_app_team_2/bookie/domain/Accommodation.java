@@ -99,4 +99,5 @@ public class Accommodation {
     public boolean canAccommodate(int numberOfGuests) {
         return minimumGuests <= numberOfGuests && maximumGuests >= numberOfGuests;
     }
+
 }

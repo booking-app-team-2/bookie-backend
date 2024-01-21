@@ -6,6 +6,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @NoArgsConstructor
 @Getter
@@ -55,5 +58,27 @@ public class Reservation {
         this.reservee = reservee;
         this.period = period;
         this.price = price;
+    }
+
+    public boolean hasBegun() {
+        return period.hasBegun();
+    }
+
+    public boolean isCancellable() {
+        return status == ReservationStatus.Accepted &&
+                LocalDate
+                        .now()
+                        .isBefore(period.getStartDate().minusDays(accommodation.getReservationCancellationDeadline()));
+    }
+
+    public BigDecimal getPricePerDayPerGuest() {
+        int priceDivisor = accommodation.isPricedPerGuest() ? numberOfGuests : 1;
+        return price
+                .divide(BigDecimal.valueOf(period.getInDays()), 2, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(priceDivisor), 2, RoundingMode.HALF_UP);
+    }
+
+    public boolean isRecent(){
+        return period.getEndDate().isBefore(LocalDate.now()) && ChronoUnit.DAYS.between(period.getEndDate(), LocalDate.now()) <= 7;
     }
 }

@@ -4,6 +4,7 @@ import booking_app_team_2.bookie.domain.User;
 import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.service.UserService;
+import jakarta.validation.Valid;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
     public ResponseEntity<UserBasicInfoDTO> updateUserBasicInfo(@PathVariable Long id,
-                                                                @RequestBody UserBasicInfoDTO userBasicInfoDTO) {
+                                                                @Valid @RequestBody UserBasicInfoDTO userBasicInfoDTO) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
             throw new HttpTransferException(HttpStatus.NOT_FOUND, "User not found.");
@@ -63,8 +64,10 @@ public class UserController {
     @PutMapping(value = "/{id}/telephone", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
-    public ResponseEntity<UserTelephoneDTO> updateUserContactInfo(@PathVariable Long id,
-                                                                    @RequestBody UserTelephoneDTO userTelephoneDTO) {
+    public ResponseEntity<UserTelephoneDTO> updateUserContactInfo(
+            @PathVariable Long id,
+            @Valid @RequestBody UserTelephoneDTO userTelephoneDTO
+    ) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
             throw new HttpTransferException(HttpStatus.NOT_FOUND, "User not found.");
@@ -81,8 +84,10 @@ public class UserController {
     @PutMapping(value = "/{id}/address-of-residence", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
-    public ResponseEntity<UserAddressDTO> updateUserAddressOfResidence(@PathVariable Long id,
-                                                                     @RequestBody UserAddressDTO userAddressDTO) {
+    public ResponseEntity<UserAddressDTO> updateUserAddressOfResidence(
+            @PathVariable Long id,
+            @Valid @RequestBody UserAddressDTO userAddressDTO
+    ) {
         Optional<User> userOptional = userService.findOne(id);
         if (userOptional.isEmpty())
             throw new HttpTransferException(HttpStatus.NOT_FOUND, "User not found.");
@@ -100,7 +105,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('Guest', 'Owner', 'Admin')")
     public ResponseEntity<UserPasswordDTO> updateUserPassword(@PathVariable Long id,
-                                                             @RequestBody UserPasswordDTO userPasswordDTO) {
+                                                              @Valid @RequestBody UserPasswordDTO userPasswordDTO) {
         userService.updatePassword(id, userPasswordDTO);
 
         return new ResponseEntity<>(userPasswordDTO, HttpStatus.OK);

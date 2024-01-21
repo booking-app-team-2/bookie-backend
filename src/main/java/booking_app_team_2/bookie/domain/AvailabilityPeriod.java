@@ -1,8 +1,8 @@
 package booking_app_team_2.bookie.domain;
 
+import booking_app_team_2.bookie.dto.AvailabilityPeriodDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +24,11 @@ import java.math.BigDecimal;
 @Table(name = "availability_period")
 public class AvailabilityPeriod {
     @Id
-    @SequenceGenerator(name = "availability_period_seq", sequenceName = "sequence_availability_period", allocationSize = 1)
+    @SequenceGenerator(
+            name = "availability_period_seq",
+            sequenceName = "sequence_availability_period",
+            allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "availability_period_seq")
     @Column(unique = true, nullable = false)
     private Long id = null;
@@ -42,6 +46,11 @@ public class AvailabilityPeriod {
     public AvailabilityPeriod(BigDecimal price, Period period) {
         this.price = price;
         this.period = period;
+    }
+
+    public AvailabilityPeriod(AvailabilityPeriodDTO availabilityPeriodDTO) {
+        this.price = availabilityPeriodDTO.getPrice();
+        this.period = new Period(availabilityPeriodDTO.getPeriod());
     }
 
     @JsonIgnore
