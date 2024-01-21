@@ -100,6 +100,11 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
     }
 
     @Override
+    public List<OwnerReview> findReportedReviews() {
+        return ownerReviewRepository.findAllByIsReported(true);
+    }
+
+    @Override
     public void approveReview(Long reviewId) {
         Optional<OwnerReview> optionalOwnerReview = ownerReviewRepository.findById(reviewId);
         if (optionalOwnerReview.isEmpty()) {

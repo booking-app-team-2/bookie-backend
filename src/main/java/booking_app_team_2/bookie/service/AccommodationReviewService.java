@@ -16,4 +16,5 @@ public interface AccommodationReviewService extends GenericService<Accommodation
     void reportReview(Long reviewId);
 
     List<AccommodationReview> findUnapprovedReviews();
+    List<AccommodationReview> findReportedReviews();
 }

@@ -57,9 +57,11 @@ public class AccommodationServiceImpl implements AccommodationService {
         for (Accommodation accommodation : accommodations) {
             if ((numberOfGuests >= accommodation.getMinimumGuests() && numberOfGuests <= accommodation.getMaximumGuests()) || (numberOfGuests == 0)) {
                 for (AvailabilityPeriod availabilityPeriod : accommodation.getAvailabilityPeriods()) {
-                    if (availabilityPeriod.getPeriod().overlaps(period)) {
-                        newAccommodations.add(accommodation);
-                        break;
+                    if (availabilityPeriod.getPeriod().overlaps(period) || (startDate==0 && endDate==0)) {
+                        if(accommodation.getLocation().isInProximity(location) || location.isEmpty()){
+                            newAccommodations.add(accommodation);
+                            break;
+                        }
                     }
                 }
             }

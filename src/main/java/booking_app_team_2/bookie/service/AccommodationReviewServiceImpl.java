@@ -44,7 +44,7 @@ public class AccommodationReviewServiceImpl implements AccommodationReviewServic
 
     @Override
     public Optional<AccommodationReview> findOne(Long id) {
-        return Optional.empty();
+        return accommodationReviewRepository.findById(id);
     }
 
     @Override
@@ -107,6 +107,12 @@ public class AccommodationReviewServiceImpl implements AccommodationReviewServic
     public List<AccommodationReview> findUnapprovedReviews() {
         return accommodationReviewRepository.findAllByIsApproved(false);
     }
+
+    @Override
+    public List<AccommodationReview> findReportedReviews() {
+        return accommodationReviewRepository.findAllByIsReported(true);
+    }
+
     @Override
     public void reportReview(Long reviewId) {
         Optional<AccommodationReview> optionalAccommodationReview = accommodationReviewRepository.findById(reviewId);

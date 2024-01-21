@@ -10,5 +10,6 @@ public interface OwnerReviewRepository extends GenericRepository<OwnerReview> {
     List<OwnerReview> findAllByReviewee_IdAndIsApproved(Long ownerId, boolean approved);
 
     List<OwnerReview> findAllByIsApproved(boolean approved);
+    List<OwnerReview> findAllByIsReported(boolean reported);
 
 }
