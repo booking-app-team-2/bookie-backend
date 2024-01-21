@@ -6,6 +6,7 @@ import booking_app_team_2.bookie.dto.UserRegistrationDTO;
 import booking_app_team_2.bookie.dto.UserTokenStateDTO;
 import booking_app_team_2.bookie.service.UserService;
 import booking_app_team_2.bookie.util.TokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,7 +41,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserTokenStateDTO> logIn(@RequestBody UserAuthenticationDTO userAuthenticationDTO) {
+    public ResponseEntity<UserTokenStateDTO> logIn(@RequestBody UserAuthenticationDTO userAuthenticationDTO,
+                                                   HttpServletRequest httpServletRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userAuthenticationDTO.getUsername(),
@@ -51,6 +53,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         User user = (User) authentication.getPrincipal();
+        tokenUtils.setUserAgent(httpServletRequest.getHeader("User-Agent"));
         String jWT = tokenUtils.generateToken(user);
         int validityPeriod = tokenUtils.getValidityPeriod();
 
