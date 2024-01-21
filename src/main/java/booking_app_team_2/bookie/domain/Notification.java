@@ -1,5 +1,6 @@
 package booking_app_team_2.bookie.domain;
 
+import booking_app_team_2.bookie.dto.NotificationDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,4 +37,11 @@ public class Notification {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    public Notification(NotificationDTO notificationDTO) {
+        this.id = notificationDTO.getId();
+        this.body = notificationDTO.getBody();
+        this.type = notificationDTO.getType();
+        this.isDeleted = false;
+    }
 }
