@@ -3,6 +3,7 @@ package booking_app_team_2.bookie.dto;
 import booking_app_team_2.bookie.domain.Period;
 import booking_app_team_2.bookie.validation.TimestampNotBeforeToday;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.ZoneId;
 
 @NoArgsConstructor
 @Getter
+@AllArgsConstructor
 public class PeriodDTO {
 
     @TimestampNotBeforeToday(message = "The period start date must not be earlier than today.")
