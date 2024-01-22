@@ -46,7 +46,7 @@ public class Location {
         return Objects.equals(city, getCityName());
     }
 
-    private String getCityName() {
+    public String getCityName() {
         try {
             String url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.latitude + "&lon=" + this.longitude;
             HttpClient httpClient = HttpClient.newHttpClient();
