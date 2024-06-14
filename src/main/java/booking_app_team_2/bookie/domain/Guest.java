@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.Set;
 
@@ -23,4 +22,13 @@ public class Guest extends User {
             inverseJoinColumns = @JoinColumn(name = "accommodation_id", referencedColumnName = "id", nullable = false)
     )
     private Set<Accommodation> favouriteAccommodations;
+
+    public Guest(String username, String password, String name, String surname, String addressOfResidence,
+                 String telephone, UserRole role, boolean receivesReservationRequestNotifications,
+                 Set<Accommodation> favouriteAccommodations) {
+        super(username, password, name, surname, addressOfResidence, telephone, role);
+
+        this.receivesReservationRequestNotifications = receivesReservationRequestNotifications;
+        this.favouriteAccommodations = favouriteAccommodations;
+    }
 }
