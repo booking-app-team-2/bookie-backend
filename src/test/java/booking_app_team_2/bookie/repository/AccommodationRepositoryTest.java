@@ -5,7 +5,6 @@ import booking_app_team_2.bookie.domain.AccommodationType;
 import booking_app_team_2.bookie.domain.Location;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,7 +19,6 @@ public class AccommodationRepositoryTest {
     private AccommodationRepository accommodationRepository;
 
     @Test
-    @Order(1)
     @DisplayName("Test save")
     public void testSave() {
         Accommodation accommodation =
