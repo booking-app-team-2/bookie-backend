@@ -55,6 +55,15 @@ public class ReservationServiceTest {
 
     @Test
     @Order(1)
+    @DisplayName("Test createReservation when reservation is automatically accepted")
+    public void testCreateReservationWhenReservationIsAutomaticallyAccepted() {
+
+    }
+
+    // TODO: Finish this
+
+    @Test
+    @Order(2)
     @DisplayName("Test acceptReservation")
     public void testAcceptReservation() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -128,7 +137,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     @DisplayName("Test acceptReservation when a reservation has not been found")
     public void testAcceptReservationWhenReservationHasNotBeenFound() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -149,7 +158,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     @DisplayName("Test acceptReservation when token is null")
     public void testAcceptReservationWhenTokenIsNull() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -175,7 +184,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     @DisplayName("Test acceptReservation when Id from token is null")
     public void testAcceptReservationWhenIdFromTokenIsNull() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -202,7 +211,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     @DisplayName("Test acceptReservation when owner does not exist")
     public void testAcceptReservationWhenOwnerDoesNotExist() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -229,7 +238,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("Test acceptReservation when owner is blocked")
     public void testAcceptReservationWhenOwnerIsBlocked() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -274,7 +283,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     @DisplayName("Test acceptReservation when owner has no verificator")
     public void testAcceptReservationWhenOwnerHasNoVerificator() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -320,7 +329,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     @DisplayName("Test acceptReservation when owner is not verified")
     public void testAcceptReservationWhenOwnerIsNotVerified() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -368,7 +377,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     @DisplayName("Test acceptReservation when owner does not own the reserved accommodation")
     public void testAcceptReservationWhenOwnerDoesNotOwnTheReservedAccommodation() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -421,7 +430,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     @DisplayName("Test acceptReservation when reservation is not on waiting")
     public void testAcceptReservationWhenReservationIsNotOnWaiting() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -475,7 +484,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(11)
+    @Order(12)
     @DisplayName("Test acceptReservation when reservation has begun")
     public void testAcceptReservationWhenReservationHasBegun() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -535,7 +544,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(12)
+    @Order(13)
     @DisplayName("Test acceptReservation when accommodation is not available in the reserved period")
     public void testAcceptReservationWhenAccommodationIsNotAvailableInReservedPeriod() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -609,7 +618,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(13)
+    @Order(14)
     @DisplayName("Test declineReservation")
     public void testDeclineReservation() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -670,7 +679,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(14)
+    @Order(15)
     @DisplayName("Test declineReservation when a reservation has not been found")
     public void testDeclineReservationWhenReservationNotFound() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -691,7 +700,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(15)
+    @Order(16)
     @DisplayName("Test declineReservation when token is null")
     public void testDeclineReservationWhenTokenIsNull() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -717,7 +726,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(16)
+    @Order(17)
     @DisplayName("Test declineReservation when Id from token is null")
     public void testDeclineReservationWhenIdFromTokenIsNull() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -744,7 +753,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(17)
+    @Order(18)
     @DisplayName("Test declineReservation when owner does not exist")
     public void testDeclineReservationWhenOwnerDoesNotExist() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -771,7 +780,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(18)
+    @Order(19)
     @DisplayName("Test declineReservation when owner is blocked")
     public void testDeclineReservationWhenOwnerIsBlocked() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -816,7 +825,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(19)
+    @Order(20)
     @DisplayName("Test declineReservation when owner has no verificator")
     public void testDeclineReservationWhenOwnerHasNoVerificator() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -862,7 +871,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(20)
+    @Order(21)
     @DisplayName("Test declineReservation when owner is not verified")
     public void testDeclineReservationWhenOwnerIsNotVerified() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -910,7 +919,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(21)
+    @Order(22)
     @DisplayName("Test declineReservation when owner does not own the reserved accommodation")
     public void testDeclineReservationWhenOwnerDoesNotOwnTheReservedAccommodation() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -963,7 +972,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(22)
+    @Order(23)
     @DisplayName("Test declineReservation when reservation is not on waiting")
     public void testDeclineReservationWhenReservationIsNotOnWaiting() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -1017,7 +1026,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @Order(23)
+    @Order(24)
     @DisplayName("Test declineReservation when reservation has begun")
     public void testDeclineReservationWhenReservationHasBegun() {
         MockHttpServletRequest request = new MockHttpServletRequest();

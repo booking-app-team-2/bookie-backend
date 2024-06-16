@@ -75,6 +75,7 @@ public class ReservationRepositoryTest {
                 .isEqualTo(reservation);
     }
 
+    // TODO: Finish this
     @Test
     @Order(4)
     @DisplayName("Test findAllByIntersectingPeriod when reservation ")
