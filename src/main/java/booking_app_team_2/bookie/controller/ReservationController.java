@@ -87,9 +87,7 @@ public class ReservationController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Guest')")
     public ResponseEntity<ReservationDTO> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
-        reservationService.createReservation(reservationDTO);
-
-        return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationService.createReservation(reservationDTO), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}/status/accepted", produces = MediaType.APPLICATION_JSON_VALUE)

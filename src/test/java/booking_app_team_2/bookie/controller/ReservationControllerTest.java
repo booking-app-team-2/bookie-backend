@@ -48,6 +48,7 @@ public class ReservationControllerTest {
         ReservationDTO reservationDTO =
                 new ReservationDTO(
                         2,
+                        null,
                         accommodationId,
                         3L,
                         new PeriodDTO(
@@ -69,6 +70,7 @@ public class ReservationControllerTest {
                                 ReservationDTO.class
                         );
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertEquals(Objects.requireNonNull(responseEntity.getBody()).getStatus(), ReservationStatus.Accepted);
         assertEquals(Objects.requireNonNull(responseEntity.getBody()).getAccommodationId(), accommodationId);
     }
 
@@ -85,6 +87,7 @@ public class ReservationControllerTest {
         ReservationDTO reservationDTO =
                 new ReservationDTO(
                         1,
+                        null,
                         accommodationId,
                         3L,
                         new PeriodDTO(
@@ -106,6 +109,7 @@ public class ReservationControllerTest {
                                 ReservationDTO.class
                         );
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertEquals(Objects.requireNonNull(responseEntity.getBody()).getStatus(), ReservationStatus.Waiting);
         assertEquals(Objects.requireNonNull(responseEntity.getBody()).getAccommodationId(), accommodationId);
     }
 

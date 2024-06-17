@@ -28,7 +28,7 @@ public interface ReservationService extends GenericService<Reservation> {
     NumberOfCancelledReservationsDTO getNumberOfCancelledReservations(Long reserveeId,
                                                                       HttpServletRequest httpServletRequest);
 
-    void createReservation(ReservationDTO reservationDTO);
+    ReservationDTO createReservation(ReservationDTO reservationDTO);
 
     void acceptReservation(Long id, HttpServletRequest httpServletRequest);
 
