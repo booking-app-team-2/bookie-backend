@@ -101,8 +101,8 @@ public class MyReservationsPage {
 
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
         javascriptExecutor.executeScript("arguments[0].scrollIntoView();", cancelButton);
-        new WebDriverWait(driver, Duration.ofSeconds(20)).until(ExpectedConditions.elementToBeClickable(cancelButton));
-        cancelButton.click();
+        new WebDriverWait(driver, Duration.ofSeconds(20)).until(ExpectedConditions.visibilityOf(cancelButton));
+        cancelButton.sendKeys(Keys.ENTER);
     }
 
     public Optional<WebElement> getFirstUncancellableReservation() {
@@ -167,8 +167,8 @@ public class MyReservationsPage {
 
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
         javascriptExecutor.executeScript("arguments[0].scrollIntoView();", cancelButton);
-        new WebDriverWait(driver, Duration.ofSeconds(20)).until(ExpectedConditions.elementToBeClickable(cancelButton));
-        cancelButton.click();
+        new WebDriverWait(driver, Duration.ofSeconds(20)).until(ExpectedConditions.visibilityOf(cancelButton));
+        cancelButton.sendKeys(Keys.ENTER);
     }
 
     public boolean hasReservationBeenCancelledCorrectly(boolean shouldReservationHaveBeenCancelled) {
