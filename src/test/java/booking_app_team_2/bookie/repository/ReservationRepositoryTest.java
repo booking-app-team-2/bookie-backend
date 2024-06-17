@@ -7,15 +7,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -75,12 +80,267 @@ public class ReservationRepositoryTest {
                 .isEqualTo(reservation);
     }
 
-    // TODO: Finish this
-    @Test
+    private static Stream<Arguments> argumentSource() {
+        return
+                Stream
+                        .of(
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .minusDays(22)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .minusDays(21)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                0
+                                        ),
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .minusDays(22)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .minusDays(17)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                1
+                                        ),
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .minusDays(17)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(23)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                2
+                                        ),
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(18)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(28)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                1
+                                        ),
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(28)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(29)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                0
+                                        ),
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(21)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(24)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                1
+                                        ),
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(23)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(30)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                1
+                                        ),
+                                Arguments
+                                        .arguments(
+                                                new Reservation(
+                                                        1,
+                                                        new Accommodation(),
+                                                        new Guest(),
+                                                        new Period(
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(22)
+                                                                        ),
+                                                                LocalDate
+                                                                        .from(
+                                                                                LocalDate
+                                                                                        .now()
+                                                                                        .atStartOfDay(
+                                                                                                ZoneId.systemDefault()
+                                                                                        )
+                                                                                        .plusDays(23)
+                                                                        )
+                                                        ),
+                                                        BigDecimal.valueOf(1)
+                                                ),
+                                                1
+                                        )
+                        );
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "argumentSource")
     @Order(4)
     @DisplayName("Test findAllByIntersectingPeriod")
-    public void testFindAllByIntersectingPeriod() {
+    public void testFindAllByIntersectingPeriod(Reservation reservation, int expectedNumberOfIntersectingReservations) {
+        Optional<Accommodation> accommodation = accommodationRepository.findById(1L);
+        if (accommodation.isEmpty())
+            throw new RuntimeException("Something went terribly wrong if the test got here...");
 
+        reservation.setId(0L);
+        reservation.setAccommodation(accommodation.get());
+        List<Reservation> reservations = reservationRepository.findAllByIntersectingPeriod(reservation);
+        assertEquals(expectedNumberOfIntersectingReservations, reservations.size());
+        reservations.forEach(foundReservation -> assertEquals(reservation.getStatus(), foundReservation.getStatus()));
     }
 
     @Test
