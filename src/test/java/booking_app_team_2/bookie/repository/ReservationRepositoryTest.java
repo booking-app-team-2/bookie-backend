@@ -78,7 +78,7 @@ public class ReservationRepositoryTest {
     // TODO: Finish this
     @Test
     @Order(4)
-    @DisplayName("Test findAllByIntersectingPeriod when reservation ")
+    @DisplayName("Test findAllByIntersectingPeriod")
     public void testFindAllByIntersectingPeriod() {
 
     }

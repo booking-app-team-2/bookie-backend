@@ -4,8 +4,10 @@ import booking_app_team_2.bookie.validation.StartTimestampBeforeEndTimestamp;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class ReservationDTO {
     @Min(value = 0, message = "The number of guests must not be less than 0.")
