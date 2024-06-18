@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 public class TokenUtils {
@@ -91,8 +92,6 @@ public class TokenUtils {
     private Claims getAllClaimsFromToken(String token) {
         try {
             return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-        } catch (ExpiredJwtException ex) {
-            throw ex;
         } catch (Exception e) {
             return null;
         }
@@ -149,10 +148,7 @@ public class TokenUtils {
     public Long getIdFromToken(String token) {
         try {
             final Claims claims = getAllClaimsFromToken(token);
-            assert claims != null;
-            return claims.get("id", Long.class);
-        } catch (ExpiredJwtException ex) {
-            throw ex;
+            return Objects.requireNonNull(claims).get("id", Long.class);
         } catch (Exception e) {
             return null;
         }

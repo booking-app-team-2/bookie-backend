@@ -37,4 +37,16 @@ public class Owner extends User {
     public boolean owns(Accommodation accommodation) {
         return accommodations.contains(accommodation);
     }
+
+    public Owner(Long id, String username, String password, String name, String surname, String addressOfResidence,
+                 String telephone, UserRole role, boolean isBlocked, Set<Accommodation> accommodations,
+                 boolean receivesReservationRequestNotifications, boolean receivesReservationCancellationNotifiactions,
+                 boolean receivesReviewNotifications, boolean receivesAccommodationReviewNotifications) {
+        super(id, username, password, name, surname, addressOfResidence, telephone, role, isBlocked);
+        this.accommodations = accommodations;
+        this.receivesReservationRequestNotifications = receivesReservationRequestNotifications;
+        this.receivesReservationCancellationNotifiactions = receivesReservationCancellationNotifiactions;
+        this.receivesReviewNotifications = receivesReviewNotifications;
+        this.receivesAccommodationReviewNotifications = receivesAccommodationReviewNotifications;
+    }
 }

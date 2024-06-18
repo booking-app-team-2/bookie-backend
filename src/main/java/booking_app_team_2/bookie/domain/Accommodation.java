@@ -88,6 +88,24 @@ public class Accommodation {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
+    public Accommodation(String name, String description, Location location, Set<Amenities> amenities,
+                         Set<Image> images, int minimumGuests, int maximumGuests, int reservationCancellationDeadline,
+                         AccommodationType type, boolean isPricedPerGuest, boolean isReservationAutoAccepted,
+                         Set<AvailabilityPeriod> availabilityPeriods) {
+        this.name = name;
+        this.location = location;
+        this.description = description;
+        this.amenities = amenities;
+        this.images = images;
+        this.minimumGuests = minimumGuests;
+        this.maximumGuests = maximumGuests;
+        this.reservationCancellationDeadline = reservationCancellationDeadline;
+        this.type = type;
+        this.isPricedPerGuest = isPricedPerGuest;
+        this.isReservationAutoAccepted = isReservationAutoAccepted;
+        this.availabilityPeriods = availabilityPeriods;
+    }
+
     public boolean addAvailabilityPeriod(AvailabilityPeriod availabilityPeriod) {
         return availabilityPeriods.add(availabilityPeriod);
     }

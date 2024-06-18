@@ -65,6 +65,18 @@ public class User implements UserDetails {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
+    public User(Long id, String username, String password, String name, String surname, String addressOfResidence, String telephone, UserRole role, boolean isBlocked) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.addressOfResidence = addressOfResidence;
+        this.telephone = telephone;
+        this.role = role;
+        this.isBlocked = isBlocked;
+    }
+
     public User(String username, String password, String name, String surname, String addressOfResidence,
                 String telephone, UserRole role) {
         this.username = username;
