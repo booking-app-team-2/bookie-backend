@@ -7,9 +7,11 @@ import lombok.Getter;
 @Getter
 public class AccommodationNameDTO {
     private final String name;
+    private final int reservationCancellationDeadline;
 
     @JsonIgnore
     public AccommodationNameDTO(Accommodation accommodation) {
         name = accommodation.getName();
+        reservationCancellationDeadline = accommodation.getReservationCancellationDeadline();
     }
 }
