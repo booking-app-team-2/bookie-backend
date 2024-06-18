@@ -222,7 +222,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void createReservation(ReservationDTO reservationDTO) {
+    public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         Optional<Accommodation> accommodationOptional =
                 accommodationService.findOne(reservationDTO.getAccommodationId());
         if (accommodationOptional.isEmpty())
@@ -278,7 +278,7 @@ public class ReservationServiceImpl implements ReservationService {
             declineIntersectingReservations(reservation);
         }
 
-        reservationRepository.save(reservation);
+        return new ReservationDTO(reservationRepository.save(reservation));
     }
 
     @Override

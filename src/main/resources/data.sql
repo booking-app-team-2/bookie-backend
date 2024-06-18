@@ -36,6 +36,24 @@ VALUES (nextval('sequence_user'), 'guestnoreservations@gmail.com',
         '$2a$10$xP789d3bmJNDtvBx/8mSXuEdV/ckuGPBDspgrEdqg3kKnV8t3XIBS', 'Guest', 'Guest', 'Placeholder', 'Placeholder',
         '2023-01-04', 'Guest', false, false);
 
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'blockedowner@gmail.com',
+        '$2a$10$few03YtTWb0Dewj4TOAwSuzCYBImAIEuaPDBnhGU7FcleFj4lTZpG', 'test', 'test', 'test', 'test', '2024-06-17',
+        'Owner', true, false);
+
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'ownerwithoutverificator@gmail.com',
+        '$2a$10$AC2r/Nv0uGB.ZO1l1v1y5u1NLr4qec1LcnfUhlzI3jcHF8.5Cxi4m', 'test', 'test', 'test', 'test', '2024-06-17',
+        'Owner', false, false);
+
+INSERT INTO user_bookie (id, username, password, name, surname, address_of_residence, telephone,
+                         last_password_reset_date, role, is_blocked, is_deleted)
+VALUES (nextval('sequence_user'), 'nonverifiedowner@gmail.com',
+        '$2a$10$Mr96iDN8aqy/oP4BO.YPTeayn7SRRCvVIWfcxCyGcZUq/JtjnCtzC', 'test', 'test', 'test', 'test', '2024-06-17',
+        'Owner', false, false);
+
 INSERT INTO guest (id, receives_reservation_request_notifications)
 VALUES (2, true);
 
@@ -57,6 +75,18 @@ VALUES (6, true, true, true, true);
 INSERT INTO guest (id, receives_reservation_request_notifications)
 VALUES (7, true);
 
+INSERT INTO owner (id, receives_reservation_request_notifications, receives_reservation_cancellation_notifications,
+                   receives_review_notifications, receives_accommodation_review_notifications)
+VALUES (8, true, true, true, true);
+
+INSERT INTO owner (id, receives_reservation_request_notifications, receives_reservation_cancellation_notifications,
+                   receives_review_notifications, receives_accommodation_review_notifications)
+VALUES (9, true, true, true, true);
+
+INSERT INTO owner (id, receives_reservation_request_notifications, receives_reservation_cancellation_notifications,
+                   receives_review_notifications, receives_accommodation_review_notifications)
+VALUES (10, true, true, true, true);
+
 INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:14:30', true, 1, false);
 
@@ -77,6 +107,12 @@ VALUES (nextval('sequence_account_verificator'), timestamp '2023-12-09 22:16:48'
 
 INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
 VALUES (nextval('sequence_account_verificator'), timestamp '2024-01-04 16:29:00', true, 7, false);
+
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2024-06-17 00:00:00', true, 8, false);
+
+INSERT INTO account_verificator (id, timestamp_of_registration, is_verified, user_id, is_deleted)
+VALUES (nextval('sequence_account_verificator'), timestamp '2024-06-17 00:00:00', false, 10, false);
 
 INSERT INTO accommodation (id, name, description, latitude, longitude, minimum_guests, maximum_guests,
                            reservation_cancellation_deadline, type, is_priced_per_guest, is_approved,
@@ -159,6 +195,9 @@ VALUES (nextval('sequence_availability_period'), 10, current_date - 5, current_d
 INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
 VALUES (nextval('sequence_availability_period'), 16.782193, current_date + 13, current_date + 20, false);
 
+INSERT INTO availability_period (id, price, start_date, end_date, is_deleted)
+VALUES (nextval('sequence_availability_period'), 12.5, current_date - 30, current_date - 15, false);
+
 INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
 VALUES (1, 1);
 
@@ -173,6 +212,9 @@ VALUES (3, 4);
 
 INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
 VALUES (1, 5);
+
+INSERT INTO accommodation_availability_periods (accommodation_id, availability_period_id)
+VALUES (1, 6);
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
@@ -200,7 +242,15 @@ VALUES (nextval('sequence_reservation'), 1, 'Waiting', 2, 3, current_date + 1, c
 
 INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
                          is_deleted)
-VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date - 10, current_date -5, 300, false);
+VALUES (nextval('sequence_reservation'), 4, 'Accepted', 1, 3, current_date - 10, current_date - 5, 300, false);
+
+INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
+                         is_deleted)
+VALUES (nextval('sequence_reservation'), 4, 'Waiting', 1, 3, current_date - 20, current_date - 15, 300, false);
+
+INSERT INTO reservation (id, number_of_guests, status, accommodation_id, reservee_id, start_date, end_date, price,
+                         is_deleted)
+VALUES (nextval('sequence_reservation'), 4, 'Waiting', 1, 3, current_date + 21, current_date + 24, 200, false);
 
 INSERT INTO image(id,name,path,type,is_deleted)
 VALUES (nextval('sequence_image'),'slika11','src/main/resources/images','jpg',false);
