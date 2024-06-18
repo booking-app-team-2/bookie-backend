@@ -1,6 +1,8 @@
 package booking_app_team_2.bookie.service;
 
 import booking_app_team_2.bookie.domain.*;
+import booking_app_team_2.bookie.dto.PeriodDTO;
+import booking_app_team_2.bookie.dto.ReservationDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.repository.ReservationRepository;
 import booking_app_team_2.bookie.util.TokenUtils;
@@ -8,6 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import static org.mockito.Mockito.*;
@@ -21,9 +26,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Stream;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -51,33 +56,397 @@ public class ReservationServiceTest {
     @Captor
     private ArgumentCaptor<Reservation> reservationCaptor;
 
-    // TODO: Finish this
-
-    @Test
-    @Order(1)
-    @DisplayName("Test createReservation when reservation is automatically accepted")
-    public void testCreateReservationWhenReservationIsAutomaticallyAccepted() {
-
+    private static Stream<Arguments> overlappingReservationsSource() {
+        return Stream.of(
+                Arguments.of(
+                        List.of(
+                                new Reservation(
+                                        1,
+                                        null,
+                                        null,
+                                        new Period(
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(2)
+                                                        ),
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(7)
+                                                        )
+                                        ),
+                                        BigDecimal.valueOf(1)
+                                )
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new Reservation(
+                                        1,
+                                        null,
+                                        null,
+                                        new Period(
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                        ),
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(2)
+                                                        )
+                                        ),
+                                        BigDecimal.valueOf(1)
+                                ),
+                                new Reservation(
+                                        1,
+                                        null,
+                                        null,
+                                        new Period(
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(3)
+                                                        ),
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(7)
+                                                        )
+                                        ),
+                                        BigDecimal.valueOf(1)
+                                )
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new Reservation(
+                                        1,
+                                        null,
+                                        null,
+                                        new Period(
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(2)
+                                                        ),
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(2)
+                                                        )
+                                        ),
+                                        BigDecimal.valueOf(1)
+                                )
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new Reservation(
+                                        1,
+                                        null,
+                                        null,
+                                        new Period(
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(1)
+                                                        ),
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(3)
+                                                        )
+                                        ),
+                                        BigDecimal.valueOf(1)
+                                )
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new Reservation(
+                                        1,
+                                        null,
+                                        null,
+                                        new Period(
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                        ),
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(2)
+                                                        )
+                                        ),
+                                        BigDecimal.valueOf(1)
+                                )
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new Reservation(
+                                        1,
+                                        null,
+                                        null,
+                                        new Period(
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                        ),
+                                                LocalDate
+                                                        .from(
+                                                                LocalDate
+                                                                        .now()
+                                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                                        .plusDays(5)
+                                                        )
+                                        ),
+                                        BigDecimal.valueOf(1)
+                                )
+                        )
+                )
+        );
     }
 
-    // TODO: Finish this
+    @ParameterizedTest
+    @MethodSource(value = "overlappingReservationsSource")
+    @Order(1)
+    @DisplayName("Test createReservation when reservation is automatically accepted")
+    public void testCreateReservationWhenReservationIsAutomaticallyAccepted(List<Reservation> reservations) {
+        Accommodation accommodation = new Accommodation();
+        accommodation.setId(1L);
+        accommodation.setApproved(true);
+        accommodation.setMinimumGuests(1);
+        accommodation.setMaximumGuests(1);
+        accommodation.setPricedPerGuest(true);
+        accommodation.setReservationAutoAccepted(true);
+
+        HashSet<AvailabilityPeriod> availabilityPeriods = new HashSet<>();
+        AvailabilityPeriod availabilityPeriod =
+                new AvailabilityPeriod(
+                        BigDecimal.valueOf(1),
+                        new Period(
+                                LocalDate
+                                        .from(
+                                                LocalDate
+                                                        .now()
+                                                        .atStartOfDay(ZoneId.systemDefault())
+                                        ),
+                                LocalDate
+                                        .from(
+                                                LocalDate
+                                                        .now()
+                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                        .plusDays(20)
+                                        )
+                        )
+                );
+        availabilityPeriods.add(availabilityPeriod);
+        accommodation.setAvailabilityPeriods(availabilityPeriods);
+
+        Guest reservee = new Guest();
+        reservee.setId(1L);
+        reservee.setBlocked(false);
+        reservee.setRole(UserRole.Guest);
+
+        ReservationDTO reservationDTO =
+                new ReservationDTO(
+                        1,
+                        ReservationStatus.Waiting,
+                        1L,
+                        1L,
+                        new PeriodDTO(
+                                new Period(
+                                        LocalDate
+                                                .from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plusDays(1)),
+                                        LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plusDays(3))
+                                )
+                        )
+                );
+
+        when(accommodationService.findOne(reservationDTO.getAccommodationId())).thenReturn(Optional.of(accommodation));
+        when(userService.findOne(reservationDTO.getReserveeId())).thenReturn(Optional.of(reservee));
+
+        AccountVerificator accountVerificator = new AccountVerificator();
+        accountVerificator.setUser(reservee);
+        accountVerificator.setVerified(true);
+
+        when(accountVerificatorService.findOneByUser(reservee)).thenReturn(Optional.of(accountVerificator));
+
+        Reservation reservation = new Reservation();
+        reservation.setNumberOfGuests(reservationDTO.getNumberOfGuests());
+        reservation.setAccommodation(accommodation);
+        reservation.setReservee(reservee);
+        reservation.setPeriod(new Period(reservationDTO.getPeriodDTO()));
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
+
+        reservations.forEach(intersectingReservation -> {
+            intersectingReservation.setAccommodation(accommodation);
+            intersectingReservation.setReservee(reservee);
+        });
+        when(reservationRepository.findAllByIntersectingPeriod(any(Reservation.class))).thenReturn(reservations);
+
+        reservationService.createReservation(reservationDTO);
+
+        verify(accommodationService, atMostOnce()).findOne(reservationDTO.getAccommodationId());
+        verify(userService, atMostOnce()).findOne(reservationDTO.getReserveeId());
+        verify(accountVerificatorService, atMostOnce()).findOneByUser(reservee);
+        verify(accommodationService, atMostOnce()).save(accommodation);
+        verify(reservationRepository, atMostOnce()).findAllByIntersectingPeriod(reservation);
+
+        reservations
+                .forEach(
+                        intersectingReservation ->{
+                            verify(reservationRepository, atLeastOnce()).save(intersectingReservation);
+                            assertEquals(intersectingReservation.getStatus(), ReservationStatus.Declined);
+                        }
+
+                );
+
+        verify(reservationRepository, atLeastOnce()).save(reservationCaptor.capture());
+
+        assertEquals(reservationCaptor.getValue().getId(), reservation.getId());
+        assertEquals(reservationCaptor.getValue().getStatus(), ReservationStatus.Accepted);
+    }
 
     @Test
     @Order(2)
     @DisplayName("Test createReservation when reservation is not automatically accepted")
     public void testCreateReservationWhenReservationIsNotAutomaticallyAccepted() {
+        Accommodation accommodation = new Accommodation();
+        accommodation.setId(1L);
+        accommodation.setApproved(true);
+        accommodation.setMinimumGuests(1);
+        accommodation.setMaximumGuests(1);
+        accommodation.setPricedPerGuest(true);
+        accommodation.setReservationAutoAccepted(false);
 
+        HashSet<AvailabilityPeriod> availabilityPeriods = new HashSet<>();
+        AvailabilityPeriod availabilityPeriod =
+                new AvailabilityPeriod(
+                        BigDecimal.valueOf(1),
+                        new Period(
+                                LocalDate
+                                        .from(
+                                                LocalDate
+                                                        .now()
+                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                        .minusDays(5)
+                                        ),
+                                LocalDate
+                                        .from(
+                                                LocalDate
+                                                        .now()
+                                                        .atStartOfDay(ZoneId.systemDefault())
+                                                        .plusDays(5)
+                                        )
+                        )
+                );
+        availabilityPeriods.add(availabilityPeriod);
+        accommodation.setAvailabilityPeriods(availabilityPeriods);
+
+        Guest reservee = new Guest();
+        reservee.setId(1L);
+        reservee.setBlocked(false);
+        reservee.setRole(UserRole.Guest);
+
+        ReservationDTO reservationDTO =
+                new ReservationDTO(
+                        1,
+                        ReservationStatus.Waiting,
+                        1L,
+                        1L,
+                        new PeriodDTO(
+                                new Period(
+                                        LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault())),
+                                        LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plusDays(1))
+                                )
+                        )
+                );
+
+        when(accommodationService.findOne(reservationDTO.getAccommodationId())).thenReturn(Optional.of(accommodation));
+        when(userService.findOne(reservationDTO.getReserveeId())).thenReturn(Optional.of(reservee));
+
+        AccountVerificator accountVerificator = new AccountVerificator();
+        accountVerificator.setUser(reservee);
+        accountVerificator.setVerified(true);
+
+        when(accountVerificatorService.findOneByUser(reservee)).thenReturn(Optional.of(accountVerificator));
+
+        Reservation reservation = new Reservation();
+        reservation.setNumberOfGuests(reservationDTO.getNumberOfGuests());
+        reservation.setAccommodation(accommodation);
+        reservation.setReservee(reservee);
+        reservation.setPeriod(new Period(reservationDTO.getPeriodDTO()));
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
+
+        reservationService.createReservation(reservationDTO);
+
+        verify(accommodationService, atMostOnce()).findOne(reservationDTO.getAccommodationId());
+        verify(userService, atMostOnce()).findOne(reservationDTO.getReserveeId());
+        verify(accountVerificatorService, atMostOnce()).findOneByUser(reservee);
+        verifyNoMoreInteractions(accommodationService);
+        verify(reservationRepository, atMostOnce()).save(reservationCaptor.capture());
+
+        assertEquals(reservationCaptor.getValue().getId(), reservation.getId());
+        assertEquals(reservationCaptor.getValue().getStatus(), ReservationStatus.Waiting);
+
+        verifyNoMoreInteractions(reservationRepository);
     }
 
-    // TODO: Finish this
-
-    @Test
+    @ParameterizedTest
+    @MethodSource(value = "overlappingReservationsSource")
     @Order(3)
     @DisplayName("Test acceptReservation")
-    public void testAcceptReservation() {
+    public void testAcceptReservation(List<Reservation> reservations) {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer token");
 
+        HashSet<AvailabilityPeriod> availabilityPeriods = new HashSet<>();
+        availabilityPeriods
+                .add(
+                        new AvailabilityPeriod(
+                                BigDecimal.valueOf(1),
+                                new Period(
+                                        LocalDate
+                                                .from(
+                                                        LocalDate
+                                                                .now()
+                                                                .atStartOfDay(ZoneId.systemDefault())
+                                                ),
+                                        LocalDate
+                                                .from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plusDays(20))
+                                )
+                        )
+                );
         Accommodation accommodation =
                 new Accommodation(
                         "test",
@@ -91,14 +460,17 @@ public class ReservationServiceTest {
                         AccommodationType.Apartment,
                         true,
                         true,
-                        new HashSet<>()
+                        availabilityPeriods
                 );
         Reservation reservation =
                 new Reservation(
                         1,
                         accommodation,
                         new Guest(),
-                        new Period(LocalDate.now().plusDays(5), LocalDate.now().plusDays(10)),
+                        new Period(
+                                LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plusDays(1)),
+                                LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plusDays(3))
+                        ),
                         BigDecimal.valueOf(1)
                 );
         reservation.setStatus(ReservationStatus.Waiting);
@@ -131,18 +503,34 @@ public class ReservationServiceTest {
         accountVerificator.setVerified(true);
         when(accountVerificatorService.findOneByUser(owner)).thenReturn(Optional.of(accountVerificator));
 
-        HttpTransferException exception =
-                assertThrows(HttpTransferException.class, () -> reservationService.acceptReservation(1L, request));
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getHttpStatus());
-        assertEquals("This accommodation is not available in the requested period.", exception.getMessage());
+        reservations.forEach(intersectingReservation -> {
+            intersectingReservation.setAccommodation(accommodation);
+            intersectingReservation.setReservee(reservation.getReservee());
+        });
+        when(reservationRepository.findAllByIntersectingPeriod(reservation)).thenReturn(reservations);
+
+        reservationService.acceptReservation(1L, request);
 
         verify(reservationRepository, atMostOnce()).findById(1L);
         verify(tokenUtils, atMostOnce()).getToken(request);
         verify(tokenUtils, atMostOnce()).getIdFromToken(tokenUtils.getToken(request));
         verify(userService, atMostOnce()).findOne(tokenUtils.getIdFromToken(tokenUtils.getToken(request)));
         verify(accountVerificatorService, atMostOnce()).findOneByUser(owner);
-        verifyNoInteractions(accommodationService);
-        verifyNoMoreInteractions(reservationRepository);
+        verify(accommodationService, atMostOnce()).save(accommodation);
+        verify(reservationRepository, atMostOnce()).findAllByIntersectingPeriod(reservation);
+
+        reservations
+                .forEach(
+                        intersectingReservation -> {
+                            verify(reservationRepository, atLeastOnce()).save(intersectingReservation);
+                            assertEquals(intersectingReservation.getStatus(), ReservationStatus.Declined);
+                        }
+                );
+
+        verify(reservationRepository, atLeastOnce()).save(reservationCaptor.capture());
+
+        assertEquals(reservationCaptor.getValue().getId(), reservation.getId());
+        assertEquals(reservationCaptor.getValue().getStatus(), ReservationStatus.Accepted);
     }
 
     @Test
