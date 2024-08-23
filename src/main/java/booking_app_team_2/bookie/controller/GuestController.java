@@ -2,6 +2,7 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.dto.AccommodationDTO;
 import booking_app_team_2.bookie.service.GuestService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Setter
 @RestController
@@ -65,13 +68,30 @@ public class GuestController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @GetMapping(value = "/{id}/favourite-accommodations",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> getFavouriteAccommodations(@PathVariable Long id){
-        Collection<Accommodation> accommodations= Collections.emptyList();
-        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    public ResponseEntity<Collection<AccommodationDTO>> getFavouriteAccommodations(@PathVariable Long id){
+        Optional<Guest> guest = guestService.findOne(id);
+        Collection<Accommodation> accommodations = Collections.emptyList();
+        if(guest.isPresent()){
+            accommodations = guest.get().getFavouriteAccommodations();
+            if(accommodations.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Collection<AccommodationDTO> accommodationDTO=accommodations.stream()
+                .map(accommodation -> new AccommodationDTO(accommodation.getId(),accommodation.getName(),accommodation.getDescription(),accommodation.getMinimumGuests(),accommodation.getMaximumGuests(),accommodation.getLocation(),accommodation.getAmenities(),accommodation.getAvailabilityPeriods(),accommodation.getImages(),accommodation.getReservationCancellationDeadline(),accommodation.getType(),accommodation.isReservationAutoAccepted()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(accommodationDTO, HttpStatus.OK);
     }
     @PostMapping(value = "/{id}/favourite-accommodations",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Guest> addFavouriteAccommodation(@PathVariable Long id, @RequestBody Long accommodationId){
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Void> addFavouriteAccommodation(@PathVariable Long id,  @RequestParam(value = "accommodation_id") Long accommodationId){
+        Boolean flag = guestService.addFavouriteAccommodation(id,accommodationId);
+        if(flag){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

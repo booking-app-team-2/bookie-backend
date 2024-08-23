@@ -287,3 +287,21 @@ VALUES (nextval('sequence_review'),4,'not bad dude','2024-01-11 12:30:45.123456'
 
 INSERT INTO owner_review(reviewee_id, id)
 VALUES (4,4);
+
+INSERT INTO report(id,body,reporter_id,reportee_id,is_deleted)
+VALUES (nextval('sequence_report'),'Nije bio dobar',5,2,false);
+
+INSERT INTO report(id,body,reporter_id,reportee_id,is_deleted)
+VALUES (nextval('sequence_report'),'Bio je zao',4,3,false);
+
+INSERT INTO report(id,body,reporter_id,reportee_id,is_deleted)
+VALUES (nextval('sequence_report'),'Bio je zlocest',2,7,false);
+
+INSERT INTO notification(id,body,type,receiver_id,is_deleted)
+VALUES (nextval('sequence_notification'),'Your reservation is accepted!','ReservationRequest',3,false);
+
+INSERT INTO guest_favourite_accommodations(accommodation_id,guest_id)
+VALUES (1,3);
+
+INSERT INTO guest_favourite_accommodations(accommodation_id,guest_id)
+VALUES (2,3);

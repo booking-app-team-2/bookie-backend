@@ -33,8 +33,8 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public Optional findOne(Long id) {
-        return Optional.empty();
+    public Optional<Notification> findOne(Long id) {
+        return notificationRepository.findById(id);
     }
 
     @Override
@@ -44,7 +44,8 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public void remove(Long id) {
-
+        Optional<Notification> notification = notificationRepository.findById(id);
+        notification.ifPresent(value -> notificationRepository.delete(value));
     }
 
     @Override

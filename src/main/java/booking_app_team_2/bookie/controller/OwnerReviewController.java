@@ -121,6 +121,12 @@ public class OwnerReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/unapproved/{id}")
+    public ResponseEntity<Void> denyReview(@PathVariable Long id) {
+        ownerReviewService.remove(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('Guest')")
     public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
