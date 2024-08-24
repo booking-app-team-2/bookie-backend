@@ -53,6 +53,10 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         User user = (User) authentication.getPrincipal();
+        if (user.isBlocked())
+            throw new RuntimeException("User is blocked");
+
+
         tokenUtils.setUserAgent(httpServletRequest.getHeader("User-Agent"));
         String jWT = tokenUtils.generateToken(user);
         int validityPeriod = tokenUtils.getValidityPeriod();
