@@ -185,9 +185,21 @@ public class AccommodationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Accommodation> createAccommodation(@RequestBody Accommodation accommodation) {
-        Accommodation savedAccommodation = new Accommodation() {};
-        return new ResponseEntity<>(savedAccommodation, HttpStatus.CREATED);
+    public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody AccommodationDTO accommodation) {
+        Accommodation savedAccommodation = new Accommodation();
+        savedAccommodation.setName(accommodation.getName());
+        savedAccommodation.setDescription(accommodation.getDescription());
+        savedAccommodation.setLocation(accommodation.getLocation());
+        savedAccommodation.setAmenities(accommodation.getAmenities());
+        savedAccommodation.setAvailabilityPeriods(accommodation.getAvailabilityPeriods());
+        savedAccommodation.setImages(accommodation.getImages());
+        savedAccommodation.setMinimumGuests(accommodation.getMinimumGuests());
+        savedAccommodation.setMaximumGuests(accommodation.getMaximumGuests());
+        savedAccommodation.setReservationAutoAccepted(accommodation.isReservationAutoAccepted());
+        savedAccommodation.setType(accommodation.getType());
+        savedAccommodation.setPricedPerGuest(true);
+        accommodationService.save(savedAccommodation);
+        return new ResponseEntity<>(accommodation, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}/is-approved", consumes = MediaType.APPLICATION_JSON_VALUE,

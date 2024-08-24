@@ -6,6 +6,7 @@ import booking_app_team_2.bookie.dto.NotificationDTO;
 import booking_app_team_2.bookie.service.NotificationService;
 import booking_app_team_2.bookie.service.UserService;
 import lombok.Setter;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,9 +39,8 @@ public class NotificationController {
         return new ResponseEntity<>(notification,HttpStatus.CREATED);
     }
 
-    //Request param pogledati kod darkovog
     @GetMapping(value = "/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Notification>> getUserNotifications(@PathVariable Long userId){
+    public ResponseEntity<Collection<NotificationDTO>> getUserNotifications(@PathVariable Long userId){
         Optional<User> userOptional = userService.findOne(userId);
         Collection<Notification> notifications = Collections.emptyList();
         if(userOptional.isPresent()) {
@@ -48,6 +48,18 @@ public class NotificationController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(notifications, HttpStatus.OK);
+        Collection<NotificationDTO> notificationDTOS = notifications.stream().map(NotificationDTO::new).toList();
+        return new ResponseEntity<>(notificationDTOS, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/{Id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteNotification(@PathVariable Long Id){
+        Optional<Notification> notification = notificationService.findOne(Id);
+        if(notification.isPresent()) {
+            notificationService.remove(Id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

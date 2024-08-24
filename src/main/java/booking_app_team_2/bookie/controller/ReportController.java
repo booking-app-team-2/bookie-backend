@@ -2,6 +2,8 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Report;
 import booking_app_team_2.bookie.dto.ReportDTO;
+import booking_app_team_2.bookie.service.ReportService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,22 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/api/v1/reports")
 public class ReportController {
+
+    private ReportService reportService;
+
+    @Autowired
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReportDTO>>getReports(){
-        Collection<ReportDTO> reports= Collections.emptyList();
-        return new ResponseEntity<>(reports, HttpStatus.OK);
+        Collection<Report> reports= reportService.findAll();
+        if (reports.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Collection<ReportDTO> reportDTOS = reports.stream().map(ReportDTO::new).toList();
+        return new ResponseEntity<>(reportDTOS, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,10 +42,15 @@ public class ReportController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> blockUser(@PathVariable Long userId){
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PutMapping(value = "/{Id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> blockUser(@PathVariable Long Id){
+        if(reportService.findOne(Id).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Boolean blocked = reportService.blockUser(Id);
+        if (blocked) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    // TODO: Implement blocking users
 }

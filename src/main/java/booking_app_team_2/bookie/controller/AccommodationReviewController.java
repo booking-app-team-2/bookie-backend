@@ -110,10 +110,7 @@ public class AccommodationReviewController {
 
     @DeleteMapping(value = "/unapproved/{id}")
     public ResponseEntity<Void> denyReview(@PathVariable Long id) {
-        AccommodationReview accommodationReview = new AccommodationReview();
-        if (accommodationReview.equals(null)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        accommodationReviewService.remove(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
