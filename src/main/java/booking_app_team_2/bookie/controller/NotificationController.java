@@ -39,7 +39,6 @@ public class NotificationController {
         return new ResponseEntity<>(notification,HttpStatus.CREATED);
     }
 
-    //Request param pogledati kod darkovog
     @GetMapping(value = "/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<NotificationDTO>> getUserNotifications(@PathVariable Long userId){
         Optional<User> userOptional = userService.findOne(userId);
