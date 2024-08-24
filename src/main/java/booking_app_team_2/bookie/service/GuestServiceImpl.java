@@ -1,6 +1,8 @@
 package booking_app_team_2.bookie.service;
 
+import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.repository.AccommodationRepository;
 import booking_app_team_2.bookie.repository.GuestRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class GuestServiceImpl implements GuestService {
 
     private GuestRepository guestRepository;
+    private AccommodationRepository accommodationRepository;
 
     @Autowired
-    public GuestServiceImpl(GuestRepository guestRepository) {
+    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository) {
         this.guestRepository = guestRepository;
+        this.accommodationRepository = accommodationRepository;
     }
 
     @Override
@@ -39,11 +43,29 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public Guest save(Guest guest) {
-        return null;
+        return guestRepository.save(guest);
     }
 
     @Override
     public void remove(Long id) {
 
+    }
+
+    @Override
+    public Boolean addFavouriteAccommodation(Long guestId, Long accommodationId) {
+        Optional<Guest> guestOptional = guestRepository.findById(guestId);
+        if (guestOptional.isPresent()) {
+            Guest guest = guestOptional.get();
+            Optional<Accommodation> optionalAccommodation = accommodationRepository.findById(accommodationId);
+            if (optionalAccommodation.isPresent()) {
+                Accommodation accommodation = optionalAccommodation.get();
+                if (!guest.getFavouriteAccommodations().contains(accommodation)) {
+                    guest.getFavouriteAccommodations().add(accommodation);
+                    guestRepository.save(guest);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
