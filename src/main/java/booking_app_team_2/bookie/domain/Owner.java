@@ -21,15 +21,19 @@ public class Owner extends User {
     )
     private Set<Accommodation> accommodations;
 
+    @Setter
     @Column(name = "receives_reservation_request_notifications", nullable = false)
     private boolean receivesReservationRequestNotifications = true;
 
+    @Setter
     @Column(name = "receives_reservation_cancellation_notifications", nullable = false)
     private boolean receivesReservationCancellationNotifiactions = true;
 
+    @Setter
     @Column(name = "receives_review_notifications", nullable = false)
     private boolean receivesReviewNotifications = true;
 
+    @Setter
     @Column(name = "receives_accommodation_review_notifications", nullable = false)
     private boolean receivesAccommodationReviewNotifications = true;
 

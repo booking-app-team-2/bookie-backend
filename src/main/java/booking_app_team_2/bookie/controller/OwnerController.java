@@ -3,6 +3,7 @@ package booking_app_team_2.bookie.controller;
 import booking_app_team_2.bookie.domain.Guest;
 import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.domain.User;
+import booking_app_team_2.bookie.dto.PreferencesDTO;
 import booking_app_team_2.bookie.dto.UserDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.service.OwnerService;
@@ -75,5 +76,20 @@ public class OwnerController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteOwner(@PathVariable("id") Long id) {
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/notifications/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Owner> updatePreferences(@RequestBody PreferencesDTO preferencesDTO, @PathVariable Long id) {
+        Optional<Owner> owner = ownerService.findOne(id);
+        if (owner.isPresent()) {
+            owner.get().setReceivesReservationCancellationNotifiactions(preferencesDTO.cancellationNotifications);
+            owner.get().setReceivesReviewNotifications(preferencesDTO.reviewNotifications);
+            owner.get().setReceivesReservationRequestNotifications(preferencesDTO.requestNotifications);
+            owner.get().setReceivesAccommodationReviewNotifications(preferencesDTO.accomodationReviewNotifications);
+            ownerService.save(owner.get());
+            return new ResponseEntity<>(owner.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -1,8 +1,12 @@
 package booking_app_team_2.bookie.controller;
 
+import booking_app_team_2.bookie.domain.Reservation;
+import booking_app_team_2.bookie.domain.ReservationStatus;
 import booking_app_team_2.bookie.domain.User;
+import booking_app_team_2.bookie.domain.UserRole;
 import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.exception.HttpTransferException;
+import booking_app_team_2.bookie.service.ReservationService;
 import booking_app_team_2.bookie.service.UserService;
 import jakarta.validation.Valid;
 import lombok.Setter;
@@ -13,7 +17,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Setter
 @RestController
@@ -21,10 +27,13 @@ import java.util.Optional;
 @CrossOrigin
 public class UserController {
     private UserService userService;
+    private ReservationService reservationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ReservationService reservationService) {
+
         this.userService = userService;
+        this.reservationService = reservationService;
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -117,5 +126,34 @@ public class UserController {
         userService.remove(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/block")
+    @PreAuthorize("hasAnyAuthority('Admin')")
+    public ResponseEntity<String> blockUser(@PathVariable Long id) {
+        User user = userService.findOne(id).orElseThrow(() -> new RuntimeException("User not found."));
+        user.setBlocked(true);
+        if(user.getRole().equals(UserRole.Guest)){
+            List<Reservation> reservations = reservationService.findAll();
+            for(Reservation reservation : reservations){
+                if(reservation.getReservee().getId().equals(user.getId()) && reservation.getStatus().equals(ReservationStatus.Waiting)){
+                    reservation.setStatus(ReservationStatus.Cancelled);
+                    reservationService.save(reservation);
+                }
+            }
+        }
+        userService.save(user);
+
+        return new ResponseEntity<>("User blocked.", HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/unblock")
+    @PreAuthorize("hasAnyAuthority('Admin')")
+    public ResponseEntity<String> unblockUser(@PathVariable Long id) {
+        User user = userService.findOne(id).orElseThrow(() -> new RuntimeException("User not found."));
+        user.setBlocked(false);
+        userService.save(user);
+
+        return new ResponseEntity<>("User unblocked.", HttpStatus.OK);
     }
 }

@@ -40,7 +40,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Report save(Report report) {
-        return null;
+        return this.reportRepository.save(report);
     }
 
     @Override

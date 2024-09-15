@@ -85,6 +85,7 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/accommodation-reviews/{accommodationId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/accommodation-reviews/{accommodationId}/grade").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/accommodations/filter").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/authentication/verify/**").permitAll()
                     .anyRequest().authenticated();
         });
         httpSecurity.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, userDetailsService),

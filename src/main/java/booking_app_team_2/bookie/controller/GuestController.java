@@ -2,7 +2,9 @@ package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.Accommodation;
 import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.domain.Owner;
 import booking_app_team_2.bookie.dto.AccommodationDTO;
+import booking_app_team_2.bookie.dto.PreferencesDTO;
 import booking_app_team_2.bookie.service.GuestService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,5 +96,16 @@ public class GuestController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @PutMapping(value = "/notifications/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Guest> updatePreferences(@RequestBody PreferencesDTO preferencesDTO, @PathVariable Long id) {
+        Optional<Guest> guest = guestService.findOne(id);
+        if (guest.isPresent()) {
+            guest.get().setReceivesReservationRequestNotifications(preferencesDTO.guestReservationRequest);
+            guestService.save(guest.get());
+            return new ResponseEntity<>(guest.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }

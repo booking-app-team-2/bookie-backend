@@ -1,8 +1,6 @@
 package booking_app_team_2.bookie.controller;
 
-import booking_app_team_2.bookie.domain.Accommodation;
-import booking_app_team_2.bookie.domain.AccommodationReview;
-import booking_app_team_2.bookie.domain.Guest;
+import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.AccommodationReviewDTO;
 import booking_app_team_2.bookie.dto.PeriodDTO;
 import booking_app_team_2.bookie.dto.UserDTO;
@@ -11,6 +9,8 @@ import booking_app_team_2.bookie.repository.GuestRepository;
 import booking_app_team_2.bookie.service.AccommodationReviewService;
 import booking_app_team_2.bookie.service.AccommodationService;
 import booking_app_team_2.bookie.service.GuestService;
+import booking_app_team_2.bookie.service.ReservationService;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,23 +18,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/accommodation-reviews")
 public class AccommodationReviewController {
     private AccommodationReviewService accommodationReviewService;
     private AccommodationService accommodationService;
+    private ReservationService reservationService;
     private GuestService guestService;
 
     @Autowired
-    public AccommodationReviewController(AccommodationReviewService accommodationReviewService, AccommodationService accommodationService, GuestService guestService){
+    public AccommodationReviewController(AccommodationReviewService accommodationReviewService,
+                                         AccommodationService accommodationService, GuestService guestService,
+                                         ReservationService reservationService){
         this.accommodationReviewService=accommodationReviewService;
         this.accommodationService=accommodationService;
         this.guestService=guestService;
+        this.reservationService=reservationService;
     }
     @GetMapping(value = "/{accommodationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationReviewDTO>> getAccommodationReviews(@PathVariable Long accommodationId) {
@@ -90,14 +95,26 @@ public class AccommodationReviewController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('Guest')")
-    public ResponseEntity<AccommodationReviewDTO> createReview(@RequestBody AccommodationReviewDTO accommodationReviewDTO) {
+    public ResponseEntity<String> createReview(@RequestBody AccommodationReviewDTO accommodationReviewDTO) {
         AccommodationReview newReview = new AccommodationReview(accommodationReviewDTO);
         Optional<Accommodation> optionalAccommodation=accommodationService.findOne(accommodationReviewDTO.getAccommodationId());
         optionalAccommodation.ifPresent(newReview::setAccommodation);
         Optional<Guest> optionalGuest=guestService.findOne(accommodationReviewDTO.getReviewerId());
         optionalGuest.ifPresent(newReview::setReviewer);
-        accommodationReviewService.addAccommodationReview(newReview);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        LocalDate date = Instant.ofEpochMilli(accommodationReviewDTO.getTimestampOfCreation()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+        List<Reservation> reservationList = reservationService.findAll();
+        for(Reservation reservation : reservationList) {
+            if(reservation.getAccommodation().getId().equals(accommodationReviewDTO.getAccommodationId())) {
+                if(reservation.getStatus().equals(ReservationStatus.Accepted) &&
+                        date.isAfter(reservation.getPeriod().getEndDate()) &&
+                        date.isBefore(reservation.getPeriod().getEndDate().plusDays(7))) {
+                        accommodationReviewService.addAccommodationReview(newReview);
+                        return new ResponseEntity<>("Review created!", HttpStatus.CREATED);
+                }
+            }
+        }
+        return new ResponseEntity<>("Unable to create review", HttpStatus.NOT_ACCEPTABLE);
     }
 
     @PutMapping(value = "/unapproved/{id}")
@@ -127,6 +144,7 @@ public class AccommodationReviewController {
         accommodationReviewService.reportReview(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping(value = "reported/{id}")
     @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<Void> deleteReportedReview(@PathVariable Long id) {

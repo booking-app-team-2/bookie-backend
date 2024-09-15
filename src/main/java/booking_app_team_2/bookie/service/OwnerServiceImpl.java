@@ -64,4 +64,14 @@ public class OwnerServiceImpl implements OwnerService{
         }
         return owner.getId();
     }
+
+    @Override
+    public void addAccommodation(Long ownerId, Long accommodationId) {
+        ownerRepository.findById(ownerId).ifPresent(owner -> {
+            accommodationRepository.findById(accommodationId).ifPresent(accommodation -> {
+                owner.getAccommodations().add(accommodation);
+                ownerRepository.save(owner);
+            });
+        });
+    }
 }

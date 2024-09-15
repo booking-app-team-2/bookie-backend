@@ -51,7 +51,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<Reservation> findAll() {
-        return null;
+        return reservationRepository.findAll();
     }
 
     @Override

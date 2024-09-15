@@ -1,5 +1,7 @@
 package booking_app_team_2.bookie.domain;
 
+import booking_app_team_2.bookie.dto.ReportDTO;
+import com.shapesecurity.salvation2.Directives.ReportUriDirective;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,4 +38,10 @@ public class Report {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    public Report(String body, User reporter, User reportee) {
+        this.body = body;
+        this.reporter = reporter;
+        this.reportee = reportee;
+    }
 }

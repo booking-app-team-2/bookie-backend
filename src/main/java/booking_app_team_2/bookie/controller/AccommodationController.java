@@ -1,11 +1,7 @@
 package booking_app_team_2.bookie.controller;
 
 import booking_app_team_2.bookie.domain.*;
-import booking_app_team_2.bookie.dto.AccommodationApprovalDTO;
-import booking_app_team_2.bookie.dto.AccommodationAutoAcceptDTO;
-import booking_app_team_2.bookie.dto.AccommodationBasicInfoDTO;
-import booking_app_team_2.bookie.dto.AccommodationDTO;
-import booking_app_team_2.bookie.dto.OwnerDTO;
+import booking_app_team_2.bookie.dto.*;
 import booking_app_team_2.bookie.service.AccommodationService;
 import booking_app_team_2.bookie.service.ImageService;
 import booking_app_team_2.bookie.service.OwnerService;
@@ -13,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -184,8 +181,9 @@ public class AccommodationController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody AccommodationDTO accommodation) {
+    @PostMapping(value="/{ownerId}" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('Owner')")
+    public ResponseEntity<Accommodation> createAccommodation(@PathVariable Long ownerId, @RequestBody AccommodationDTO accommodation) {
         Accommodation savedAccommodation = new Accommodation();
         savedAccommodation.setName(accommodation.getName());
         savedAccommodation.setDescription(accommodation.getDescription());
@@ -198,8 +196,23 @@ public class AccommodationController {
         savedAccommodation.setReservationAutoAccepted(accommodation.isReservationAutoAccepted());
         savedAccommodation.setType(accommodation.getType());
         savedAccommodation.setPricedPerGuest(true);
+        savedAccommodation.setAvailabilityPeriods(accommodation.getAvailabilityPeriods());
         accommodationService.save(savedAccommodation);
-        return new ResponseEntity<>(accommodation, HttpStatus.CREATED);
+        ownerService.addAccommodation(ownerId,savedAccommodation.getId());
+        return new ResponseEntity<>(savedAccommodation, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/{id}/availability-periods", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('Owner')")
+    public ResponseEntity<Accommodation> addAvailabilityPeriod(@PathVariable Long id, @RequestBody AvailabilityPeriodDTO availabilityPeriodDTO) throws Exception {
+        Optional<Accommodation> accommodation = Optional.ofNullable(accommodationService.findOne(id).orElseThrow(() -> new Exception("Not found!")));
+
+        Set<AvailabilityPeriod> availabilityPeriods = accommodation.get().getAvailabilityPeriods();
+        AvailabilityPeriod availabilityPeriod = new AvailabilityPeriod(availabilityPeriodDTO);
+        availabilityPeriods.add(availabilityPeriod);
+        accommodation.get().setAvailabilityPeriods(availabilityPeriods);
+        accommodationService.save(accommodation.get());
+        return new ResponseEntity<>(accommodation.get(), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}/is-approved", consumes = MediaType.APPLICATION_JSON_VALUE,

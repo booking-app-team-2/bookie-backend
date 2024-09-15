@@ -1,14 +1,12 @@
 package booking_app_team_2.bookie.controller;
 
-import booking_app_team_2.bookie.domain.Guest;
-import booking_app_team_2.bookie.domain.Owner;
-import booking_app_team_2.bookie.domain.OwnerReview;
-import booking_app_team_2.bookie.domain.Review;
+import booking_app_team_2.bookie.domain.*;
 import booking_app_team_2.bookie.dto.OwnerReviewDTO;
 import booking_app_team_2.bookie.exception.HttpTransferException;
 import booking_app_team_2.bookie.service.GuestService;
 import booking_app_team_2.bookie.service.OwnerReviewService;
 import booking_app_team_2.bookie.service.OwnerService;
+import booking_app_team_2.bookie.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,10 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/owner-reviews")
@@ -27,12 +23,15 @@ public class OwnerReviewController {
     private OwnerReviewService ownerReviewService;
     private GuestService guestService;
     private OwnerService ownerService;
+    private ReservationService reservationService;
 
     @Autowired
-    public OwnerReviewController(OwnerReviewService ownerReviewService, GuestService guestService, OwnerService ownerService) {
+    public OwnerReviewController(OwnerReviewService ownerReviewService, GuestService guestService,
+                                 OwnerService ownerService, ReservationService reservationService) {
         this.ownerReviewService = ownerReviewService;
         this.guestService = guestService;
         this.ownerService = ownerService;
+        this.reservationService = reservationService;
     }
 
     @GetMapping(value = "/{ownerId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -110,8 +109,21 @@ public class OwnerReviewController {
         optionalReviewer.ifPresent(ownerReview::setReviewer);
         Optional<Owner> optionalReviewee = ownerService.findOne(ownerReviewDTO.getRevieweeId());
         optionalReviewee.ifPresent(ownerReview::setReviewee);
-        ownerReviewService.addOwnerReview(ownerReview);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+
+        Set<Accommodation> accommodations = optionalReviewee.get().getAccommodations();
+        List<Long> accommodationIds = accommodations.stream()
+                .map(Accommodation::getId)
+                .collect(Collectors.toList());
+        List<Reservation> reservationList = reservationService.findAll();
+
+        for(Reservation reservation : reservationList) {
+            if(reservation.getReservee().getId().equals(ownerReviewDTO.getReviewerId()) &&
+                accommodationIds.contains(reservation.getAccommodation().getId())) {
+                    ownerReviewService.addOwnerReview(ownerReview);
+                    return new ResponseEntity<>(HttpStatus.CREATED);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @PutMapping(value = "/unapproved/{id}")
